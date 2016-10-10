@@ -1,0 +1,168 @@
+\documentclass[12pt]{gatech-thesis}
+\usepackage{amsmath,amssymb,latexsym,float,epsfig,subfigure,graphicx}
+
+% \includeonly{aase}
+
+\title{Integrating Reinforcement Learning into a Programming Language}
+
+\author{Christopher Simpkins}
+\department{School of Interactive Computing}
+
+
+\principaladvisor{Professor Charles L. Isbell, Jr.}[School of
+  Interactive Computing]
+\committeechair{}
+\firstreader{Dr. Douglas Bodner}[Tennenbaum Institute]
+\secondreader{Professor Mark Riedl}[School of Interactive Computing]
+\thirdreader{Dr. Spencer Rugaber}[School of Computer Science]
+\fourthreader{Professor Andrea Thomaz}[School of Interactive Computing]
+
+
+\degree{Doctor of Philosophy}
+
+
+%% Set \listmajortrue below, then uncomment and set this for
+%% interdisciplinary PhD programs so that the title page says
+%% ``[degree] in [major]'' and puts the department at the bottom of
+%% the page, rather than saying ``[degree] in the [department]''
+
+%% \major{Algorithms, Combinatorics, and Optimization}
+\major{Computer Science}
+
+\copyrightyear{2016}
+\submitdate{15 March 2016}
+
+%% The date the last committee member signs the thesis form. Printed
+%% on the approval page.
+\approveddate{TBD}
+
+
+\bibfiles{references}
+
+%% The following are the defaults
+%%    \titlepagetrue
+%%    \signaturepagetrue
+%%    \copyrightfalse
+%%    \figurespagetrue
+%%    \tablespagetrue
+%%    \contentspagetrue
+%%    \dedicationheadingfalse
+%%    \bibpagetrue
+%%    \thesisproposalfalse
+%%    \strictmarginstrue
+%%    \dissertationfalse
+%%    \listmajorfalse
+%%    \multivolumefalse
+
+\listmajortrue
+\dissertationtrue
+
+%% \thesisproposaltrue
+
+\begin{document}
+\nocite{*}
+\bibliographystyle{gatech-thesis}
+%%
+\begin{preliminary}
+\begin{dedication}
+\null\vfil
+{\large
+\begin{center}
+To my children,\\\vspace{12pt}
+Isaac and Meredith,\\\vspace{12pt}
+who motivated my decision to give up flying and enter academia.
+\end{center}}
+\vfil\null
+\end{dedication}
+%\begin{preface}
+
+%\end{preface}
+%\begin{acknowledgements}
+
+%\end{acknowledgements}
+% print table of contents, figures and tables here.
+\contents
+% if you need a "List of Symbols or Abbreviations" look into
+% gatech-thesis-gloss.sty.
+
+\begin{summary}
+\vspace{-1in}
+
+{\bf My Thesis:} Improving the composability of modules in modular reinforcement learning (MRL) and integrating MRL into a programming language supports reuse in adaptive agent software engineering.  This thesis claims that (1) MRL can be extended to support composability in modular reinforcement learning agents by uncoupling the reward scales of the modules that comprise the agents, and (2) integrating modular reinforcement learning into a programming language supports adaptive agent programming by reducing the effort required to adapt agent programs to new domains.
+
+Composability, an essential property of modularity in software engineering, allows components to be reused in the construction of new systems.  In the case of a modular reinforcement learning agent composability means being able to reuse behavior modules in new agents without modifying the modules.  The current state of the art in modular reinforcement learning supports decomposition but not composition, or module reuse.  This dissertation contributes a reformulation of MRL that supports composition by uncoupling the reward scales of the modules that comprise a modular reinforcement learning agent, and an algorithm that solves it.
+
+An excellent way to support software engineering is with practical, usable programming languages.  The second major contribution of this dissertation is an domain-specific language and framework embedded in the Scala programming language that integrates MRL.  We show how this integration is useful to software engineers writing practical adaptive agent software by applying AFABL to representative agent programming tasks and measuring the benefit of integrated MRL compared to traditional programming.  This application to practical software engineering problems distinguishes AFABL from previous work in integrating RL into programming languages such as ALisp.
+
+\end{summary}
+
+\end{preliminary}
+
+\cleardoublepage
+\include{introduction}
+
+\include{rl}
+
+\include{arbiq}
+
+\include{software-engineering}
+
+\include{related-work}
+
+\include{afabl}
+
+\include{aase}
+
+\include{conclusion}
+
+\appendix
+
+
+\begin{postliminary}
+\references
+\postfacesection{Index}{%
+%%             ... generate an index here
+%%         look into gatech-thesis-index.sty
+}
+\begin{vita}
+
+\section{Education}
+
+\begin{tabular}{lllr}
+%{\bf Degree} & {\bf Year} & {\bf University}\hspace{2.0in} & {\bf Field} \\
+%\hline \\[\tabitemskip]
+\textbf{Ph.D.} & 2013 (expected) & Georgia Institute of Technology &
+{\sl Computer Science}\\
+\textbf{M.S.} &  2004 & Southern Polytechnic State University &
+{\sl Computer Science}\\
+\textbf{B.S.} & 1990 & United States Air Force Academy & \\
+\end{tabular}
+
+\section{Employment History}
+
+\begin{tabular}{llr}
+%\textbf{Title} & \textbf{Organization} & \textbf{Years} \\ \hline \\[.1in]
+
+\textbf{Research Scientist II} & Georgia Institute of Technology
+                               &{\sl 2001-present}\\
+                            & Atlanta, GA & \\
+\textbf{Software Engineer} & Internet Security Systems & {\sl
+  2000-2001}\\
+                           & Atlanta, GA & \\
+\textbf{Software Engineer,} & U.S. Air Force & {\sl 1998-2000}\\
+\textbf{IT/Network Manager} & Columbus AFB, MS & \\
+\textbf{T-37 Instructor Pilot} & U.S. Air Force & {\sl 1997-2000}\\
+                           & Columbus AFB, MS & \\
+\textbf{KC-135 Pilot} & U.S. Air Force & {\sl 1995-1997}\\
+                           & McConnell AFB, KS & \\
+\textbf{Interactive Courseware} & U.S. Air Force & {\sl 1993-1995}\\
+\textbf{Developer} & Vandenberg AFB, CA & \\
+\textbf{Space Instructor} & U.S. Air Force & {\sl 1992-1995}\\
+                           & Vandenberg AFB, CO; Lowry AFB, CO & \\
+\textbf{Student Pilot} & U.S. Air Force & {\sl 1990-1992}\\
+                           & Columbus AFB, MS &
+\end{tabular}
+
+\end{vita}
+\end{postliminary}
+\end{document}

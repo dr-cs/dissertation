@@ -1,0 +1,34 @@
+\chapter{Conclusions and Future Work}
+
+\section{Conclusions}
+
+\subsection{Thesis Confirmed: Integrated RL is Helpful}
+
+\subsection{Review of Specific Contributions}
+
+\subsubsection{ArbiQ}
+
+\subsubsection{AFABL}
+
+\section{Limitations of Current Work}
+
+\section{Directions for Future Work}
+
+\subsection{Function Approximation in Reinforcement Learning}
+
+\subsection{Hierarchical Reinforcement Learning}
+
+Current implementations of partial programming are based on hierarchical reinforcement learning (HRL) \cite{dietterich1998maxq,dietterich2000hierarchical,sutton1999between,parr1998reinforcement,andre2000programmable,andre2002state,marthi2005concurrent}, which exploits a temporal decomposition of the Q function.  In the case of HRL, the designer typically specifies a delegation hierarchy of components with points of adaptation where a policy is learned to perform the delegation.  The designer programs the policies of some of these components, which constitute a partial specification of the agent's behavior, and some of the components use reinforcement learning to adapt to the hierarchy by learning the control policies for their parts of the problem.  The adaptive components relieve the designer from writing the parts of the program that are hard to specify, or require difficult to write adaptivity, and the partial program constrains the learning problem faced by the adaptive components, which speeds convergence.  Components can be reused in other contexts, providing for modularity in temporal problem decompositions.
+
+\subsubsection{Semi-Markov Decision Processes}
+
+\subsubsection{MAXQ}
+
+\subsubsection{Options}
+
+\subsubsection{Hierarchical Abstract Machines}
+
+
+\subsection{Relational Reinforcement Learning}
+
+\subsection{Multi-Agent Systems}

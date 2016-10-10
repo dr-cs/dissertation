@@ -1,0 +1,39 @@
+\chapter{Background in Reinforcement Learning}
+
+
+
+\section{Reinforcement Learning}
+
+One can think of reinforcement learning (RL) \cite{sutton1998reinforcement,kaelbling1996reinforcement} as a machine learning approach to planning, that is, as a way of finding a sequence of actions that achieves a goal.  In RL, problems of decision-making by agents interacting with uncertain environments are usually modeled as Markov decision processes (MDPs). In the MDP framework, at each time step the agent senses the state of the environment and executes an action from the set of actions available to it in that state. The agent's action (and perhaps other uncontrolled external events) cause a stochastic change in the state of the environment. The agent receives a (possibly zero) scalar reward from the environment. The agent's goal is to find a {\it policy}; that is, to choose actions so as to maximize the expected sum of rewards over some time horizon. An optimal policy is a mapping from states to actions that maximizes the long-term expected reward.  In short, a policy defines which action an agent should take in a given state to maximize its chances of reaching a goal.  RL algorithms typically learn an action-value function, or Q function, that represents the value of taking a given action in a given state.  The agent's policy is derived from the Q function.
+
+\subsection{Markov Decision Processes}
+
+
+\subsection{Calculating Policies via Direct Solution}
+
+\subsubsection{Policy Iteration}
+
+\subsubsection{Value Iteration}
+
+\subsection{Learning Policies via Reinforcement Learning}
+
+\subsubsection{Markov-Chain Monte-Carlo Policy Learning}
+
+\subsubsection{Q-Learning}
+
+\subsubsection{SARSA}
+
+Our work in integrating reinforcement learning into a programming language is based on the idea of partial programming. Partial programming is a framework for programming in which a programmer or designer specifies the structure of certain parts of the system while leaving other portions unspecified, such that a learning system can learn how to perform them.
+
+\subsection{The Curse of Dimensionality in Reinforcement Learning}
+
+
+\section{Modular reinforcement learning}
+
+A second kind of decomposition in reinforcement learning, which is somewhat confusingly referred to as modular reinforcement learning (MRL) ~\cite{russell2003q-decomposition,sprague2003multiple-goal}, decomposes the original problem concurrently rather than temporally. In contrast to HRL, current MRL implementations do not involve delegation; instead, an agent is decomposed into several components, each of which is concurrently learning a subgoal of the original, complex, multiple-goal learning problem. On each occasion that a decision for what action to take is needed, an arbitrator combines the action preferences of the components to compute the output of the joint policy.  The current state of the art in modular reinforcement learning uses the the Q-values of the components directly to effect the arbitration decision.  Russell's and Zimdars's Q-decomposition \cite{russell2003q-decomposition} views the problem as a value function decomposition.  Sprague and Ballard view the problem more explicitly as arbitration, that is, action selection among multiple concurrently executing modules, although their solution, Greatest-Mass (GM) Sarsa \cite{sprague2003multiple-goal} is equivalent to Q-decomposition.
+
+
+\subsection{Greatest-Mass and Q-Decomposition}
+
+\subsection{Kaushik and Jon's Thing}
+
