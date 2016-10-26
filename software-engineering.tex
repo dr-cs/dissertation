@@ -79,3 +79,102 @@
 
 \section{Software Complexity}
 
+
+\section{Adaptive Programming}
+
+By adaptive software we refer to the notion used in the machine learning community: software that learns to adapt to its environment during run-time, not software that is written to be easily changed by modifying the source code and recompiling.  In particular, we use Peter Norvig's definition of adaptive software:
+
+\begin{quote}
+Adaptive software uses available information about changes in its
+environment to improve its behavior~\cite{norvig1998adaptive}.
+\end{quote}
+
+We are particularly interested in programming intelligent agents that operate in real environments, and in virtual environments that are designed to simulate real environments.  Examples of these kinds of agents include robots, and non-player characters in interactive games and dramas.  Unlike traditional programs, agents operate in environments that are often incompletely perceived and constantly changing.  This incompleteness of perception and dynamism in the environment creates a strong need for adaptivity.  Programming this adaptivity by hand in a language that does not provide built-in support for adaptivity is very cumbersome.  This dissertation will contribute a programming language -- AFABL -- with built-in adaptivity and support for partial programming, making the construction of adaptive agents much easier.
+
+\subsection{Authorability and the NPC Programming Space}
+
+Authorability is the ease with which a programmer can author the behavior of NPCs.  Concretely, we suggest a framework for assessing authorability that considers domain knowledge requirements, algorithm knowledge requirements, and the adaptability of agents.
+
+{\bf Domain knowledge} refers to the world-specific details the NPC author must program into the NPC for a particular domain.  Examples of domain knowledge include representations of state and the dynamics of the world, that is, how actions cause transitions from one state to another.
+
+{\bf Algorithm knowledge} refers to the degree of algorithm detail that must be programmed in the NPC.  For example, an NPC agent that uses a STRIPS planner for action selection would need to contain details of STRIPS operators and the mechanisms for selecting them in response to state perception.
+
+{\bf Adaptability} refers to the ease with which an NPC, once authored, can adapt to a changing world or be reused in a different world.
+
+These factors are not completely orthogonal.  High domain knowledge requirements can hinder adaptability because NPC agents need to be preprogrammed for worlds that have different dynamics.  Domain knowledge and algorithm knowledge often go hand-in-hand, for example in the encoding of heuristic functions.  Returning to our STRIPS example, STRIPS operators essentially encode world dynamics into the decision making algorithm, thereby coupling domain knowledge and algorithm knowledge.
+
+We say that authorability is high when required domain knowledge is low, algorithm knowledge is low, and adaptability is high.  Such an NPC is easy to program in the first place, can adapt to a world with non-stationary dynamics, and can be reused in new worlds with minimal reprogramming.
+
+With this working framework for assessing the authorability of NPC programming approaches we can map the NPC programming space as a spectrum from fully scripted to fully learning approaches.
+
+\subsubsection{Fully scripted NPC Programming}
+
+Fully scripted NPCs are the most common type of NPCs.  The scripts that control such NPCs specify every detail of the NPC's behavior ahead of time.  While scripted NPCs can pursue goals and exhibit intelligence, the manner in which these goals are pursued must be written explicitly by the agent author, and if these goals are to be pursued using a particular algorithm, such as a planning algorithm, the algorithm itself must be encoded (or used as a library) from within the code.
+
+In terms of our authorability framework, fully scripted NPCs have the
+following properties.
+\begin{itemize}
+\item Domain knowledge: high. A fully scripted agent must specify a knowledge representation for perception and action that facilitates all the kinds of analyses and decisions the agent will make.  The dynamics of the world must be known in advance and encoded in he script to allow the agent to pursue goals.
+\item Algorithm knowledge: high.  Although the algorithms may be simple, such as big if-else ladders, the agent author must have complete knowledge of how the agent's behavior algorithms work.  More complex algorithms mean more complex knowledge for the agent author to manage, fully scripted approaches scale poorly to more complex agents.
+\item Adaptability: low.  Once an agent is fully scripted for a given environment, it must be reprogrammed for new environments with different dynamics.  Also, any run-time adaptivity must be scripted explicitly.
+\end{itemize}
+
+\subsubsection{Fully Machine Learning NPC Programming}
+
+\begin{itemize}
+\item Domain knowledge: low. With a sufficiently abstract state
+  representation, the agent can have very little domain knowledge.
+\item Algorithm knowledge: low to moderate.  The choice of machine
+  learning algorithm and state representation determine the level of
+  algorithm knowledge necessary to author a fully machine learning
+  NPC.
+\item Adaptability: high.  Adaptability is the key advantage of
+  machine learning.
+\end{itemize}
+
+Neither of these two endpoints of the NPC authorability spectrum is desirable.  Fully scripted NPCs are laborious to write.  Fully machine learning NPCs typically exhibit a long period of decreasing incompetence until their learning algorithms have sufficient data.  What we want is something in between fully scripted and fully machine learning NPCs.
+
+\subsection{How to Achieve Adaptive Software}
+
+Norvig identifies several requirements of adaptive
+soft\-ware---adaptive programming concerns, agent-oriented concerns,
+and software engineering concerns---and five key
+technologies---dynamic programming languages, agent technology,
+decision theory, reinforcement learning, and probabilistic
+networks---needed to realize adaptive software.  These requirements
+and technologies are embodied in his model of adaptive programming
+given in Table~\ref{tab:adaptive-model}.
+
+\begin{table}[h]
+\begin{tabular}{|c|c|}\hline
+Traditional Programming & Adaptive Programming \\ \hline
+Function/Class & Agent/Module \\
+Input/Output & Perception/Action \\
+Logic-based & Probability-based \\
+Goal-based & Utility-based \\
+Sequential, single- & Parallel, multi- \\
+Hand-programmed & Trained (Learning) \\
+Fidelity to designer & Perform well in environment \\
+Pass test suite & Scientific method\\ \hline
+\end{tabular}
+\caption{Peter Norvig's model of adaptive programming
+  ~\cite{norvig1998decision}.}
+\label{tab:adaptive-model}
+\end{table}
+
+AFABL integrates two of Norvig's key technologies: agent technology and reinforcement learning.  This dissertation will explain how AFABL implements Norvig's adaptive programming model and argue that AFABL satisfies many of Norvig's requirements.
+
+AFABL will be a framework and DSL embedded in Scala.  Implementing AFABL as an embedded DSL gives programmers the full power and expressivity of Scala.  In essence, AFABL is a modular RL-based agent programming framework and a set of idioms and design patterns for writing adaptive agents.  Using the term "language" to refer to this kind of solution is common in the literature \cite{andre2002state}.
+
+This dissertation is interdisciplinary, containing elements of machine learning, programming languages, and software engineering.  To be credible this work must address language design issues relevant to practical programming problems, and it must provide a rigorous account of how the adaptive parts of AFABL implement reinforcement learning.
+
+\subsection{The Partial Programming Paradigm}
+
+The model of computation, or ``control regime,'' supported by a language is the fundamental semantics of language constructs that molds the way programmers think about programs. PROLOG provides a declarative semantics in which programmers express objects and constraints, and pose queries for which PROLOG can find proofs.  In C, programmers manipulate a complex state machine. Functional languages such as ML and Haskell are based on Lambda Calculus. AFABL, being a domain-specific language (DSL) \cite{hudak1996building} embedded in Scala \cite{odersky2008programming,odersky2005scalable} in Scala, will be multi-paradigmatic, supporting functional and object-oriented through its direct use of Scala, and partial programming semantics based on reinforcement learning, in which the programmer defines the agent's actions and allows the learning system to select them based on states and rewards.  This point is important: partial programming represents a new paradigm which results in a new way of writing programs that is much better suited to certain classes of problems, namely adaptive agents, than other programming paradigms.  AFABL facilitates adaptive agent programming in the same way that PROLOG facilitates logic programming.  While it is possible to write logic programs in a procedural language, it is much more natural and efficient to write logic programs in PROLOG.  The issue here is not Turing-completeness, the issue is cognitive load on the programmer.  In a Turing-complete language, writing a program for any decidable problem is theoretically possible, but is often practically impossible for certain classes of problems.  If this were not true then the whole enterprise of language design would have reached its end years ago.
+
+The essential characteristic of partial programming that makes it the right paradigm for adaptive software is that it enables the separation of the ``what'' of agent behavior from the ``how'' in those cases where the ``how'' is either unknown or simply too cumbersome or difficult to write explicitly.  Returning to our PROLOG analogy, PROLOG programmers define elements of logical arguments.  The PROLOG system handles unification and backtracking search automatically, relieving the programmer from the need to think of such details. Similarly, in AFABL the programmer defines elements of behaviors -- states, actions, and rewards -- and leaves the language's runtime system to handle the details of how particular combinations of these elements determine the agent's behavior in a given state.  AFABL allows an agent programmer to think at a higher level of abstraction, ignoring details that are not relevant to defining an agent's behavior.  When writing an agent in AFABL, the primary task of the programmer is to define the actions that an agent can take, define whatever conditions are known to invoke certain behaviors, and define other behaviors as ``adaptive,'' that is, to be learned by the AFABL's integrated reinforcement learning.  This ability to program partial behaviors relieves a great deal of burden from the programmer and greatly simplifies the task of writing adaptive agents.  In Section \ref{sec:afabl-evaluation} we will see how AFABL implements its support for adaptivity and partial programming.
+
+
+\section{ALisp}
+
+\section{Adaptation-Based Programming}
