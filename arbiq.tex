@@ -81,7 +81,7 @@ Bhat, et., al., \cite{bhat2006on-the-difficulty} argued for a ``benevolent dicta
 %% saving, as this is simply flat RL all over again.
 
 %In discussing MRL techniques, we will follow the nomenclature as
-%introduced by ~\cite{sprague03multiple}.  
+%introduced by ~\cite{sprague03multiple}.
 
 \subsection{Formalization}
 
@@ -92,7 +92,7 @@ The agent's policy is defined indirectly by the arbitrator's policy, $\pi_0(s, a
 For the agent author, this formulation adds the requirement of authoring a dedicated reward signal for the arbitrator.  For our bunny agent, this is LiveLongProsper:
 
 \begin{itemize}
-\item {\em Why} avoid predator, {\em why} eat? To live longer. 
+\item {\em Why} avoid predator, {\em why} eat? To live longer.
 \item Encodes the tradeoffs between subagents -- perhaps food is more
   important to some bunnies.
 \item The arbitrator could be hand-authored, or could be another RL
@@ -139,25 +139,10 @@ We use a world derived from Sprague and Ballard ~\cite{sprague2003multiple-goal}
 \subsection{Methodology}
 
 %Show the update equations (Q-learning, Sarsa, gradient Sarsa)...with
-%references.  
+%references.
 
-We validate Arbi-Q's performance by comparing it with the following
-algorithms:
-
-\begin{itemize}
-
-\item \textbf{Q.} Normal Q-learning with one-step backups 
-
-\item \textbf{Sarsa.} Standard Sarsa with one-step backups
-
-\item \textbf{Greatest Mass Q-Learning (GM-Q).} An arbitration
-  function consistent with GM-Q (or Q-decomposition) orders actions by
-  their summed Q-value, $X_a=\sum_j Q_j(s,a)$. The arbitrator then
-  selects the action with the largest $X_a$ value (the one with the
-  ``greatest mass''). This approach can be viewed as an attempt to
-  maximize average happiness.
-
-\item \textbf{GM-Sarsa.} GM/Q-decomposition with Sarsa for the subagents.
+We validate Arbi-Q's performance by comparing it with Greatest Mass Sarsa, which is a Q-decomposition algorithm that orders actions by their summed Q-value, $X_a=\sum_j Q_j(s,a)$. The arbitrator then selects the action with the largest $X_a$ value (the one with the
+  ``greatest mass'').
 
 \end{itemize}
 
@@ -167,29 +152,16 @@ For baselines, GM and Arbi-Q algorithms used subagents with similarly scaled rew
 
 For robustness validation, we scaled the FindFood subagent reward by 10 to simulate the swapping out of separately-authored learning modules.  We believe that a truly modular arbitrator function should handle such subagent modification without serious degradation of performance.  Otherwise, any time a learning module were modified, the arbitrator, and possibly all the other modules, would need to be modified to ensure compatibility.
 
-\subsection{Results}
+\section{Results}
 
-%% \subsection{Baseline performance}
+\begin{figure}[ht]
+  \begin{center}
+    \scalebox{.75}{\includegraphics{gm-bunny-wolf.png}}
+    \scalebox{.75}{\includegraphics{arbiq-bunny-wolf.png}}
+    \caption{Performance of Arbi-Q versus GM-Sarsa/Q-decomposition on the bunny-wolf problem. The top plot shows that Greatest Mass command arbitration degrades significantly when its subagent rewards are incomprable. Arbi-Q shows no degredation in performance when subagents have incomprable rewards, suggesting that it is amenable to ``swappable'' subagents.}
+  \end{center}
+  \label{fig:gmresults}
+\end{figure}
 
-%% \begin{figure}
-%%   \begin{center}
-%%     \scalebox{.3}{\includegraphics{baseline}}
-%%     \caption{Baseline comparison of algorithms.}
-%%   \end{center}
-%%   \label{fig:baseline}
-%% \end{figure}
-
-%% \subsection{Robustness to Subagent Modification}
-
-%% \begin{figure}
-%%   \begin{center}
-%%     \scalebox{.3}{\includegraphics{robustness}}
-%%     \caption{Robustness to subagent modification.  Notice that GM
-%%       degrades significantly compared to the baseline when its subagent
-%%       rewards are scaled arbitrarily.  Arbi-Q shows no such degredation,
-%%       suggesting that it is amenable to ``swappable'' subagents.}
-%%   \end{center}
-%%   \label{fig:robustness}
-%% \end{figure}
 
 \section{Discussion}

@@ -4,12 +4,27 @@
 
 \section{Reinforcement Learning}
 
-One can think of reinforcement learning (RL) \cite{sutton1998reinforcement,kaelbling1996reinforcement} as a machine learning approach to planning, that is, as a way of finding a sequence of actions that achieves a goal.  In RL, problems of decision-making by agents interacting with uncertain environments are usually modeled as Markov decision processes (MDPs). In the MDP framework, at each time step the agent senses the state of the environment and executes an action from the set of actions available to it in that state. The agent's action (and perhaps other uncontrolled external events) cause a stochastic change in the state of the environment. The agent receives a (possibly zero) scalar reward from the environment. The agent's goal is to find a {\it policy}; that is, to choose actions so as to maximize the expected sum of rewards over some time horizon. An optimal policy is a mapping from states to actions that maximizes the long-term expected reward.  In short, a policy defines which action an agent should take in a given state to maximize its chances of reaching a goal.  RL algorithms typically learn an action-value function, or Q function, that represents the value of taking a given action in a given state.  The agent's policy is derived from the Q function.
+One can think of reinforcement learning (RL) \cite{sutton1998reinforcement,kaelbling1996reinforcement} as a machine learning approach to planning, that is, as a way of finding a sequence of actions that achieves a goal. In RL, problems of decision-making by agents interacting with uncertain environments are usually modeled as Markov decision processes (MDPs). In the MDP framework, at each time step the agent senses the state of the environment and executes an action from the set of actions available to it in that state. The agent's action (and perhaps other uncontrolled external events) cause a stochastic change in the state of the environment. The agent receives a (possibly zero) scalar reward from the environment. The agent's goal is to find a {\it policy}; that is, to choose actions so as to maximize the expected sum of rewards over some time horizon. An optimal policy is a mapping from states to actions that maximizes the long-term expected reward.  In short, a policy defines which action an agent should take in a given state to maximize its chances of reaching a goal.
 
 \subsection{Markov Decision Processes}
 
+The basic Markov decision process is a 3-tuple,
 
-\subsection{Calculating Policies via Direct Solution}
+\[
+(S, A, T(s, a, s'))
+\]
+
+where
+
+\begin{itemize}
+\item $S$ is a set of states,
+\item $A$ is a set of actions, and
+\item $T(s, a, s')$ is a transition function which gives the probably that executing action $a$ in state $s$ will result in $s'$.
+\end{itemize}
+
+Some authors include a reward function, $R(s)$ or $R(s, a, s')$ or even
+
+\subsection{Solving MDPs with Dynamic Programming}
 
 \subsubsection{Policy Iteration}
 
@@ -36,4 +51,3 @@ A second kind of decomposition in reinforcement learning, which is somewhat conf
 \subsection{Greatest-Mass and Q-Decomposition}
 
 \subsection{Kaushik and Jon's Thing}
-
