@@ -4,7 +4,6 @@ This chapter sets the stage for the work presented in this dissertation.
 
 \section{The Promise of AI and the Challenges of Software Engineering}
 
-
 \subsection{Artificial Intelligence}
 
 Artificial intelligence was one of the first grand promises of computing. Almost as soon as the field of computer science was born the pioneers of AI were promising machines that could think and act like humans within their lifetimes. Early research in AI focused on machines that could ``think'' like humans and employed symbolic computation to create constraint solvers, planners, and exert systems that used truth maintenance systems. We had computer programs that solved algebra equations, found paths, played games, and diagnosed illnesses based on user-reported symptoms. But symbolic, or knowlege-based AI hit a bottleneck in the 1980s -- commonly called the knowledge acquisition bottleneck -- and the promise faded, a period known as the ``AI Winter.''
@@ -31,14 +30,34 @@ More detail can be found in \cite{sutton1998reinforcement,kaelbling1996reinforce
 
 While the field of AI went though its periods of promise, disappointment, and redefinition the rest of computer science went about the business of creating hardware and software systems for a variety of applications, initially business management and scientific computing.  Since the personal computing revolution, a great deal of effort has been put into making software systems easy for all kinds of users, technical and non-technical.  Through it all, computing power has increased dramatically and the software systems users demand have exploded in size and complexity.  Software engineering has struggled to keep pace with the growing size and complexity of these systems. Today the field of software engineering, both in academia and industry, has developed a well-defined set of practices and design guidelines that result in software systems that are maintainable, reliable and extensible.
 
-
-\subsection{Programming Langauges}
-
 Programming languages have been the primary means by which research in software engineering and formal computer science has been brought to bear for the working programmer. From structured programming to object-oriented programming to powerful modern type systems, important advances in computing research have real impact when they are incorporated as features in practical programming languages. In the same way that, say, formal methods are used by the modern programmer in the form of static type systems without requiring the programmer to know much about formal methods, AFABL's goal is to allow the programmer to use reinforcement learning without knowing much about reinforcement learning algorithms.
 
 \section{Contributions}
 
-The primary contribution of this work is to marry AI and software engineering in a way that advances both fields. The needs of practical software engineering inspires a new AI algorithm for modular reinforcement learning. Integrating this new formulation of MRL and associated algorithms in to a programming language enables a new kind of software engineering: modular agent programming.
+The work work presented in this dissertation marries articficial intelligence and software engineering in a way that advances both fields. The needs of practical software engineering inspires a new AI algorithm for modular reinforcement learning. Integrating this new formulation of modular reinforcement learning and associated algorithms in to a programming language enables a new kind of software engineering: modular adaptive agent programming. In particular, this work makes the following contributions:
 
+\begin{itemize}
+\item We explain a problem with the current state of the art in modular reinforcement learning, namely, that performance degrades if subagents have differing, incomparable reward scales.
+\item We empirically demonstrate the performance degradation of modular reinforcement learning agents whose subagent have incomparable reward scales.
+\item We present an analysis of the shortcoming of current approaches to modular reinforcement learning based on Arrow's impossibility theorem in order to frame our solution.
+\item We reformulate the modular reinformcement learning problem as one of {\it command arbitration} instead of merging MDPs or Q functions.
+\item We present a command arbitration algirithm -- Arbi-Q -- that uses our theoretically grounded reformulation of modular reinforcement learning.
+\item We empirically demonstrate that modular reinformcenment learning agents using Arbi-Q exhibit no performace degradation when subagents have incomp0arable reward scales.
+\item We present a Scala-embedded domain-specific langage -- AFABL -- that integrates modular reinformcent learning and our Arbi-Q command arbitration algorithm.
+\item We demonstrate the value of integrating integrating modular reinformcenet learning into a programming language on practical software engineering in a programmer study.
+\item We apply AFABL to two practical problems: psychology-based human agent modeling, and game programming.
+\end{itemize}
 
-\section{Overview}
+\section{Outline}
+
+Chapter \ref{ch:rl} provides background information in modular reinformcement learning and existing approaches that sets the stage for the rest of the dissertation.
+
+Chapter \ref{ch:arbiq} presents an empircal demonstration of the performance degradation of modular reinforcement learning agents whose subagent have incomparable reward scales. Arrow's Impssibility Theorem for social choice provides an explanation for the failure of existing approaches to modular reinformcent learning and a framework for our solution. We present our solution, the Arbi-Q command arbitration algorithm, and empirically demonstrate that it does not exhibit the same performance degradation as existing approaches to modular reinformcement learning.
+
+Chapter \ref{ch:se} provides background information on software engineering that motivates the use of modular reinformcement learning in building practical software systems, and the integration of modular reinforcement learning into a programming language.
+
+Chapter \ref{ch:afabl} presents a programming language, AFABL, which integrates modular reinformcement learning. AFABL, a domain-specific language embedded in the Scala language, allows programmers to write adaptive software agents in a declarative style using elements of modular reinforcement learning: subagents (modules) with states, actions, and rewards. We present the results of a programmer study that shows the value of integrating reinforcement learning into a programming language: AFABL agents are less complex, easier to write, and easier to adapt to changes in the environment.
+
+Chapter \ref{ch:applications} presents two practical applications of AFABL that demonstrate the usefulness of integrating modular reinforcement learning into a programming language.
+
+Chapter \ref{ch:conclusion} concludes the dissertation by reviewing how the central theses of this dissertation were confirmed and the present work's context, limitations, and consequences. We relate modular reinforcement learning to the broader field of decompositional reinformcement learning and discuss directions for future work.

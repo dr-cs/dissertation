@@ -144,8 +144,6 @@ We use a world derived from Sprague and Ballard ~\cite{sprague2003multiple-goal}
 We validate Arbi-Q's performance by comparing it with Greatest Mass Sarsa, which is a Q-decomposition algorithm that orders actions by their summed Q-value, $X_a=\sum_j Q_j(s,a)$. The arbitrator then selects the action with the largest $X_a$ value (the one with the
   ``greatest mass'').
 
-\end{itemize}
-
 We evaluate each algorithm similarly to Sprague and Ballard \cite{sprague2003multiple-goal} by training for 100,000 time steps and evaluating performance every 10,000 steps.  Performance is evaluated by running the greedy policy in the world for 1000 episodes and calculating the average reward per episode.  Each algorithm used a discount rate of 0.9 and $\epsilon$-greedy action selection during training.
 
 For baselines, GM and Arbi-Q algorithms used subagents with similarly scaled rewards.  Unlike the Predator world from Sprague and Ballard \cite{sprague2003multiple-goal}, our FindFood subagent reaches a terminal state (death by starvation) after a fixed number of time steps.  This modification forces the agent to pursue both subgoals simultaneously in order to achieve long life.  In previous work the agent could achieve long life by avoiding the predator to the exclusion of finding food.
