@@ -1,5 +1,4 @@
-
-\chapter{Background in Software Engineering and Programming Languages}
+\chapter{Background in Software Engineering and Programming Languages}\label{ch:se}
 
 
 \cite{polancic2010a-an-empirical}
@@ -38,10 +37,7 @@
 
 \cite{mohagheghi2008a-an-empirical}
 
-
 \cite{lorenz2011a-code}
-
-
 
 \subsection{APIs}
 
@@ -89,29 +85,29 @@ Adaptive software uses available information about changes in its
 environment to improve its behavior~\cite{norvig1998adaptive}.
 \end{quote}
 
-We are particularly interested in programming intelligent agents that operate in real environments, and in virtual environments that are designed to simulate real environments.  Examples of these kinds of agents include robots, and non-player characters in interactive games and dramas.  Unlike traditional programs, agents operate in environments that are often incompletely perceived and constantly changing.  This incompleteness of perception and dynamism in the environment creates a strong need for adaptivity.  Programming this adaptivity by hand in a language that does not provide built-in support for adaptivity is very cumbersome.  This dissertation will contribute a programming language -- AFABL -- with built-in adaptivity and support for partial programming, making the construction of adaptive agents much easier.
+In this work we are particularly interested in programming intelligent agents that operate in real environments, and in virtual environments that are designed to simulate real environments.  Examples of these kinds of agents include robots, and non-player characters in interactive games and dramas.  Unlike traditional programs, agents operate in environments that are often incompletely perceived and constantly changing.  This incompleteness of perception and dynamism in the environment creates a strong need for adaptivity.  Programming this adaptivity by hand in a language that does not provide built-in support for adaptivity is very cumbersome.  This dissertation will contribute a programming language -- AFABL -- with built-in adaptivity and support for partial programming, making the construction of adaptive agents much easier.
 
-\subsection{Authorability and the NPC Programming Space}
+\subsection{Authorability and the Agent Programming Space}
 
-Authorability is the ease with which a programmer can author the behavior of NPCs.  Concretely, we suggest a framework for assessing authorability that considers domain knowledge requirements, algorithm knowledge requirements, and the adaptability of agents.
+Authorability is the ease with which a programmer can author the behavior of agents.  Concretely, we suggest a framework for assessing authorability that considers domain knowledge requirements, algorithm knowledge requirements, and the adaptability of agents.
 
-{\bf Domain knowledge} refers to the world-specific details the NPC author must program into the NPC for a particular domain.  Examples of domain knowledge include representations of state and the dynamics of the world, that is, how actions cause transitions from one state to another.
+{\bf Domain knowledge} refers to the world-specific details the agent author must program into the agent for a particular domain.  Examples of domain knowledge include representations of state and the dynamics of the world, that is, how actions cause transitions from one state to another.
 
-{\bf Algorithm knowledge} refers to the degree of algorithm detail that must be programmed in the NPC.  For example, an NPC agent that uses a STRIPS planner for action selection would need to contain details of STRIPS operators and the mechanisms for selecting them in response to state perception.
+{\bf Algorithm knowledge} refers to the degree of algorithm detail that must be programmed in the agent.  An agent using a general-purpose programming language with no libraries to support agent programming would need to write the agent's behavior algorithms from scratch. Even an agent using an agent programming library would still likely need to encode a significant amount of algorithm knowledge in the agent. For example, an agent agent that uses a STRIPS planner for action selection would need to contain details of STRIPS operators and the mechanisms for selecting them in response to state perception.
 
-{\bf Adaptability} refers to the ease with which an NPC, once authored, can adapt to a changing world or be reused in a different world.
+{\bf Adaptability} refers to the ease with which an agent, once authored, can adapt to a changing world or be reused in a different world.
 
-These factors are not completely orthogonal.  High domain knowledge requirements can hinder adaptability because NPC agents need to be preprogrammed for worlds that have different dynamics.  Domain knowledge and algorithm knowledge often go hand-in-hand, for example in the encoding of heuristic functions.  Returning to our STRIPS example, STRIPS operators essentially encode world dynamics into the decision making algorithm, thereby coupling domain knowledge and algorithm knowledge.
+These factors are not completely orthogonal.  High domain knowledge requirements can hinder adaptability because agent agents need to be preprogrammed for worlds that have different dynamics.  Domain knowledge and algorithm knowledge often go hand-in-hand, for example in the encoding of heuristic functions.  Returning to our STRIPS example, STRIPS operators essentially encode world dynamics into the decision making algorithm, thereby coupling domain knowledge and algorithm knowledge.
 
-We say that authorability is high when required domain knowledge is low, algorithm knowledge is low, and adaptability is high.  Such an NPC is easy to program in the first place, can adapt to a world with non-stationary dynamics, and can be reused in new worlds with minimal reprogramming.
+We say that authorability is high when required domain knowledge is low, algorithm knowledge is low, and adaptability is high.  Such an agent is easy to program in the first place, can adapt to a world with non-stationary dynamics, and can be reused in new worlds with minimal reprogramming.
 
-With this working framework for assessing the authorability of NPC programming approaches we can map the NPC programming space as a spectrum from fully scripted to fully learning approaches.
+With this working framework for assessing the authorability of agent programming approaches we can map the agent programming space as a spectrum from fully scripted to fully learning approaches.
 
-\subsubsection{Fully scripted NPC Programming}
+\subsubsection{Fully scripted agent Programming}
 
-Fully scripted NPCs are the most common type of NPCs.  The scripts that control such NPCs specify every detail of the NPC's behavior ahead of time.  While scripted NPCs can pursue goals and exhibit intelligence, the manner in which these goals are pursued must be written explicitly by the agent author, and if these goals are to be pursued using a particular algorithm, such as a planning algorithm, the algorithm itself must be encoded (or used as a library) from within the code.
+Fully scripted agents are the most common type of agents.  The scripts that control such agents specify every detail of the agent's behavior ahead of time.  While scripted agents can pursue goals and exhibit intelligence, the manner in which these goals are pursued must be written explicitly by the agent author, and if these goals are to be pursued using a particular algorithm, such as a planning algorithm, the algorithm itself must be encoded (or used as a library) from within the code.
 
-In terms of our authorability framework, fully scripted NPCs have the
+In terms of our authorability framework, fully scripted agents have the
 following properties.
 \begin{itemize}
 \item Domain knowledge: high. A fully scripted agent must specify a knowledge representation for perception and action that facilitates all the kinds of analyses and decisions the agent will make.  The dynamics of the world must be known in advance and encoded in he script to allow the agent to pursue goals.
@@ -119,7 +115,7 @@ following properties.
 \item Adaptability: low.  Once an agent is fully scripted for a given environment, it must be reprogrammed for new environments with different dynamics.  Also, any run-time adaptivity must be scripted explicitly.
 \end{itemize}
 
-\subsubsection{Fully Machine Learning NPC Programming}
+\subsubsection{Fully Machine Learning agent Programming}
 
 \begin{itemize}
 \item Domain knowledge: low. With a sufficiently abstract state
@@ -127,12 +123,12 @@ following properties.
 \item Algorithm knowledge: low to moderate.  The choice of machine
   learning algorithm and state representation determine the level of
   algorithm knowledge necessary to author a fully machine learning
-  NPC.
+  agent.
 \item Adaptability: high.  Adaptability is the key advantage of
   machine learning.
 \end{itemize}
 
-Neither of these two endpoints of the NPC authorability spectrum is desirable.  Fully scripted NPCs are laborious to write.  Fully machine learning NPCs typically exhibit a long period of decreasing incompetence until their learning algorithms have sufficient data.  What we want is something in between fully scripted and fully machine learning NPCs.
+Neither of these two endpoints of the agent authorability spectrum is desirable.  Fully scripted agents are laborious to write.  Fully machine learning agents typically exhibit a long period of decreasing incompetence until their learning algorithms have sufficient data.  What we want is something in between fully scripted and fully machine learning agents.
 
 \subsection{How to Achieve Adaptive Software}
 

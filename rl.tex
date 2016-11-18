@@ -1,4 +1,6 @@
-\chapter{Background in Modular Reinforcement Learning}\label{ch:rl}
+\chapter{Background in Reinforcement Learning}\label{ch:rl}
+
+The field of reinformcement learning is large and growing. In this chapter we provide the background in reinforcement learning and modular reinformcenet learning necessary to understand our work and place it in context.
 
 \section{Reinforcement Learning}
 
@@ -20,7 +22,23 @@ where
 \item $T(s, a, s')$ is a transition function which gives the probably that executing action $a$ in state $s$ will result in $s'$.
 \end{itemize}
 
-Some authors include a reward function, $R(s)$ or $R(s, a, s')$ or even
+Some authors include a reward function, $R(s, a, s')$ which specifies the reward received by an agent for taking action $a$ in state $s$ and arriving in state $s'$, or equivalently simply a reward for arriving in state $s$, $R(s)$. Still others include an initialization function, $I(s)$, which specifies the probablity the the agent will start in some state $s \in S$, and others even include a discount factor, $\gamma$, which specifies how much longer-term rewards are discounted compared to shorter-term rewards.
+
+We prefer to think of the basic 3-tuple MDP as representing the states and state transition dynamics of a world, and an agent solving a Markov Decision {\it Problem} which adds the reward function, initialization function, and discount factor. This distinction between Markov Decision {\it Processes} and Markov Decision {\it Problems} leads to a more natural expression of worlds and agents for programmer who are not familiar with the underlyiung theory of reinforcement learning. For example, most people would not include a single universal reward function as part of the ``world'' because different agents may value different states differently. Similarly, different agents may have a shorter or longer term view of decision optimality and thus different discount factors. The solution to a Markov Decision Problem is a policy, denoted $\pi$, which is a mapping from states to actions.
+
+
+\section{The Bunny World}
+
+Value functions: how good is it for an agent to be particular state. The value of a state (or state, action pair) is computed from the rewards and state transition dynamics of a world.
+
+The value of a state under a particular policy $\pi$ is given by:
+
+\[
+V^\pi(s) = E_\pi\{R_t | s_t = s\} = E_\pi \{ \sum_{k=0}^{\infty} \gamma^k r_{t+k+i} | s_t = s \}
+\]
+
+
+
 
 \subsection{Solving MDPs with Dynamic Programming}
 
@@ -36,16 +54,33 @@ Some authors include a reward function, $R(s)$ or $R(s, a, s')$ or even
 
 \subsubsection{SARSA}
 
-Our work in integrating reinforcement learning into a programming language is based on the idea of partial programming. Partial programming is a framework for programming in which a programmer or designer specifies the structure of certain parts of the system while leaving other portions unspecified, such that a learning system can learn how to perform them.
 
 \subsection{The Curse of Dimensionality in Reinforcement Learning}
 
 
-\section{Modular reinforcement learning}
-
-A second kind of decomposition in reinforcement learning, which is somewhat confusingly referred to as modular reinforcement learning (MRL) ~\cite{russell2003q-decomposition,sprague2003multiple-goal}, decomposes the original problem concurrently rather than temporally. In contrast to HRL, current MRL implementations do not involve delegation; instead, an agent is decomposed into several components, each of which is concurrently learning a subgoal of the original, complex, multiple-goal learning problem. On each occasion that a decision for what action to take is needed, an arbitrator combines the action preferences of the components to compute the output of the joint policy.  The current state of the art in modular reinforcement learning uses the the Q-values of the components directly to effect the arbitration decision.  Russell's and Zimdars's Q-decomposition \cite{russell2003q-decomposition} views the problem as a value function decomposition.  Sprague and Ballard view the problem more explicitly as arbitration, that is, action selection among multiple concurrently executing modules, although their solution, Greatest-Mass (GM) Sarsa \cite{sprague2003multiple-goal} is equivalent to Q-decomposition.
+\section{Decompositional Reinforcement Learning}
 
 
-\subsection{Greatest-Mass and Q-Decomposition}
 
-\subsection{Kaushik and Jon's Thing}
+\subsection{Temporal Decomposition: Hierarchical Reinformcement Learning}
+
+Semi-markov decision processes.
+
+Current implementations of partial programming are based on hierarchical reinforcement learning (HRL) \cite{dietterich1998maxq,dietterich2000hierarchical,sutton1999between,parr1998reinforcement,andre2000programmable,andre2002state,marthi2005concurrent}, which exploits a temporal decomposition of the Q function.  In the case of HRL, the designer typically specifies a delegation hierarchy of components with points of adaptation where a policy is learned to perform the delegation.  The designer programs the policies of some of these components, which constitute a partial specification of the agent's behavior, and some of the components use reinforcement learning to adapt to the hierarchy by learning the control policies for their parts of the problem.  The adaptive components relieve the designer from writing the parts of the program that are hard to specify, or require difficult to write adaptivity, and the partial program constrains the learning problem faced by the adaptive components, which speeds convergence.  Components can be reused in other contexts, providing for modularity in temporal problem decompositions.
+
+\subsubsection{Semi-Markov Decision Processes}
+
+\subsubsection{MAXQ}
+
+\subsubsection{Options}
+
+\subsubsection{Hierarchical Abstract Machines}
+
+
+\subsection{Concurrent Decomposition: Modular Reinforcement Learning}
+
+A second kind of decomposition in reinforcement learning, which is somewhat confusingly referred to as modular reinforcement learning (MRL) ~\cite{russell2003q-decomposition,sprague2003multiple-goal}, decomposes the original problem concurrently rather than temporally. In contrast to HRL, current MRL implementations do not involve delegation; instead, an agent is decomposed into several components, each of which is concurrently learning a subgoal of the original, complex, multiple-goal learning problem.
+
+Two approaches to modular reinforcement learning: merging MDPs \cite{singh1998how-to-dynamically}, and merging Q functions \cite{sprague2003multiple-goal,russell2003q-decomposition}.
+
+On each occasion that a decision for what action to take is needed, an arbitrator combines the action preferences of the components to compute the output of the joint policy.  The current state of the art in modular reinforcement learning uses the the Q-values of the components directly to effect the arbitration decision.  Russell's and Zimdars's Q-decomposition \cite{russell2003q-decomposition} views the problem as a value function decomposition.  Sprague and Ballard view the problem more explicitly as arbitration, that is, action selection among multiple concurrently executing modules, although their solution, Greatest-Mass (GM) Sarsa \cite{sprague2003multiple-goal} is equivalent to Q-decomposition.

@@ -1,4 +1,4 @@
-\chapter{Conclusions and Future Work}
+\chapter{Conclusion}\label{ch:conclusion}
 
 \section{Conclusions}
 
@@ -14,19 +14,43 @@
 
 \section{Directions for Future Work}
 
-\subsection{Function Approximation in Reinforcement Learning}
+\subsection{General Agent Architecture}
 
-\subsection{Hierarchical Reinforcement Learning}
+\subsubsection{Aversion Module}
 
-Current implementations of partial programming are based on hierarchical reinforcement learning (HRL) \cite{dietterich1998maxq,dietterich2000hierarchical,sutton1999between,parr1998reinforcement,andre2000programmable,andre2002state,marthi2005concurrent}, which exploits a temporal decomposition of the Q function.  In the case of HRL, the designer typically specifies a delegation hierarchy of components with points of adaptation where a policy is learned to perform the delegation.  The designer programs the policies of some of these components, which constitute a partial specification of the agent's behavior, and some of the components use reinforcement learning to adapt to the hierarchy by learning the control policies for their parts of the problem.  The adaptive components relieve the designer from writing the parts of the program that are hard to specify, or require difficult to write adaptivity, and the partial program constrains the learning problem faced by the adaptive components, which speeds convergence.  Components can be reused in other contexts, providing for modularity in temporal problem decompositions.
+An Aversion module is a behavior module that runs throughout the life
+of its conataining agent and represents a state that an agent should
+constantly avoid.  It is a constraint in the sense that, in certain
+staes, a constraint module will identify actions that should *not* be
+executed.
 
-\subsubsection{Semi-Markov Decision Processes}
 
-\subsubsection{MAXQ}
+\subsubsection{Drive Module}
 
-\subsubsection{Options}
+A Drive module is a behavior module that runs throughout the life of
+its conataining agent and represents a state that an agent should
+constantly seek.
 
-\subsubsection{Hierarchical Abstract Machines}
+
+\subsubsection{Objective}
+
+A an objective is a short-term goal state that generates a Drive module
+that is active until its goal is acheived.
+
+
+\subsubsection{Knowledge-Based Modules}
+
+In a knowledge-based module, the decision making and adaptation
+mechanisms are coded explicitly in the form of rules, state machines,
+or other explicitly programmed logic.  If a knowledge-based module is
+adaptive, this adaptivity must be programmed by hand by the agent
+author.  Because adaptivity is not "free," and thus not typically done
+for knowledge-based modules, we distinguish between (possibly but not
+usuallly adaptive) knowledge-based modules, and adaptive modules which
+are always adaptive because the adaptivity is built-in.
+
+
+\subsection{Integrating Hierarchical Reinforcement Learning}
 
 
 \subsection{Relational Reinforcement Learning}

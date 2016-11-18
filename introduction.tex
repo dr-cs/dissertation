@@ -1,32 +1,26 @@
 \chapter{Introduction}
 
-This chapter sets the stage for the work presented in this dissertation.
+This chapter sets the stage for the work presented in this dissertation, an overview of the specific conctributions of its contributions, and concludes with a roadmap of the following chapters.
 
 \section{The Promise of AI and the Challenges of Software Engineering}
 
-\subsection{Artificial Intelligence}
+Artificial intelligence was one of the first grand promises of computing. Almost as soon as the field of computer science was born the pioneers of AI were promising machines that could think and act like humans within the ``visible future.'' Early research in AI focused on machines that could ``think'' like humans and employed symbolic computation to create constraint solvers, planners, and exert systems that used truth maintenance systems. We had computer programs that solved algebra equations, found paths, played games, and diagnosed illnesses based on user-reported symptoms. But symbolic, or knowlege-based AI hit a bottleneck in the late 1980s -- commonly called the knowledge acquisition bottleneck -- and the early promise of developing systems that {\it replaced} humans faded.
 
-Artificial intelligence was one of the first grand promises of computing. Almost as soon as the field of computer science was born the pioneers of AI were promising machines that could think and act like humans within their lifetimes. Early research in AI focused on machines that could ``think'' like humans and employed symbolic computation to create constraint solvers, planners, and exert systems that used truth maintenance systems. We had computer programs that solved algebra equations, found paths, played games, and diagnosed illnesses based on user-reported symptoms. But symbolic, or knowlege-based AI hit a bottleneck in the 1980s -- commonly called the knowledge acquisition bottleneck -- and the promise faded, a period known as the ``AI Winter.''
+%% Say something about symbolic problem solving is easy, getting a robot to balance on two legs is hard, visual object recognition is hard, etc.
 
-Say something about symbolic problem solving is easy, getting a robot to balance on two legs is hard, visual object recognition is hard, etc.
+%% Around the same time, though, engineers were continuing to develop the field of neural networks, which had largely been abandoned by the AI community after Marvin Minsky showed the limitations of early linear neural network models.
 
-Around the same time, though, engineers were continuing to develop the field of neural networks, which had largely been abandoned by the AI community after Marvin Minsky showed the limitations of early linear neural network models.
+%% This stuff led to modern AI, which is centered around machine learning.
 
-This stuff led to modern AI, which is centered around machine learning.
+%% Most modern AI deals with pattern recognition.
 
-Most modern AI deals with pattern recognition.
+%% The early vision of AI -- the creation of intelligent agents -- was lost in modern pattern recognition-oriented AI.
 
-The early vision of AI -- the creation of intelligent agents -- was lost in modern pattern recognition-oriented AI.
+%% Reinforcement learning applies modern AI -- quantitative machine learning -- to the agent problem.
 
-Reinforcement learning applies modern AI -- quantitative machine learning -- to the agent problem.
+But AI in general did not fade. AI reinvented itself. Instead of
 
-\subsection{Reinforcement Learning}
-
-One can think of reinforcement learning (RL) as a machine learning approach to planning, that is, a way of finding a sequence of actions that achieves a goal.  The RL problem formulation is this: an agent's world is described by a set of states, the agent can execute one of a set of actions in each state, and the agent is rewarded to greater or lesser degrees for each state-changing action it executes. In RL, problems of decision-making by agents interacting with uncertain environments are usually modeled as Markov decision problems (MDPs). In the MDP framework, at each time step the agent senses the state of the environment and executes an action from the set of actions available to it in that state. The agent's action (and perhaps other uncontrolled external events) cause a stochastic change in the state of the environment. The agent receives a (possibly zero) scalar reward each time it executes an action and makes a transition to a new state. The agent's goal is to find a {\it policy} that says which action should be chosen in each state.  The policy should specify actions that maximize the expected sum of rewards over some time horizon. An optimal policy is a mapping from states to actions that maximizes the long-term expected reward.  In short, a policy defines which action an agent should take in a given state to maximize its chances of reaching a goal.  Reinforcement learning is a large and active area of research, but the preceding is all the reader needs to understand the work presented here. For the software engineer who would like to employ refinforcement learning without becoming an expert in reinforcement learning the most important thing to understand about reinforcement learning is that the world of an agent can be modeled in terms of states, actions, and rewards.
-
-More detail can be found in \cite{sutton1998reinforcement,kaelbling1996reinforcement}.
-
-\subsection{Software Engineering}
+One can think of reinforcement learning (RL) as a machine learning approach to planning, that is, a way of finding a sequence of actions that achieves a goal.  The RL problem formulation is this: an agent's world is described by a set of states, the agent can execute one of a set of actions in each state, and the agent is rewarded to greater or lesser degrees for each state-changing action it executes. In RL, problems of decision-making by agents interacting with uncertain environments are usually modeled as Markov decision problems (MDPs). In the MDP framework, at each time step the agent senses the state of the environment and executes an action from the set of actions available to it in that state. The agent's action (and perhaps other uncontrolled external events) cause a stochastic change in the state of the environment. The agent receives a (possibly zero) scalar reward each time it executes an action and makes a transition to a new state. The agent's goal is to find a {\it policy} that says which action should be chosen in each state.  The policy should specify actions that maximize the expected sum of rewards over some time horizon. An optimal policy is a mapping from states to actions that maximizes the long-term expected reward.  In short, a policy defines which action an agent should take in a given state to maximize its chances of reaching a goal.  Reinforcement learning is a large and active area of research, but the preceding is all the reader needs to understand the work presented here. For the software engineer who would like to employ refinforcement learning without becoming an expert in reinforcement learning the most important thing to understand is that the world of an agent can be modeled in terms of states, actions, and rewards. Our work shows that if you can specify the states, actions, and rewards for an agent our algorithms can work behind the scenes to develop a control policy.
 
 While the field of AI went though its periods of promise, disappointment, and redefinition the rest of computer science went about the business of creating hardware and software systems for a variety of applications, initially business management and scientific computing.  Since the personal computing revolution, a great deal of effort has been put into making software systems easy for all kinds of users, technical and non-technical.  Through it all, computing power has increased dramatically and the software systems users demand have exploded in size and complexity.  Software engineering has struggled to keep pace with the growing size and complexity of these systems. Today the field of software engineering, both in academia and industry, has developed a well-defined set of practices and design guidelines that result in software systems that are maintainable, reliable and extensible.
 
@@ -34,18 +28,18 @@ Programming languages have been the primary means by which research in software 
 
 \section{Contributions}
 
-The work work presented in this dissertation marries articficial intelligence and software engineering in a way that advances both fields. The needs of practical software engineering inspires a new AI algorithm for modular reinforcement learning. Integrating this new formulation of modular reinforcement learning and associated algorithms in to a programming language enables a new kind of software engineering: modular adaptive agent programming. In particular, this work makes the following contributions:
+The work work presented in this dissertation marries articficial intelligence and software engineering in a way that advances both fields. The needs of practical software engineering for reuse and composability inspires a new AI algorithm for modular reinforcement learning. Integrating this new formulation of modular reinforcement learning and associated algorithms into a programming language enables a new kind of software engineering: modular adaptive agent programming. In particular, this work makes the following contributions:
 
 \begin{itemize}
 \item We explain a problem with the current state of the art in modular reinforcement learning, namely, that performance degrades if subagents have differing, incomparable reward scales.
 \item We empirically demonstrate the performance degradation of modular reinforcement learning agents whose subagent have incomparable reward scales.
-\item We present an analysis of the shortcoming of current approaches to modular reinforcement learning based on Arrow's impossibility theorem in order to frame our solution.
+\item We present an analysis of the shortcoming of current approaches to modular reinforcement learning based on Arrow's Impossibility Theorem for social choice in order to frame our solution.
 \item We reformulate the modular reinformcement learning problem as one of {\it command arbitration} instead of merging MDPs or Q functions.
 \item We present a command arbitration algirithm -- Arbi-Q -- that uses our theoretically grounded reformulation of modular reinforcement learning.
-\item We empirically demonstrate that modular reinformcenment learning agents using Arbi-Q exhibit no performace degradation when subagents have incomp0arable reward scales.
+\item We empirically demonstrate that modular reinforcenment learning agents using Arbi-Q exhibit no performace degradation when subagents have incomparable reward scales.
 \item We present a Scala-embedded domain-specific langage -- AFABL -- that integrates modular reinformcent learning and our Arbi-Q command arbitration algorithm.
-\item We demonstrate the value of integrating integrating modular reinformcenet learning into a programming language on practical software engineering in a programmer study.
-\item We apply AFABL to two practical problems: psychology-based human agent modeling, and game programming.
+\item We demonstrate and quantify the value of integrating integrating modular reinformcenet learning into a programming language to practical software engineering in a programmer study applying AFABL in a syntheic agent programming domain.
+\item We apply AFABL to a practical problems in psychology-based human agent modeling to partially demonstrate AFABL's practical potential.
 \end{itemize}
 
 \section{Outline}
@@ -58,6 +52,6 @@ Chapter \ref{ch:se} provides background information on software engineering that
 
 Chapter \ref{ch:afabl} presents a programming language, AFABL, which integrates modular reinformcement learning. AFABL, a domain-specific language embedded in the Scala language, allows programmers to write adaptive software agents in a declarative style using elements of modular reinforcement learning: subagents (modules) with states, actions, and rewards. We present the results of a programmer study that shows the value of integrating reinforcement learning into a programming language: AFABL agents are less complex, easier to write, and easier to adapt to changes in the environment.
 
-Chapter \ref{ch:applications} presents two practical applications of AFABL that demonstrate the usefulness of integrating modular reinforcement learning into a programming language.
+Chapter \ref{ch:applications} presents a practical application of AFABL that further demonstrates the usefulness of integrating modular reinforcement learning into a programming language.
 
 Chapter \ref{ch:conclusion} concludes the dissertation by reviewing how the central theses of this dissertation were confirmed and the present work's context, limitations, and consequences. We relate modular reinforcement learning to the broader field of decompositional reinformcement learning and discuss directions for future work.

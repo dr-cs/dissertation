@@ -1,4 +1,4 @@
-\chapter{AFABL: A Friendly Adaptive Behavior Language}
+\chapter{AFABL: A Friendly Adaptive Behavior Language}\label{ch:afabl}
 
 \section{Background}
 
@@ -138,39 +138,6 @@ the module consists entirely of reporting a state observation to the
 module, asking the module for an action, and reporting to the module
 the effect of executing an action.
 
-
-\subsubsection{Aversion Module}
-
-An Aversion module is a behavior module that runs throughout the life
-of its conataining agent and represents a state that an agent should
-constantly avoid.  It is a constraint in the sense that, in certain
-staes, a constraint module will identify actions that should *not* be
-executed.
-
-
-\subsubsection{Drive Module}
-
-A Drive module is a behavior module that runs throughout the life of
-its conataining agent and represents a state that an agent should
-constantly seek.
-
-
-\subsubsection{Objective}
-
-A an objective is a short-term goal state that generates a Drive module
-that is active until its goal is acheived.
-
-
-\subsubsection{Knowledge-Based Modules}
-
-In a knowledge-based module, the decision making and adaptation
-mechanisms are coded explicitly in the form of rules, state machines,
-or other explicitly programmed logic.  If a knowledge-based module is
-adaptive, this adaptivity must be programmed by hand by the agent
-author.  Because adaptivity is not "free," and thus not typically done
-for knowledge-based modules, we distinguish between (possibly but not
-usuallly adaptive) knowledge-based modules, and adaptive modules which
-are always adaptive because the adaptivity is built-in.
 
 
 \subsubsection{Adaptive Modules}
