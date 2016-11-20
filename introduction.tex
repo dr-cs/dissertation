@@ -6,18 +6,6 @@ This chapter sets the stage for the work presented in this dissertation, an over
 
 Artificial intelligence was one of the first grand promises of computing. Almost as soon as the field of computer science was born the pioneers of AI were promising machines that could think and act like humans within the ``visible future.'' Early research in AI focused on machines that could ``think'' like humans and employed symbolic computation to create constraint solvers, planners, and exert systems that used truth maintenance systems. We had computer programs that solved algebra equations, found paths, played games, and diagnosed illnesses based on user-reported symptoms. But symbolic, or knowlege-based AI hit a bottleneck in the late 1980s -- commonly called the knowledge acquisition bottleneck -- and the early promise of developing systems that {\it replaced} humans faded.
 
-%% Say something about symbolic problem solving is easy, getting a robot to balance on two legs is hard, visual object recognition is hard, etc.
-
-%% Around the same time, though, engineers were continuing to develop the field of neural networks, which had largely been abandoned by the AI community after Marvin Minsky showed the limitations of early linear neural network models.
-
-%% This stuff led to modern AI, which is centered around machine learning.
-
-%% Most modern AI deals with pattern recognition.
-
-%% The early vision of AI -- the creation of intelligent agents -- was lost in modern pattern recognition-oriented AI.
-
-%% Reinforcement learning applies modern AI -- quantitative machine learning -- to the agent problem.
-
 But AI in general did not fade. AI reinvented itself. Instead of
 
 One can think of reinforcement learning (RL) as a machine learning approach to planning, that is, a way of finding a sequence of actions that achieves a goal.  The RL problem formulation is this: an agent's world is described by a set of states, the agent can execute one of a set of actions in each state, and the agent is rewarded to greater or lesser degrees for each state-changing action it executes. In RL, problems of decision-making by agents interacting with uncertain environments are usually modeled as Markov decision problems (MDPs). In the MDP framework, at each time step the agent senses the state of the environment and executes an action from the set of actions available to it in that state. The agent's action (and perhaps other uncontrolled external events) cause a stochastic change in the state of the environment. The agent receives a (possibly zero) scalar reward each time it executes an action and makes a transition to a new state. The agent's goal is to find a {\it policy} that says which action should be chosen in each state.  The policy should specify actions that maximize the expected sum of rewards over some time horizon. An optimal policy is a mapping from states to actions that maximizes the long-term expected reward.  In short, a policy defines which action an agent should take in a given state to maximize its chances of reaching a goal.  Reinforcement learning is a large and active area of research, but the preceding is all the reader needs to understand the work presented here. For the software engineer who would like to employ refinforcement learning without becoming an expert in reinforcement learning the most important thing to understand is that the world of an agent can be modeled in terms of states, actions, and rewards. Our work shows that if you can specify the states, actions, and rewards for an agent our algorithms can work behind the scenes to develop a control policy.

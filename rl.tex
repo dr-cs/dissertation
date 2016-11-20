@@ -10,9 +10,9 @@ One can think of reinforcement learning (RL) \cite{sutton1998reinforcement,kaelb
 
 The basic Markov decision process is a 3-tuple,
 
-\[
+\begin{equation}
 (S, A, T(s, a, s'))
-\]
+\end{equation}
 
 where
 
@@ -22,59 +22,147 @@ where
 \item $T(s, a, s')$ is a transition function which gives the probably that executing action $a$ in state $s$ will result in $s'$.
 \end{itemize}
 
-Some authors include a reward function, $R(s, a, s')$ which specifies the reward received by an agent for taking action $a$ in state $s$ and arriving in state $s'$, or equivalently simply a reward for arriving in state $s$, $R(s)$. Still others include an initialization function, $I(s)$, which specifies the probablity the the agent will start in some state $s \in S$, and others even include a discount factor, $\gamma$, which specifies how much longer-term rewards are discounted compared to shorter-term rewards.
+Most definitions of MDPS include a reward function, $R(s, a, s')$ which specifies the reward that the world provides to an agent for taking action $a$ in state $s$ and arriving in state $s'$, or equivalently simply a reward for arriving in state $s$, $R(s)$. Some definitions of MDPS include an initialization function, $I(s)$, which specifies the probablity the the agent will start in some state $s \in S$, others specify a particular state from $S$ as the start state.
 
-We prefer to think of the basic 3-tuple MDP as representing the states and state transition dynamics of a world, and an agent solving a Markov Decision {\it Problem} which adds the reward function, initialization function, and discount factor. This distinction between Markov Decision {\it Processes} and Markov Decision {\it Problems} leads to a more natural expression of worlds and agents for programmer who are not familiar with the underlyiung theory of reinforcement learning. For example, most people would not include a single universal reward function as part of the ``world'' because different agents may value different states differently. Similarly, different agents may have a shorter or longer term view of decision optimality and thus different discount factors. The solution to a Markov Decision Problem is a policy, denoted $\pi$, which is a mapping from states to actions.
+We prefer to think of the basic 3-tuple MDP as representing the states and state transition dynamics of a world, and an agent solving a Markov Decision {\it Problem} which adds the reward function, initialization function, and discount factor. We believe this distinction between Markov Decision {\it Processes} and Markov Decision {\it Problems} leads to a more natural expression of worlds and agents for programmer who are not familiar with the underlyiung theory of reinforcement learning. For example, most people would not include a single universal reward function as part of the ``world'' because different agents may value different states differently. Similarly, different agents may have a shorter or longer term view of decision optimality and thus different discount factors. Separating the world dynamics from the agent's use of the world dynamics doesn't change the reinformcement learning algorithms, but as we will see in Chapter \ref{ch:afabl}, separating worlds from agents is useful in practical programming.
+
+The solution to a Markov Decision Problem is a policy, denoted $\pi$, which is a mapping from states to actions. The policy says, for any state, what is the best action to take in order to maximaze the agent's long term reward.
+
+\subsection{Long Term Reward}
+
+Acting optimally in the world means maximizing your long term reward. In the MDP setting there are many ways to compute long term reward depending on whether you consider rewards gained during a finite or infinite time horizon, can depend on there being a terminal state the agent is guaranteed to reach, or whether the agent's task is episodic or continuing. The most commonly used formulation of long term which is geometrically discounted rewards over an infinite time horizon, which works for episodic taks, continuing tasks, and results in stationary policies, that is, policies that depend only on the current state.
+
+\begin{equation}
+R_t = \sum_{k=0}^{\infty} \gamma^k r_{t+k+1}
+\end{equation}
+
+We use this conception of long term reward to calcluate the values of states.
 
 
-\section{The Bunny World}
+\subsection{Value Functions}
 
-Value functions: how good is it for an agent to be particular state. The value of a state (or state, action pair) is computed from the rewards and state transition dynamics of a world.
+A value function assigns a number to each state indicating how good is it for an agent to be in that state. If you know the values of all the possible next states of your current state, then the action you should take is the action most likey to get you into the next state having the highest value.
 
-The value of a state under a particular policy $\pi$ is given by:
+The value of a state (or state, action pair) under a particular policy $\pi$ is the expected long term reward an agent would get starting from state $s$ if it followed $\pi$. The value is computed from the rewards and state transition dynamics of a world as follows:
 
-\[
-V^\pi(s) = E_\pi\{R_t | s_t = s\} = E_\pi \{ \sum_{k=0}^{\infty} \gamma^k r_{t+k+i} | s_t = s \}
-\]
+\begin{equation}
+V^\pi(s) = E \left [ \sum_{t=0}^{\infty} \gamma^t R(s_t) \right ]
+\end{equation}
 
+State value functions form the basis of dynamic programming approaches to solving MPDs. The reinforcement learning algorithms we discuss in Section \ref{sec:rl} use action value functions, which assign values directly to the actions available in a given state.
 
+\subsection{Optimal Policies}
 
+Since some states have higher values than others, and some actions have higher probabilities of causing transitions to higher-valued successor states, there is an optimal action in each state, namely, the action most likely to cause a transition to the highest-valued successor state. The optimal actions in each state is the optimal policy:
+
+\begin{equation}
+\pi^*(s) = \argmax_{a \in A} \sum_{s'} T(s, a, s') V(s')
+\end{equation}
+
+There may be many optimal policies for a given MDP, but without loss of generality we usually simply say ``the optimal policy.''
 
 \subsection{Solving MDPs with Dynamic Programming}
 
-\subsubsection{Policy Iteration}
+If you have the MDP -- you know the transition function and reward function -- you can solve for the value of each state using value iteration, from which the optimal policy is derived, or find the policy directly using policy iteration. Although a practical reinforcement learning agent usually doesn't have the full MDP model, the theory of dynamic programming is useful in understanding reinforcement learning algorithms.
 
 \subsubsection{Value Iteration}
 
-\subsection{Learning Policies via Reinforcement Learning}
+Previously we defined the value of a state under a particular policy. If we assume the optimal policy, we can define the maximum value of a state in terms of optimal actions:
 
-\subsubsection{Markov-Chain Monte-Carlo Policy Learning}
+\begin{equation}
+V(s) = R(s) + \max_{a \in A} \sum_{s'} T(s, a, s') V(s')
+\end{equation}
+
+This equation is called the Bellman optimality equation. There is one Bellman equation for each state -- $n$ equations in $n$ unknowns (the values) for a state space of size $n$. However, since the $max$ operator is nonlinear we cannot solve the system of simultaneous Bellman equations using linear algebra. One solution is to use an iterative dynamic programming approach: value iteration. The value iteration algorithm initializes each state values to random values, then iteratively update these values by turning the Bellman equation into an update rule (the Bellman update):
+
+\begin{equation}
+V_{i+1}(s) \leftarrow R(s) + \max_{a \in A} \sum_{s'} T(s, a, s') V(s')
+\end{equation}
+
+These updates are applied at the same time for all states, i.e., the values in iteration $i+1$ are calculated from the values in iteration $i$. If we apply the Bellman update infinitely often, then value iteration reaches an equilibrium at which point the values of the states are solutions to the Bellman equations, that is, they are optimal. A policy derived from these values is an optimal policy.
+
+In practice we may iterate until the updated values change by a sufficiently small amount. If all we care about is finding the optimal policy, then it doesn't matter that we find the optimal values, only that the values we find lead to the same optimal policy.
+
+
+\subsubsection{Policy Iteration}
+
+In policy iteration we start with a random initial values and policy and alternate between two steps for each iteration $i$:
+
+\begin{itemize}
+\item {\bf Policy evaluation.} Use policy $\pi_i$ to calculate the values of of each state using the duscounted current values of their successor states. Since we are calculating the values under a particular policy, we drop the $max$ operator:
+
+  \begin{equation}
+  V_{i+1}(s) = R(s) + \gamma \sum_{s'} T(s, a, s') V(s')
+  \end{equation}
+
+\item {\bf Policy improvement.} Calculate policy $p_{i+1}}$ using the values calculated in the previous step.
+\end{itemize}
+
+Note that since the update equation used in policy evaluation is linear, we can use linear algebra to solve the set of simultaneous linear equations in $O(n^3)$. This method works fine for smaller state spaces but may be too expensive for large state spaces. A solution to this problem is known as modified policy iteration, which combines policy iteration with value iteration by using a bounded number of Bellman updates to perform the policy evaluation step.
+
+\subsection{Learning Policies via Reinforcement Learning}\label{sec:rl}
+
+If the agent doesn't have the model, then the agent must learn a behavior policy by interacting with the world by taking actions, observing the effects of these actions (state transitions and reward signals), and using these observations to update some model of the world that can be used to guide future behavior. Unlike the MDP solvers discussed previously which calculate values for every state in every iteration, reinforcement learning agents choose which states to visit and often do not visit every state, leading to a central issue in refinforcement learning: exploration vs. exploitation.
+
+\subsubsection{Exploration versus Exploitation}
+
+Exploration means visiting some state of the world you haven't yet visited. Eating at a restaurant or ordering a dish you haven't tried to see if you like it is an example of exploration. Exploitation means using knowledge already learned. Eating a dish you know you like at a restaurant you know you like is an example of exploitation. The exploration versus exploration question is one of risk versus reward: exploration risks wasting effort on a possibly bad outcome, explotation trades that risk for a known reward but risks missing a discovery of something better.
+
+In the case of reinforcement learning agents exploration means taking an action in a state that may take the agent to a state not yet visited. Exploitation means using the agent's current value estimates to choose an action. We call exploitation {\it greedy} action selection becuase it chooses an action that is likely to result in higher reward. There is a saying in machine learning: the less you know the less you should trust your knowledge, the more you know the more you should trust your knowledge. A reinforcement learning agent should favor exploration early in its learning process and explotation after its model of the world stabilizes.
+
+Implementing an exploration strategy in a reinforcement learning algorithm can be done using softmax action selection such as a Boltzmann distribution, which uses a decaying temprature parameter similar to annealing to gradually decrease the randomness of action selection, or by a simpler method known as $\eplison$-greedy action selection.  $\epsilon$ is a real number in $(0, 1)$ that represents the probability of choosing an action randomly (exploring). $\epsilon$ is decayed over time so that action selection favors exploration early in the learning process and exploitation later. We use $\eplison$-greedy action selection in our algorithm implementations.
 
 \subsubsection{Q-Learning}
 
-\subsubsection{SARSA}
+An alternative value function assigns values to state-action pairs instead of states. Such a function is called a {\it Q-function}, and the optimal Q-function is defined as:
 
+\begin{equation}
+Q*(s, a) = \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')
+\end{equation}
+
+which means that the value of taking action $a$ in state $s$ is the reward received from state $s$ plus the discounted probabilistic sum of the Q-values of successor states assuming that optimal successor actions $a'$ are taken in the successor states $s'$.
+
+An important consequence of learning a Q-function instead of a state-value function is that, although Q-values can be defined as above, a reinforcement learning agent can approximate the Q-function using temporal difference learning which does not require the model. A reinforcement learning agent only needs to know the Q-values becuase the purpose is only to learn a policy which is direved directly from the Q-function. This is the idea behind the Q-learning algorithm, which uses the following temporal difference update rule:
+
+\begin{equation}
+Q(s, a) \leftarrow Q(s, a) + \alpha [R(s) + \gamma \max_{a'} Q(s', a') - Q(s, a)]
+\end{equation}
+
+$\alpha$ is a learning rate parameter. Temporal difference algorithms like Q-learning use the differences between Q-values in successive states to update Q-values in each iteration. Like value and policy iteration, Q-learning has been shown to converge to $Q*$ in the limit with infinite exploration. In practice developing a close approximation to $Q*$ isn't necessary as long as the same policy results.
+
+\subsubsection{Sarsa}
+
+Because it uses the best successor Q-value in its update rule, Q-learning is an off-policy learning algorithm, meaning that it does not use the policy being followed by the agent. A close relative of Q-learning is the SARSA algorithm, which is an on-policy algorithm that uses the following update rule:
+
+\begin{equation}
+Q(s, a) \leftarrow Q(s, a) + \alpha [R(s) + \gamma Q(s', a') - Q(s, a))]
+\end{equation}
+
+Sarsa gets its name from the elements of its update rule: $s$, $a$, $r$, $s'$, $a'$. The key difference is that the $Q(s', a')$ from the agent's policy is used in the update rule.
+
+Q-learning has the advantage of being able to learn an optimal policy even if the control policy during learning is poor. The advantage of Sarsa over Q-learning is that if the agent does not have full control over action selection selection, Sarsa will learn a policy that is optimal in the presence of external control over action selection, such as other (sub)agents. For this reason, Sarsa is used in modular reinforcement learning.
+
+\section{Decompositional Reinforcement Learning}
 
 \subsection{The Curse of Dimensionality in Reinforcement Learning}
 
+The state space grows exponentially in the number of state features.
 
-\section{Decompositional Reinforcement Learning}
+
 
 
 
 \subsection{Temporal Decomposition: Hierarchical Reinformcement Learning}
 
-Semi-markov decision processes.
-
 Current implementations of partial programming are based on hierarchical reinforcement learning (HRL) \cite{dietterich1998maxq,dietterich2000hierarchical,sutton1999between,parr1998reinforcement,andre2000programmable,andre2002state,marthi2005concurrent}, which exploits a temporal decomposition of the Q function.  In the case of HRL, the designer typically specifies a delegation hierarchy of components with points of adaptation where a policy is learned to perform the delegation.  The designer programs the policies of some of these components, which constitute a partial specification of the agent's behavior, and some of the components use reinforcement learning to adapt to the hierarchy by learning the control policies for their parts of the problem.  The adaptive components relieve the designer from writing the parts of the program that are hard to specify, or require difficult to write adaptivity, and the partial program constrains the learning problem faced by the adaptive components, which speeds convergence.  Components can be reused in other contexts, providing for modularity in temporal problem decompositions.
 
-\subsubsection{Semi-Markov Decision Processes}
+HRL models are based on the theory of {\bf Semi-Markov Decision Processes} (SMDPs). In an SMDP some actions are allowed to take more than one time step. The special actions, sometimtes called {\tt macros}, subroutines, options, or hierarchical machines represent a form of procedural abstraction that may allow a programmer to write reinforcement learning agents in a manner similar to writing other kinds of computer programs.
 
-\subsubsection{MAXQ}
+{\bf MAXQ} decomposes an MDP into w hierarchy of smaller MDPs. These smaller MDPs represent {\it subroutines} in the MAXQ framework.
 
-\subsubsection{Options}
+{\bf Options}
 
-\subsubsection{Hierarchical Abstract Machines}
+{\bf Hierarchical Abstract Machines}
 
 
 \subsection{Concurrent Decomposition: Modular Reinforcement Learning}
