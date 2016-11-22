@@ -11,7 +11,7 @@ One can think of reinforcement learning (RL) \cite{sutton1998reinforcement,kaelb
 The basic Markov decision process is a 3-tuple,
 
 \begin{equation}
-(S, A, T(s, a, s'))
+<S, A, T(s, a, s')>
 \end{equation}
 
 where
@@ -22,22 +22,21 @@ where
 \item $T(s, a, s')$ is a transition function which gives the probably that executing action $a$ in state $s$ will result in $s'$.
 \end{itemize}
 
-Most definitions of MDPS include a reward function, $R(s, a, s')$ which specifies the reward that the world provides to an agent for taking action $a$ in state $s$ and arriving in state $s'$, or equivalently simply a reward for arriving in state $s$, $R(s)$. Some definitions of MDPS include an initialization function, $I(s)$, which specifies the probablity the the agent will start in some state $s \in S$, others specify a particular state from $S$ as the start state.
+Most definitions of MDPS include a reward function, $R(s, a, s')$ which specifies the reward that the world provides to an agent for taking action $a$ in state $s$ and arriving in state $s'$ or, equivalently, a reward for arriving in state $s$, $R(s)$. Some definitions of MDPs include an initialization function, $I(s)$, which specifies the probablity the the agent will start in some state $s \in S$, others specify a particular state from $S$ as the start state.
 
-We prefer to think of the basic 3-tuple MDP as representing the states and state transition dynamics of a world, and an agent solving a Markov Decision {\it Problem} which adds the reward function, initialization function, and discount factor. We believe this distinction between Markov Decision {\it Processes} and Markov Decision {\it Problems} leads to a more natural expression of worlds and agents for programmer who are not familiar with the underlyiung theory of reinforcement learning. For example, most people would not include a single universal reward function as part of the ``world'' because different agents may value different states differently. Similarly, different agents may have a shorter or longer term view of decision optimality and thus different discount factors. Separating the world dynamics from the agent's use of the world dynamics doesn't change the reinformcement learning algorithms, but as we will see in Chapter \ref{ch:afabl}, separating worlds from agents is useful in practical programming.
+We prefer to think of the basic 3-tuple MDP as representing the states and state transition dynamics of a world, and an agent solving a Markov Decision {\it Problem} which adds the reward function, initialization function, and discount factor. This distinction between Markov Decision {\it Processes} and Markov Decision {\it Problems} leads to a more natural expression of worlds and agents for programmers who are not familiar with the underlying theory of reinforcement learning. For example, most people would not include a single universal reward function as part of the ``world'' because different agents may value states differently. Similarly, different agents may have a shorter or longer term view of decision optimality and thus different discount factors. Separating the world dynamics from the agent's use of the world dynamics doesn't change the reinformcement learning algorithms, but as we will see in Chapter \ref{ch:afabl}, separating worlds from agents is useful in practical programming.
 
 The solution to a Markov Decision Problem is a policy, denoted $\pi$, which is a mapping from states to actions. The policy says, for any state, what is the best action to take in order to maximaze the agent's long term reward.
 
 \subsection{Long Term Reward}
 
-Acting optimally in the world means maximizing your long term reward. In the MDP setting there are many ways to compute long term reward depending on whether you consider rewards gained during a finite or infinite time horizon, can depend on there being a terminal state the agent is guaranteed to reach, or whether the agent's task is episodic or continuing. The most commonly used formulation of long term which is geometrically discounted rewards over an infinite time horizon, which works for episodic taks, continuing tasks, and results in stationary policies, that is, policies that depend only on the current state.
+Acting optimally in the world means maximizing your long term reward. In the MDP setting there are many ways to compute long term reward depending on whether you consider rewards gained during a finite or infinite time horizon, can depend on there being a terminal state the agent is guaranteed to reach, or whether the agent's task is episodic or continuing. The most commonly used formulation of long term reward is geometrically discounted rewards over an infinite time horizon, which works for episodic tasks, continuing tasks, and results in stationary policies, that is, policies that depend only on the current state no matter the time step in which the state is visited.
 
 \begin{equation}
 R_t = \sum_{k=0}^{\infty} \gamma^k r_{t+k+1}
 \end{equation}
 
-We use this conception of long term reward to calcluate the values of states.
-
+We use this conception of long term reward to calculate the values of states.
 
 \subsection{Value Functions}
 
@@ -79,10 +78,26 @@ This equation is called the Bellman optimality equation. There is one Bellman eq
 V_{i+1}(s) \leftarrow R(s) + \max_{a \in A} \sum_{s'} T(s, a, s') V(s')
 \end{equation}
 
-These updates are applied at the same time for all states, i.e., the values in iteration $i+1$ are calculated from the values in iteration $i$. If we apply the Bellman update infinitely often, then value iteration reaches an equilibrium at which point the values of the states are solutions to the Bellman equations, that is, they are optimal. A policy derived from these values is an optimal policy.
+These updates are applied at the same time for all states, i.e., the values in iteration $i+1$ are calculated from the values in iteration $i$. The value iteration algorithm is listed in Algorithm \ref{alg:value-iteration}
+
+
+\begin{algorithm}
+  \caption{Value Iteration}\label{alg:value-iteration}
+  \begin{algorithmic}
+    \State $V \gets random initial values$ \Comment{0 works too}
+    \Repeat
+      \State $V' \gets V$
+      \ForAll{$s \text{in} S$}
+        \State $V'(s) \gets R(s) + \max_{a \in A} \sum_{s'} T(s, a, s') V(s')$
+      \EndFor
+      State $V gets V'$
+    \Until $V$ changes by a sufficiently small amount
+  \end{algorithmic}
+\end{algorithm}
+
+If we apply the Bellman update infinitely often, then value iteration reaches an equilibrium at which point the values of the states are solutions to the Bellman equations, that is, they are optimal. A policy derived from these values is an optimal policy.
 
 In practice we may iterate until the updated values change by a sufficiently small amount. If all we care about is finding the optimal policy, then it doesn't matter that we find the optimal values, only that the values we find lead to the same optimal policy.
-
 
 \subsubsection{Policy Iteration}
 
@@ -97,6 +112,8 @@ In policy iteration we start with a random initial values and policy and alterna
 
 \item {\bf Policy improvement.} Calculate policy $p_{i+1}$ using the values calculated in the previous step.
 \end{itemize}
+
+When policy improvement does not change the policy, an optimal policy has been found and policy iteration terminates.
 
 Note that since the update equation used in policy evaluation is linear, we can use linear algebra to solve the set of simultaneous linear equations in $O(n^3)$. This method works fine for smaller state spaces but may be too expensive for large state spaces. A solution to this problem is known as modified policy iteration, which combines policy iteration with value iteration by using a bounded number of Bellman updates to perform the policy evaluation step.
 
