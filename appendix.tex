@@ -1,3 +1,9 @@
+\begin{appendices}
+
+%Some Table of Contents entry formatting
+\addtocontents{toc}{\protect\renewcommand{\protect\cftchappresnum}{\appendixname\space}}
+\addtocontents{toc}{\protect\renewcommand{\protect\cftchapnumwidth}{6em}}
+
 \chapter{AFABL Programmer Study}\label{ch:programmer-study}
 
 \section{Experiments}
@@ -244,3 +250,5 @@ In the event that an insufficient number of online participants can be recruited
 \section{Evaluation}
 
 The primary quantitative metric will be task completion effort in time and code quantity.  Tasks 2 and 3 will provide a measure of how much effort is required to adapt agents to new domains.  In addition, we will calculate qualitative metrics for programmer satisfaction, and mine the source code for design patterns.
+
+\end{appendices}

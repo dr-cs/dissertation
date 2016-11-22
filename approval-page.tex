@@ -1,0 +1,132 @@
+%% Define your committee members. If you have less than 6, simple delete/comment the unused lines
+
+\newcommand{\committeeMemberOne}{Professor Charles L. Isbell, Jr., Advisor}
+\newcommand{\committeeMemberOneDepartment}{College of Computing}
+\newcommand{\committeeMemberOneAffiliation}{Georgia Institute of Technology}
+
+\newcommand{\committeeMemberTwo}{Dr. Douglas Bodner}
+\newcommand{\committeeMemberTwoDepartment}{Tennenbaum Institute}
+\newcommand{\committeeMemberTwoAffiliation}{Georgia Institute of Technology}
+
+\newcommand{\committeeMemberThree}{Professor Mark Riedl}
+\newcommand{\committeeMemberThreeDepartment}{School of Interactive Computing}
+\newcommand{\committeeMemberThreeAffiliation}{Georgia Institute of Technology}
+
+\newcommand{\committeeMemberFour}{Dr. Spenser Rugaber}
+\newcommand{\committeeMemberFourDepartment}{School of Computer Science}
+\newcommand{\committeeMemberFourAffiliation}{Georgia Institute of Technology}
+
+\newcommand{\committeeMemberFive}{Professor Andrea Thomaz}
+\newcommand{\committeeMemberFiveDepartment}{Electrical and Computer Engineering}
+\newcommand{\committeeMemberFiveAffiliation}{University of Texas at Austin}
+
+\newcommand{\approvalDay}{16}
+\newcommand{\approvalMonth}{December}
+\newcommand{\approvalYear}{2016}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Do not edit these lines unless you wish to customize
+% the template
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{titlepage}
+\begin{singlespacing}
+\begin{center}
+
+\textbf{\MakeUppercase{\thesisTitle}}\\
+\vspace{10\baselineskip}
+
+\end{center}
+\vfill
+
+%Define minipages, depending on how many authors there are
+\ifdefined\committeeMemberFour
+
+Approved by:
+\vspace{2\baselineskip}		%adjust the number in front of "\baselineskip" for alignment
+
+\begin{minipage}[b]{0.4\textwidth}
+
+	\committeeMemberOne\\
+	\committeeMemberOneDepartment\\
+	\textit{\committeeMemberOneAffiliation}\\
+
+	\committeeMemberTwo\\
+	\committeeMemberTwoDepartment\\
+	\textit{\committeeMemberTwoAffiliation}\\
+
+	\committeeMemberThree\\
+	\committeeMemberThreeDepartment\\
+	\textit{\committeeMemberThreeAffiliation}\\
+
+	\vspace{2\baselineskip}		%adjust the number in front of "\baselineskip" for alignment
+
+\end{minipage}
+\hspace{0.1\textwidth}
+\begin{minipage}[b]{0.4\textwidth}
+
+	\committeeMemberFour\\
+	\committeeMemberFourDepartment\\
+	\textit{\committeeMemberFourAffiliation}\\
+
+	\ifdefined\committeeMemberSix
+	\committeeMemberFive\\
+	\committeeMemberFiveDepartment\\
+	\textit{\committeeMemberFiveAffiliation}\\
+
+	\committeeMemberSix\\
+	\committeeMemberSixDepartment\\
+	\textit{\committeeMemberSixAffiliation}\\
+
+	Date Approved: \approvalMonth{} \approvalDay, \approvalYear
+	\vspace{1\baselineskip}		%adjust the number in front of "\baselineskip" for alignment
+
+	\else
+
+	\committeeMemberFive\\
+	\committeeMemberFiveDepartment\\
+	\textit{\committeeMemberFiveAffiliation}\\
+
+	Date Approved: \approvalMonth{} \approvalDay, \approvalYear
+	\vspace{5\baselineskip}		%adjust the number in front of "\baselineskip" for alignment
+
+	\fi
+
+\end{minipage}
+
+\else
+
+\hspace{0.6\textwidth}
+\begin{minipage}[b]{0.4\textwidth}
+
+	Approved by:
+	\vspace{2\baselineskip}		%adjust the number in front of "\baselineskip" for alignment
+
+	\committeeMemberOne\\
+	\committeeMemberOneDepartment\\
+	\textit{\committeeMemberOneAffiliation}\\
+
+	\committeeMemberTwo\\
+	\committeeMemberTwoDepartment\\
+	\textit{\committeeMemberTwoAffiliation}\\
+
+	\committeeMemberThree\\
+	\committeeMemberThreeDepartment\\
+	\textit{\committeeMemberThreeAffiliation}\\
+
+	\vspace{2\baselineskip}		%adjust the number in front of "\baselineskip" for alignment
+
+	Date Approved: \approvalMonth{} \approvalDay, \approvalYear
+	\vspace{\baselineskip}		%adjust the number in front of "\baselineskip" for alignment
+
+\end{minipage}
+
+\fi
+
+
+
+
+
+\end{singlespacing}
+\end{titlepage}
