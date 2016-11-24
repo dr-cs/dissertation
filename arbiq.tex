@@ -164,9 +164,8 @@ For robustness validation, we scaled the FindFood subagent reward by 10 to simul
 
 \section{Discussion}
 
-Our work in integrating reinforcement learning into a programming language is based on the idea of partial programming. Partial programming is a framework for programming in which a programmer or designer specifies the structure of certain parts of the system while leaving other portions unspecified, such that a learning system can learn how to perform them.
 
 
 \subsection{Related Work}
 
-Marthi and colleagues \cite{marthi2005concurrent} suggest extending their work in concurrent ALisp to include the Q-decomposition algorithm of Russel and Zimdars \cite{2003q-decomposition}, but this line of research was not pursued. Lau and colleagues developed a modular reinforcement learning system that uses a central coordinator for multiple concurrent MPDs \cite{lau2012coordination}. Lau's work differs form ours in that they develop a constraint system in the central coordinator that limits the allowable actions of the component reinforcement learners, theirby constraining their learning. Our approach requires no knowledge of component learners, and component learners require no explicit or implicit knowledge of the arbitrator or the other components.
+Marthi and colleagues \cite{marthi2005concurrent} suggest extending their work in concurrent ALisp to include the Q-decomposition algorithm of Russel and Zimdars \cite{russell2003q-decomposition}, but this line of research was not pursued. Lau and colleagues developed a modular reinforcement learning system that uses a central coordinator for multiple concurrent MPDs \cite{lau2012coordination}. Lau's work differs form ours in that they develop a constraint system in the central coordinator that limits the allowable actions of the component reinforcement learners, thereby constraining their learning. Our approach does not require the arbitrator to know details of component learners, and component learners require no explicit or implicit knowledge of the arbitrator or the other components.

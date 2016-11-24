@@ -84,13 +84,13 @@ These updates are applied at the same time for all states, i.e., the values in i
 \begin{algorithm}
   \caption{Value Iteration}\label{alg:value-iteration}
   \begin{algorithmic}
-    \State $V \gets random initial values$ \Comment{0 works too}
+    \State $V \gets$ random initial values
     \Repeat
       \State $V' \gets V$
-      \ForAll{$s \text{in} S$}
+      \For{each $s \in S$}
         \State $V'(s) \gets R(s) + \max_{a \in A} \sum_{s'} T(s, a, s') V(s')$
       \EndFor
-      State $V gets V'$
+      \State $V \gets V'$
     \Until $V$ changes by a sufficiently small amount
   \end{algorithmic}
 \end{algorithm}
@@ -139,9 +139,28 @@ Q*(s, a) = \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')
 
 which means that the value of taking action $a$ in state $s$ is the reward received from state $s$ plus the discounted probabilistic sum of the Q-values of successor states assuming that optimal successor actions $a'$ are taken in the successor states $s'$.
 
-An important consequence of learning a Q-function instead of a state-value function is that, although Q-values can be defined as above, a reinforcement learning agent can approximate the Q-function using temporal difference learning which does not require the model. A reinforcement learning agent only needs to know the Q-values becuase the purpose is only to learn a policy which is direved directly from the Q-function. This is the idea behind the Q-learning algorithm, which uses the following temporal difference update rule:
+\begin{algorithm}
+  \caption{General Q-Learning}\label{alg:general-q-learning}
+  \begin{algorithmic}
+    \State
+    \State $Q \gets$ random initial values
+    \For{each episode}
+      \State $s \gets$ world.initialState()
+      \State $a \gets \epsilon-$greedy action for $s$ from $\pi$ derived from $Q$
+      \Repeat
+        \State Execute $a$, observe effects $r$ and $s'$
+        \State $a' \gets \epsilon-$greedy action for $s'$ from $\pi$ derived from $Q$
+        \State $Q(s, a) \gets$ update using Q-learning rule \ref{eqn:q-update} or Sarsa rule \ref{eqn:sarsa-update}
+        \State $s \gets s'$
+        \State $a \gets a'$
+      \Until $s$ is terminal
+    \EndFor
+  \end{algorithmic}
+\end{algorithm}
 
-\begin{equation}
+An important consequence of learning a Q-function instead of a state-value function is that, although Q-values can be defined as above, a reinforcement learning agent can approximate the Q-function using temporal difference learning which does not require the model. A reinforcement learning agent only needs to know the Q-values because the purpose is only to learn a policy which is derived directly from the Q-function. This is the idea behind the Q-learning algorithm, which uses the following temporal difference update rule:
+
+\begin{equation}\label{eqn:q-update}
 Q(s, a) \leftarrow Q(s, a) + \alpha [R(s) + \gamma \max_{a'} Q(s', a') - Q(s, a)]
 \end{equation}
 
@@ -151,7 +170,7 @@ $\alpha$ is a learning rate parameter. Temporal difference algorithms like Q-lea
 
 Because it uses the best successor Q-value in its update rule, Q-learning is an off-policy learning algorithm, meaning that it does not use the policy being followed by the agent. A close relative of Q-learning is the SARSA algorithm, which is an on-policy algorithm that uses the following update rule:
 
-\begin{equation}
+\begin{equation}\label{eqn:sarsa-update}
 Q(s, a) \leftarrow Q(s, a) + \alpha [R(s) + \gamma Q(s', a') - Q(s, a))]
 \end{equation}
 
@@ -161,13 +180,7 @@ Q-learning has the advantage of being able to learn an optimal policy even if th
 
 \section{Decompositional Reinforcement Learning}
 
-\subsection{The Curse of Dimensionality in Reinforcement Learning}
-
-The state space grows exponentially in the number of state features.
-
-
-
-
+Decomposition is an imortant tool in designing software systems in general, and as we'll see in Section \ref{sec:curse-dimensinality} a necessity for larger state spaces likely to be envcountered in real-world problems. Hierarchical refinforcement learning (HRL), discussed first below, has had as a primary goal improved authoring based on temporal subgoals that allows intermediate tasks to be modeled as higher-level actions. HRL has also formed to basis of current approaches to RL-based programming systems. Modular reinforcement learning (MRL) decomposes the original problem concurrently, modeling an agent as a set of concurrently running reinforcement learning modules. MRL has been used primarily to model multiple-goal problems and to deal with large state spaces. This work is the first to use MRL as the basis of a practical programming system.
 
 \subsection{Hierarchical Reinformcement Learning}
 
@@ -177,15 +190,33 @@ The current state of the art in HRL is based on the theory of {\bf Semi-Markov D
 
 Precup's {\bf Options} \cite{precup1998a-theoretical,sutton1999between,precup2000a-temporal} framework develops a detailed theory of temporal abstraction abstraction based on SMDPs which include inter-option . Dietterich's {\bf MAXQ} \cite{dietterich1998maxq,dietterich2000hierarchical} and {\bf Hierarchical Abstract Machines} \cite{parr1998reinforcement} models decompose an MDP into a hierarchies of smaller MDPs. These smaller MDPs represent {\it subroutines} in the MAXQ framework or {\it HAMs} in the {\it Hierarchical Abstract Machines} framework. Andre's {\bf Programmable Hierarchical Abstract Machines} \cite{andre2000programmable,andre2002state} develops a programming language for HAMs called ALisp (Adaptive Lisp), and Marthi and colleagues  \cite{marthi2005concurrent} extend ALisp (Concurrent ALisp) for single reinforcement learning agents with multiple simultaneous actions, such as as robots with multiple effectors or a controller for multiple characters in a computer game.
 
+\subsection{The Curse of Dimensionality in Reinforcement Learning}\label{sec:curse-dimensinality}
 
-\subsection{Modular Reinforcement Learning}
+As with other kinds of machine learning, reinforcement learning must deal with the curse of dimensionality. In reinforcement learning the curse of dimensionality manifests itself primarily in the size of the state space, namely, the state space grows exponentially in the number of state features. As an example, consider the $5 \times 5$ grid of the bunny world in Figure \ref{fig:bunny-world}.
+
+\begin{figure}[h]
+
+\begin{center}
+\includegraphics[height=2.4in]{bunny.png}
+\end{center}
+\caption{In the grid world above, the bunny must pursue two goals simultaneously: find food and avoid the wolf.  The bunny may move north, south, east, or west.  When it finds food it consumes the food and new food appears elsewhere in the grid world, when it meets the wolf it is eaten and ``dies.''}
+\label{fig:bunny-picture}
+\end{figure}
+
+The bunny, food, and wolf can be in one of 25 possible states. If the task of the bunny were only to reach a particular state, then the number of states woudl be 25. But if you add the task of avoiding a wolf that pursues the bunny, then the state space gros to $25^2 = 625$. Add the food that reappears in a new location after it is found and ``eaten'' and the state space grows to $25^3 = 15625$. If you model this problem as two separate modules, one in which the bunny avoids the wolf and another in which the bunny finds food, then each module solves a problem with a state space of $25^2 = 625$ states (bunny plus wolf and bunny plus food).
+
+\subsection{Modular Reinforcement Learning}\label{sec:mrl}
 
 A second kind of decomposition in reinforcement learning, which is somewhat confusingly referred to as modular reinforcement learning (MRL) ~\cite{russell2003q-decomposition,sprague2003multiple-goal}, decomposes the original problem {\it concurrently} rather than temporally. Instead of composing sequential actions into action sequences, a MRL agent is decomposed into several components each of which is concurrently learning a different subgoal of the original, complex, multiple-goal learning problem. The architecture of an MRL agent is reminiscent of Brooks's subsumption architecture, where an agent is decomposed into several components that each receive sensor input and each independently suggest an action for the overall agent to take. As we will soon discuss, our approach uses Brooks's idea of a central arbitrator to choose the agent's actions from the suggestions of its components.
 
 There have been two major kinds of approaches to modular reinforcement learning: merging MDPs \cite{singh1998how-to-dynamically}, and merging Q functions \cite{sprague2003multiple-goal,russell2003q-decomposition}. Since we are interested in applying reinforcement learning in practical domains where we can't assume, or don't want to require, complete knowledge of the world's state transition dynamics, we focus on approaches to MRL that merge Q-functions.
 
-In an MRL agent each component observes the action taken by the agent, the state transaition and a reward signal specific to the component. On each occasion that a decision for what action to take is needed, the agent combines the action preferences of the components to compute the output of the joint policy.  The current state of the art in modular reinforcement learning uses the the Q-values of the components directly to effect this action selection. Russel's and Zimdars' Q-decomposition \cite{russel2003q-decomposition} is equivalent to Sprague and Ballard's GM-Sarsa \cite{sprague2003multiple-goal}. In this work we will refer mostly to GM-Sarsa. Sprague and Ballard showed that Sarsa performs better than Q-learning because Sarsa is on-policy. As we discussed earlier, Sarsa updates its Q-function based on the policy being followed by the agent where as Q-learning updates its Q-function assuming the optimal policy will be followed. Because components do not have direct control over the policy being followed, on-policy learning algorithms like Sarsa perform better. For this reason, and so we can compare directly to GM-Sarsa, we also use Sarsa in our components.
+In an MRL agent each component observes the action taken by the agent, the state transaition and a reward signal specific to the component. On each occasion that a decision for what action to take is needed, the agent combines the action preferences of the components to compute the output of the joint policy.  The current state of the art in modular reinforcement learning uses the the Q-values of the components directly to effect this action selection. The joint policy is derived from a joint Q-function in which the Q-values for each component are added.
 
+\begin{equation}\label{eqn:joint-q}
+  Q_{joint}(s, a) = \sum Q_i(s, a)
+\end{equation}
 
+Russel's and Zimdars' Q-decomposition \cite{russell2003q-decomposition} is equivalent to Sprague and Ballard's GM-Sarsa \cite{sprague2003multiple-goal}. In this work we will refer mostly to GM-Sarsa. Both of these investigations of Q-function (de)composition showed that Sarsa is a better choice for agent components than Q-learning because Sarsa is on-policy. As we discussed earlier, Sarsa updates its Q-function based on the policy being followed by the agent where as Q-learning updates its Q-function assuming the optimal policy will be followed. Because components do not have direct control over the policy being followed, on-policy learning algorithms like Sarsa perform better. For this reason, and so we can compare directly to GM-Sarsa, we also use Sarsa in our components.
 
-Rowe and colleagues have used GM-Sarsa for interactive narrative planning \cite{rowe2013modular}.
+There is clearly a desire to model agents with multiple goals represented as reinforcement learning components. We list only a few examples here. Sprague and Ballard have applied GM-Sarsa to problems in eye movement scheduling \cite{sprague2003eye,sprague2007modeling}. Konidaris and Barto applied an algorithm derived from GM-Sarsa to adaptive robot control \cite{konidaris2006adaptive}. Aissani and colleagues used GM-Sarsa to develop a system for dynamic scheduling of maintenance tasks in the petroleum industry \cite{aissani2009dynamic}. Rowe and colleagues used GM-Sarsa for interactive narrative planning \cite{rowe2013modular}. All of the work applying MRL has been done by single teams of researchers applying MRL to research problems. Thus, modules were authored together with comparable reward scales. To support reusability in a software engineering sense we need to support the separate authoring of modules. Separately authored modules may use reward scales that are internally consistent within modules but incomparable to the rewards used in other modules. In the next chapter we show that existing approaches to MRL degrade when modules use incomprable reward scales and present an algorithm that does not exhibit the same degredation.
