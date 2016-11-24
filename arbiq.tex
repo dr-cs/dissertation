@@ -1,31 +1,24 @@
 \chapter{Robust Command Arbitration for Modular Reinforcement Learning}\label{ch:arbiq}
 
-In this chapter we
+In this chapter we demonstrate the performance degradation of modular reinforcement learning agents whose subagent have incomparable reward scales. Arrow's Impssibility Theorem for social choice provides an explanation for the failure of existing approaches to modular reinformcent learning and a framework for our solution. We present our solution, the Arbi-Q command arbitration algorithm, and empirically demonstrate that it does not exhibit the same performance degradation as existing approaches to modular reinformcement learning.
 
 \section{Modular reinforcement learning}
 
-A second kind of decomposition in reinforcement learning, which is somewhat confusingly referred to as modular reinforcement learning (MRL) ~\cite{russell2003q-decomposition,sprague2003multiple-goal}, decomposes the original problem concurrently rather than temporally. In contrast to HRL, current MRL implementations do not involve delegation; instead, an agent is decomposed into several components, each of which is concurrently learning a subgoal of the original, complex, multiple-goal learning problem. On each occasion that a decision for what action to take is needed, an arbitrator combines the action preferences of the components to compute the output of the joint policy.  The current state of the art in modular reinforcement learning uses the the Q-values of the components directly to effect the arbitration decision.  Russell's and Zimdars's Q-decomposition \cite{russell2003q-decomposition} views the problem as a value function decomposition.  Sprague and Ballard view the problem more explicitly as arbitration, that is, action selection among multiple concurrently executing modules, although their solution, Greatest-Mass (GM) Sarsa \cite{sprague2003multiple-goal} is equivalent to Q-decomposition.
-
-We would like these components to be truly modular. In particular, we would like the components to be reusable and easily understood by agent authors.  Unfortunately, current approaches implicitly require a global, monolithic reward signal, which detracts from these properties.  In particular, it detracts from the ability of the agent author to locally define the reward for a component.
-
-Because the terms {\em hierarchical} and {\em modular} are often vague and overloaded, we use HRL to denote {\em temporally decomposable
-  reinforcement learning} and MRL to denote {\em concurrently
-  decomposable reinforcement learning}.
+In the previous chapter we explained the state of the art in modular reinforcement learning as a decomposition of an implicitly global Q-function in to additive modules. To support software engineering we would like these components to be truly modular. In particular, we would like the components to be reusable and easily understood by agent authors.  Unfortunately, current approaches implicitly require a global, monolithic reward signal, which detracts from these properties.  In particular, it detracts from the ability of the agent author to locally define the reward for a component because the reward scales of other modules must be taken into account.
 
 \subsection{Command Arbitration}
 
-Like any software engineering, agent programming would benefit from modularity.  Truly modular reinforcement learning would facilitate speed of learning convergence, state abstraction, and transfer -- a component that has learned in one context can be reused (including its learned policy) in another context because the component is dependent only on its own local reward signal.  In this section we discuss the difficulties that current approaches face in achieving true modularity and present a new formulation which solves the core problem in Section \ref{sec:mrl-solution}.
+Like any software engineering, agent programming would benefit from modularity.  Truly modular reinforcement learning would facilitate speed of learning convergence, state abstraction, and transfer -- a module written in one context can be reused in another context because the component is dependent only on its own local reward signal.  In this section we discuss the difficulties that current approaches face in achieving true modularity and present a new formulation which solves the core problem in Section \ref{sec:mrl-solution}.
 
-To properly investigate our proposed mechanism of combining local learners, we will restrict our attention to the MRL framework. In this framework, a learning agent, $M$, is represented by a set of $n$ subproblems (components), $M=\{M_j\}_{j=1}^n$, each having its own reward signal and state space. The typical formulation is to have subproblems share an action set, thus $M_j = (S_j,A,R_j)$. When the agent takes an action in the world, each subproblem's state is updated, and each subproblem receives a reward. The agent can be thought of as having a state space that is a cross product of the subproblem state spaces, $S=S_1\times S_2\times\ldots\times S_n$. Traditionally, it is assumed that the agent's reward is a sum of subproblem rewards, $R(s,a)=\sum_{j\in N} R_j(s,a)$, where $N=\{1,\ldots,n\}$. Thus, $M$ is well-defined as a reinforcement learning problem, $M=(S,A,R)$, and the goal is to find a joint policy $\pi(s)$, composed of locally learned policies $\pi_j(s)$, that is optimal for the whole agent. We let $Q_j(s,a)$ refer to the Q-value learned by component $j$ for state $s$ and action $a$. Again, traditionally, $Q(s,a)=\sum_{j\in N} Q_j(s,a)$.
+To properly investigate our proposed mechanism of combining local learners, we will restrict our attention to the MRL framework. In this framework, a learning agent, $M$, is represented by a set of $n$ subproblems (modules), $M=\{M_j\}_{j=1}^n$, each having its own reward signal and state space. The typical formulation is to have subproblems share an action set, thus $M_j = (S_j,A,R_j)$. When the agent takes an action in the world, each subproblem's state is updated, and each subproblem receives a reward. The agent can be thought of as having a state space that is a cross product of the subproblem state spaces, $S=S_1\times S_2\times\ldots\times S_n$. Equivalently, each module can be considered to have a state space that is a subset of the global state space -- a module state that is an abstraction of the world state. Traditionally, it is assumed that the agent's reward is a sum of subproblem rewards, $R(s,a)=\sum_{j\in N} R_j(s,a)$, where $N=\{1,\ldots,n\}$. Thus, $M$ is well-defined as a reinforcement learning problem, $M=(S,A,R)$, and the goal is to find a joint policy $\pi(s)$, composed of locally learned policies $\pi_j(s)$, that is optimal for the whole agent. We let $Q_j(s,a)$ refer to the Q-value learned by component $j$ for state $s$ and action $a$. Again, traditionally, $Q(s,a)=\sum_{j\in N} Q_j(s,a)$.
 
 \subsection{Merging local signals}
 
-Difficulty arises when multiple single goals are being combined in a larger, multi-goal learning problem. Take AvoidWolf and FindFood for instance; it is fairly straightforward to code an internally consistent reward signal for each.  However, it is unclear how to combine the two into the larger task of LiveLong.  For example, if there is no penalty for failing to eat within a certain time period (starvation), then the obvious policy is to avoid the predator and ignore the food.  Such a degenerate case could also happen if the reward signal for one learning module were scaled without re-engineering the other reward signals in the system, a problem dealt with by Bhat, et., al. \cite{bhat2006on-the-difficulty}.  For example, one could imagine swapping-in a new AvoidWolf module with a reward several times higher than the previous module, such that avoiding the predator always carries higher reward than finding the food.  In this case, a delegating agent would favor AvoidWolf to the near exclusion of FindFood.  The ability to substitute learning modules without modifying the rest of the system is one of the primary benefits of true modularity, and this modularity is difficult to achieve if local reward signals must be merged.
-
+Difficulty arises when multiple single goals are being combined in a larger, multi-goal learning problem. Take AvoidWolf and FindFood for instance; it is fairly straightforward to code an internally consistent reward signal for each.  However, it is unclear how to combine the two into the larger task of LiveLong.  For example, if there is no penalty for failing to eat within a certain time period (starvation), then the obvious policy is to avoid the predator and ignore the food.  Such a degenerate case could also happen if the reward signal for one learning module were scaled without re-engineering the other reward signals in the system, a problem explained by Bhat, et., al. \cite{bhat2006on-the-difficulty}. For example, one could imagine swapping-in a new AvoidWolf module with a reward several times higher than the previous module, such that avoiding the predator always carries higher reward than finding the food.  In this case, a delegating agent would favor AvoidWolf to the near exclusion of FindFood.  The ability to substitute learning modules without modifying the rest of the system is one of the primary benefits of true modularity, and this modularity is difficult to achieve if local reward signals must be merged.
 
 \subsection{Ideal Arbitration is Impossible}
 
-Aside from the practical challenges cited above, Bhat, et., al. \cite{bhat2006on-the-difficulty} \cite{bhat2006on-the-difficulty} showed that ideal arbitration is impossible in full generality because command arbitration reduces to Arrow's Paradox \cite{arrow1963social}: an agent is a ``society'' of subagents, and command arbitration is social choice.  The problem is that we want the arbitrator to have the following reasonable properties:
+Aside from the practical challenges cited above, Bhat, et., al.  \cite{bhat2006on-the-difficulty} showed that ideal arbitration is impossible in full generality because command arbitration reduces to Arrow's Paradox \cite{arrow1963social}: an agent is a ``society'' of subagents, and command arbitration is social choice.  The problem is that we want the arbitrator to have the following reasonable properties:
 
 \begin{itemize}
 
@@ -50,16 +43,16 @@ Aside from the practical challenges cited above, Bhat, et., al. \cite{bhat2006on
 
 \end{itemize}
 
-According to Arrow's Paradox, if $|A|\geq 3$, then there does not exist an arbitration function that satisfies each of the properties listed above.  So even simple agents are too complex for theoretically ideal arbitration.  This dissertation contributes a novel formulation of MRL and an algorithm that implements it, which we discuss in Section \ref{sec:mrl-arbiq}.
+According to Arrow's Paradox, if $|A|\geq 3$, then there does not exist an arbitration function that satisfies each of the properties listed above.  So even simple agents with more than three actions are too complex for theoretically ideal arbitration.  This dissertation contributes a novel formulation of MRL and an algorithm that implements it, which we discuss in Section \ref{sec:mrl-arbiq}.
 
 \section{Reformulating MRL}
 
 Bhat, et., al., \cite{bhat2006on-the-difficulty} argued for a ``benevolent dictator'' arbitrator function but left the arbitration algorithm unspecified.  The contribution of this work is to show that a first-cut arbitration algorithm embodying the ideas in \cite{bhat2006on-the-difficulty} performs competitively with other MRL algorithms and shows superior robustness to subagent modification.  This robustness to subagent modification is the chief enabler of truly modular reinforcement learning in which subagents can be transferred from one system to another without having to re-engineer the reward signals to fit the new host system.
 
-%% In this work, we relax the dictatorship requirement in order to make a
-%% practical arbitrator-based learning algorithm feasible.  In the next
-%% section we present our Arbi-Q algorithm based on this practicalized
-%% arbitrator-based framework.
+In this work, we relax the dictatorship requirement in order to make a
+practical arbitrator-based learning algorithm feasible.  In the next
+section we present our Arbi-Q algorithm based on this practicalized
+arbitrator-based framework.
 
 %% This is a ``fix'' because it is a reformulation. It doesn't get around
 %% the impossibility result but instead defines a different thing to
@@ -111,7 +104,7 @@ Arbi-Q uses the standard Q-Learning algorithm to learn a policy for choosing whi
 
 \section{Experiments}
 
-Our principal claim is that Arbi-Q is robust to subagent modification.  Our experiments will show that GM-Q/Q-decomposition degrades when a subagent is modified to have an incomparable reward signal and that Arbi-Q is robust to such modification.
+Our principal claim is that Arbi-Q is robust to subagent modification.  Our experiments show that GM-Q/Q-decomposition degrades when a subagent is modified to have an incomparable reward signal and that Arbi-Q is robust to such modification.
 
 \subsection{Bunny-Wolf World}
 
