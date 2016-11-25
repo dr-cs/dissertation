@@ -68,13 +68,13 @@ If you have the MDP -- you know the transition function and reward function -- y
 
 Previously we defined the value of a state under a particular policy. If we assume the optimal policy, we can define the maximum value of a state in terms of optimal actions:
 
-\begin{equation}
+\begin{equation}\label{eqn:bellman-equation}
 V(s) = R(s) + \max_{a \in A} \sum_{s'} T(s, a, s') V(s')
 \end{equation}
 
-This equation is called the Bellman optimality equation. There is one Bellman equation for each state -- $n$ equations in $n$ unknowns (the values) for a state space of size $n$. However, since the $max$ operator is nonlinear we cannot solve the system of simultaneous Bellman equations using linear algebra. One solution is to use an iterative dynamic programming approach: value iteration. The value iteration algorithm initializes each state values to random values, then iteratively update these values by turning the Bellman equation into an update rule (the Bellman update):
+This equation is called the Bellman optimality equation \cite{bellman1957dynamic,bertsekas2012dynamic}. There is one Bellman equation for each state -- $n$ equations in $n$ unknowns (the values) for a state space of size $n$. However, since the $max$ operator is nonlinear we cannot solve the system of simultaneous Bellman equations using linear algebra. One solution is to use an iterative dynamic programming approach: value iteration. The value iteration algorithm initializes each state values to random values, then iteratively update these values by turning the Bellman equation into an update rule (the Bellman update):
 
-\begin{equation}
+\begin{equation}\label{eqn:bellman-update}
 V_{i+1}(s) \leftarrow R(s) + \max_{a \in A} \sum_{s'} T(s, a, s') V(s')
 \end{equation}
 
@@ -101,7 +101,7 @@ In practice we may iterate until the updated values change by a sufficiently sma
 
 \subsubsection{Policy Iteration}
 
-In policy iteration we start with a random initial values and policy and alternate between two steps for each iteration $i$:
+In policy iteration \cite{howard1960dynamic}we start with a random initial values and policy and alternate between two steps for each iteration $i$:
 
 \begin{itemize}
 \item {\bf Policy evaluation.} Use policy $\pi_i$ to calculate the values of of each state using the duscounted current values of their successor states. Since we are calculating the values under a particular policy, we drop the $max$ operator:
@@ -115,7 +115,7 @@ In policy iteration we start with a random initial values and policy and alterna
 
 When policy improvement does not change the policy, an optimal policy has been found and policy iteration terminates.
 
-Note that since the update equation used in policy evaluation is linear, we can use linear algebra to solve the set of simultaneous linear equations in $O(n^3)$. This method works fine for smaller state spaces but may be too expensive for large state spaces. A solution to this problem is known as modified policy iteration, which combines policy iteration with value iteration by using a bounded number of Bellman updates to perform the policy evaluation step.
+Note that since the update equation used in policy evaluation is linear, we can use linear algebra to solve the set of simultaneous linear equations in $O(n^3)$. This method works fine for smaller state spaces but may be too expensive for large state spaces. A solution to this problem is known as modified policy iteration \cite{van-nunen1976set,puterman1978modified}, which combines policy iteration with value iteration by using a bounded number of Bellman updates to perform the policy evaluation step.
 
 \subsection{Learning Policies via Reinforcement Learning}\label{sec:rl}
 
@@ -139,7 +139,7 @@ Q*(s, a) = \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')
 
 which means that the value of taking action $a$ in state $s$ is the reward received from state $s$ plus the discounted probabilistic sum of the Q-values of successor states assuming that optimal successor actions $a'$ are taken in the successor states $s'$.
 
-An important consequence of learning a Q-function instead of a state-value function is that, although Q-values can be defined as above, a reinforcement learning agent can approximate the Q-function using temporal difference learning which does not require the model. A reinforcement learning agent only needs to know the Q-values because the purpose is only to learn a policy which is derived directly from the Q-function. This is the idea behind the Q-learning algorithm, which uses the following temporal difference update rule:
+An important consequence of learning a Q-function instead of a state-value function is that, although Q-values can be defined as above, a reinforcement learning agent can approximate the Q-function using temporal difference learning which does not require the model. A reinforcement learning agent only needs to know the Q-values because the purpose is only to learn a policy which is derived directly from the Q-function. This is the idea behind the Q-learning algorithm \cite{watkins1989models}, which uses the following temporal difference update rule:
 
 \begin{equation}\label{eqn:q-update}
 Q(s, a) \leftarrow Q(s, a) + \alpha [R(s) + \gamma \max_{a'} Q(s', a') - Q(s, a)]
@@ -166,7 +166,7 @@ $\alpha$ is a learning rate parameter. Temporal difference algorithms like Q-lea
 
 \subsubsection{Sarsa}
 
-Because it uses the best successor Q-value in its update rule, Q-learning is an off-policy learning algorithm, meaning that it does not use the policy being followed by the agent. A close relative of Q-learning is the SARSA algorithm, which is an on-policy algorithm that uses the following update rule:
+Because it uses the best successor Q-value in its update rule, Q-learning is an off-policy learning algorithm, meaning that it does not use the policy being followed by the agent. A close relative of Q-learning is the SARSA algorithm \cite{rummery1994online}, which is an on-policy algorithm that uses the following update rule:
 
 \begin{equation}\label{eqn:sarsa-update}
 Q(s, a) \leftarrow Q(s, a) + \alpha [R(s) + \gamma Q(s', a') - Q(s, a))]
