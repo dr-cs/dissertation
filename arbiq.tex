@@ -145,38 +145,93 @@ Our principal claim is that Arbi-Q is robust to modules with incomparable reward
 
 \subsection{Bunny-Wolf World}
 
-We use a world derived from Sprague and Ballard ~\cite{sprague2003multiple-goal}.  In Bunny-Wolf world, our agent is a bunny that must eat food and avoid being eaten by a wolf.  We can represent such an agent in our formulation as follows:
+We use a world derived from Sprague and Ballard ~\cite{sprague2003multiple-goal}.  In Bunny-Wolf world, our agent is a bunny that must eat food and avoid being eaten by a wolf.  The bunny world is a continuing world rather than an episodic world. There is no specified start state and there is no termination of episides. When the bunny finds and eats food, a new food item appears elsewhere. When the wolf eats the bunny the bunny ``respawns'' in a new location, similar to video games. We can represent such a bunny agent in our formulation as follows:
 
 \begin{itemize}
 
-\item Module 1: FindFood.  The bunny agent must find food in order
-  to continue living.  If an agent does not find food within some
-  number of time steps, it starves, terminating the episode.
+\item Module 1: FindFood.  The bunny agent must find food in order to continue living.  When the bunny finds food it gets a reward of 1.0. In each step that it does not eat the bunny gets a reward of -0.1 to represent building hunger.
 
-\item Module 2: AvoidWolf.  The bunny agent must avoid the wolf.
-  Meeting the wolf terminates the episode.
+\item Module 2: AvoidWolf.  The bunny agent must avoid the wolf. Meeting the wolf gives the bunny a reward of -1.0. In each time step that the bunny avoids the wolf the bunny receives a reward of 0.1.
 
-\item Agent's overall goal (implemented in arbitrator): LiveLongProsper.  For a given agent, being happy can mean dying young with a full stomach, or dying old but less sated.  Either conception of happiness requires the FindFood and AvoidWolf modules defined below.  The arbitrator, in a sense, encodes the agent's ``value system'' by representing the relative weight the agent assigns to its modules. To facilitate comparison to GM-Sarsa, LiveLongProsper's goal is to get as much food per time step as possible, which will require balancing food finding with wolf avoidance. This performance metric is essentially a composite of the comparably scaled modules of the GM-Sarsa agent.
+\item Agent's overall goal (implemented in arbitrator): LiveLongProsper.  For a given agent, being happy can mean dying young with a full stomach, or dying old but less sated.  Either conception of happiness requires the FindFood and AvoidWolf modules defined below.  The arbitrator, in a sense, encodes the agent's ``value system'' by representing the relative weight the agent assigns to its modules. To facilitate comparison to GM-Sarsa, LiveLongProsper's goal is to get as much food per time step as possible, which will require balancing food finding with wolf avoidance. This performance metric is essentially a composite of the comparably scaled modules of the GM-Sarsa agent: 0.0 for meeting the wolf, 1.0 for finding food, and 0.5 for each step in which the wolf is avoided but no food is eaten.
 
 \end{itemize}
 
 
 We validate Arbi-Q's performance by comparing it with Greatest Mass Sarsa, which is a Q-decomposition algorithm that orders actions by their summed Q-value, $X_a=\sum_j Q_j(s,a)$. We evaluate each algorithm similarly to Sprague and Ballard \cite{sprague2003multiple-goal} by training for 100,000 time steps and evaluating performance every 10,000 steps.  Performance is evaluated by running the greedy policy in the world for 1000 episodes and calculating the average reward per episode.  Each algorithm used a discount rate of 0.9 and $\epsilon$-greedy action selection during training with $\epsilon$ linearly discounted from 0.4, as in Sprague and Ballard's experiments.
 
-For baselines, GM and Arbi-Q algorithms used modules with similarly scaled rewards. For robustness validation, we scaled the FindFood module reward by 10 to simulate the swapping out of separately-authored learning modules.  We believe that a truly modular arbitrator function should handle such module modification without serious degradation of performance.  Otherwise, any time a learning module were modified, the arbitrator, and possibly all the other modules, would need to be modified to ensure compatibility.
+For baselines, GM and Arbi-Q algorithms used modules with similarly scaled rewards. For robustness validation, we scaled the AvoidWolf module reward by 10 to simulate the swapping out of separately-authored learning modules.  We believe that a truly modular arbitrator function should handle such module modification without serious degradation of performance.  Otherwise, any time a learning module were modified, the arbitrator, and possibly all the other modules, would need to be modified to ensure compatibility.
 
 \section{Results}
+
+Emprical results clearly show that the performance of GM-Sarsa degrades when the reward scales of the modules are not comparable. The learning curves depicted in Figure \ref{fig:gmsarsa-results} show that GM-Sarsa bunny agent with incomparable reward scales for its modules converges to a lower score than with comparable rewards. To see why this is the case, consider a simplified example of the composite Q-values computed by GM-Sarsa with comparable rewards (B is for bunny, F is for food, W is for wolf):
+
+\begin{center}
+\begin{tabular}{|p{1em}|p{1em}|p{1em}|p{1em}|p{1em}|}\hline
+  &   & B &   & F \\\hline
+  &   &   & W &   \\\hline
+  &   &   &   &   \\\hline
+  &   &   &   &   \\\hline
+  &   &   &   &   \\\hline
+\end{tabular}
+\end{center}
+
+With comparable rewards the Q-value of moving right and left for FindFood would be
+
+\begin{align*}
+Q^*(s, a) &= \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')
+\end{align*}
+
+With comparable rewards the Q-value of moving right and left for AvoidWolf would be
+
+\begin{align*}
+Q^*(s, a) &= \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')
+\end{align*}
+
+And the composite Q-value of moving right would be
+
+\begin{align*}
+Q^*(s, a) &= \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')
+\end{align*}.
+
+And the composite
+
+If we scale the FindFood by 10, the Q-values for moving right and left would be
+
+\begin{align*}
+Q^*(s, a) &= \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')
+\end{align*}.
+
+And the composite Q-values would be
+
+\begin{align*}
+Q^*(s, a) &= \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')
+\end{align*}.
+
+As you can see, scaling the FindFood module dominates the decision problem, resulting in the bunny getting eaten, which gives negative reward and loses the food.
+
 
 \begin{figure}[ht]
   \begin{center}
     \scalebox{.75}{\includegraphics{gm-bunny-wolf.png}}
-    \scalebox{.75}{\includegraphics{arbiq-bunny-wolf.png}}
-    \caption{Performance of Arbi-Q versus GM-Sarsa/Q-decomposition on the bunny-wolf problem. The top plot shows that Greatest Mass command arbitration degrades significantly when its module rewards are incomprable. Arbi-Q shows no degredation in performance when modules have incomprable rewards, suggesting that it is amenable to ``swappable'' modules.}
+    \caption{Performance of GM-Sarsa/Q-decomposition on the bunny-wolf problem. The learning curves show that Greatest Mass command arbitration degrades significantly when its module rewards are incomprable.}
   \end{center}
-  \label{fig:bunny-wolf-results}
+  \label{fig:gmsarsa-results}
 \end{figure}
 
-In
+
+Arbi-Q does not exibit this problem because it does not use the Q-values of its modules directly. Instead, Arbi-Q learns when it should listen to a particular module. More precicely, Arbi-Q develops a probablity distribution for each state which says which module has the best advice. So Arbi-Q learns, for example, that when the wolf is close AvoidWolf should decide the bunny agent's action, and when the wolf is comfortably distant FindFood should decide the bunny agent's action.
+
+\begin{figure}[ht]
+  \begin{center}
+    \scalebox{.75}{\includegraphics{arbiq-bunny-wolf.png}}
+    \caption{Performance of Arbi-Q on the bunny-wolf problem. Arbi-Q converges to similar scores as GM-Sarsa and shows no degredation in performance when modules have incomprable rewards, suggesting that it is amenable to ``swappable'' modules.}
+  \end{center}
+  \label{fig:arbiq--results}
+\end{figure}
+
+
+For the comparable cases of both
 
 
 \subsection{Related Work}
@@ -188,3 +243,5 @@ Marthi and colleagues \cite{marthi2005concurrent} suggest extending their work i
 Due to the curse of dimensionality, abstraction of various kinds has long been an active area of research in reinforcement learning. One thread in abstraction is to use examples to guide abstraction. Zang and colleagues used examples of nearly optimal action sequences, or trajectories, to dynamically discover options from data, delivering speedups of up to 30 times in some cases \cite{zang2009discovering}. Learning from demonstration \cite{zang2010batch} uses human input to improve reinforcement learning performance. Zang and colleagues developed a value function approximation algorithm that leveraged human input to speed convergence for function approximation-based reinforcement learning algorithms \cite{zang2010using}. Cobo Rus and colleagues' Abstraction from Demonstration technique uses human demonstrations to infer state abstractions and builds policies based on those state abstractions \cite{cobo-rus2011automatic,cobo-rus2012automatic,cobo-rus2014abstraction}.
 
 Another thread in abstraction seeks to use models from the physical world to create abstracions of (simulated) physical state spaces. Cobo Rus and colleagues created abstractions of state spaces by organizing the state spaces into classes of objects and using non-optimal Q-functions to estimate the risk of ignoring certain classes of objects. Cobos Rus's Object-Focused Q-Learning (OFQ) acheived exponential speedups in some cases \cite{cobo-rus2013object}. Scholz and colleagues developed Physics-Based Reinforcement Learning \cite{scholz2014physics}, which uses computational physics engines succh as Box2D \cite{catto2013box2d} as model representations, resulting in more sample-efficient learning compared to traditional object-oriented MDP approaches. Physics-based reinforcement learning was then applied successfully in robotic mobile manipulation \cite{scholz2015learning} and robot navigation \cite{scholz2016navigating} applications.
+
+\section{Conclusion}

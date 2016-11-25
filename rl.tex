@@ -119,7 +119,7 @@ Note that since the update equation used in policy evaluation is linear, we can 
 
 \subsection{Learning Policies via Reinforcement Learning}\label{sec:rl}
 
-If the agent doesn't have the model, then the agent must learn a behavior policy by interacting with the world by taking actions, observing the effects of these actions (state transitions and reward signals), and using these observations to update some model of the world that can be used to guide future behavior. Unlike the MDP solvers discussed previously which calculate values for every state in every iteration, reinforcement learning agents choose which states to visit and often do not visit every state, leading to a central issue in refinforcement learning: exploration vs. exploitation.
+If the agent doesn't have the model, then the agent must learn a behavior policy by interacting with the world by taking actions, observing the effects of these actions (state transitions and reward signals), and using these observations to update some model of the world that can be used to guide future behavior. Unlike the MDP solvers discussed previously which calculate values for every state in every iteration, reinforcement learning agents choose which states to visit and often do not visit every state, leading to a central issue in refinforcement learning: exploration vs. exploitation. Much of the reinforcement learning information in this section can be found in the excellent introductory book by Sutton and Barto \cite{sutton1998reinforcement}, the survey by Kaelbling and colleagues \cite{kaelbling1996reinforcement} or even a general AI textbook such as the excellent book by Russell and Norvig \cite{russell2003artificial}
 
 \subsubsection{Exploration versus Exploitation}
 
@@ -134,7 +134,7 @@ Implementing an exploration strategy in a reinforcement learning algorithm can b
 An alternative value function assigns values to state-action pairs instead of states. Such a function is called a {\it Q-function}, and the optimal Q-function is defined as:
 
 \begin{equation}
-Q*(s, a) = \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')
+Q^*(s, a) = \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')
 \end{equation}
 
 which means that the value of taking action $a$ in state $s$ is the reward received from state $s$ plus the discounted probabilistic sum of the Q-values of successor states assuming that optimal successor actions $a'$ are taken in the successor states $s'$.
