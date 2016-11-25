@@ -3,7 +3,7 @@
 
 \section{Review of Major Contributions}
 
-\subsection{ArbiQ}
+\subsection{Arbi-Q}
 
 \subsection{AFABL}
 
@@ -11,11 +11,69 @@
 
 \subsection{Authoring and Training}
 
+Using any reinforcement learning-based programming system requires the availability of a simulation environment to train the learning modules before being used ``in production.'' Using an untrained reinforcement learning agent and accepting that it will perform poorly until it learns is not practical because reinforcement learning algorithms typically require hundreds or thousands of iterations to reach an acceptable level of performance.
+
 \subsection{Host Language Limitations}
+
+Writing AFABL agents is writing Scala code.
+
+Must have at least basic competence with Scala tool chain.
+
+The error messages are under the control of the Scala compiler and run-time system.
 
 \section{Directions for Future Work}
 
 \subsection{General Agent Architecture}
+
+
+\paragraph{Knowledge-Based Arbitrators}
+
+A knowledge-based arbitrator uses hand-coded logic to decide from
+among the actions recommended by a set of modules.  Simple arbetrators
+with few modules to arbitrate can often be coded quite simply as
+knowledge-based arbitrators.  For example, consider an arbitrator for
+a simple agent consisting of two modules: AvoidWolf and FindFood.  A
+command arbitrator could contain simple logic to encode the rule "when
+the wolf is near, choose AvoidWolf's action, otherwise choose
+FindFood's action."
+
+
+\paragraph{Adaptive Arbitrators}
+
+Adaptive arbitrators use learning algorithms under the hood to
+automatically select actions from among a set of candidate actions.
+Like adaptive behavior modules, adpative arbitrators must be trained
+in the world with the set of modules it must arbitrate.  In effect, an
+adaptvei arbitrator learns which module to listen to in a given state.
+
+
+\subsubsection{Integrated Intelligence}
+
+Because an AFABL agent performs command arbitration over modules that
+support a behavioral interface (providing an action given a state
+observation), the modules themselves can employ any mechanism to
+decide on actions given a state.  This information hiding means that
+AFABL agents can be composed of a mixture of modules that use many
+different kinds of AI, including statistical learning, rule-based
+reasoning, or (reactive) planning.  AFABL is an integrated
+intelligence architecture.
+
+
+
+\subsubsection{Hierarchical Decomposition}
+
+
+Beacuse modules are themselves agents, modules can contain other
+modules and perform command arbitration over those modules just as the
+top-level agent does.  Agents can thus be decomposed recursively into
+behavioral subsystems.  This recursive behavior module decomposition
+provides the agent designer with great flexibility.  Recursive module
+composition is somewhat similar to the levels of competence in
+Brooks's subsumption architecture with an important difference: the
+internal workings of modules are never altered externally.  Modules
+are treated as black-boxes.  Command arbitration accomplishes the same
+result that output suppression does in classic subsumption.
+
 
 \subsubsection{Aversion Module}
 
@@ -32,13 +90,6 @@ A Drive module is a behavior module that runs throughout the life of
 its conataining agent and represents a state that an agent should
 constantly seek.
 
-
-\subsubsection{Objective}
-
-A an objective is a short-term goal state that generates a Drive module
-that is active until its goal is acheived.
-
-
 \subsubsection{Knowledge-Based Modules}
 
 In a knowledge-based module, the decision making and adaptation
@@ -50,6 +101,14 @@ for knowledge-based modules, we distinguish between (possibly but not
 usuallly adaptive) knowledge-based modules, and adaptive modules which
 are always adaptive because the adaptivity is built-in.
 
+\subsection{Drama Management Integration}
+
+Activating and deactivating modules. Injecting new goals.
+
+\subsubsection{Objective}
+
+A an objective is a short-term goal state that generates a Drive module
+that is active until its goal is acheived.
 
 \subsection{Integrating Hierarchical Reinforcement Learning}
 

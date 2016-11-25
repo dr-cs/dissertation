@@ -1,6 +1,6 @@
-\chapter{Robust Command Arbitration for Modular Reinforcement Learning}\label{ch:arbiq}
+\chapter{Command Arbitration for Modular Reinforcement Learning}\label{ch:arbiq}
 
-In this chapter we demonstrate the performance degradation of modular reinforcement learning agents whose subagent have incomparable reward scales. Arrow's Impssibility Theorem for social choice provides an explanation for the failure of existing approaches to modular reinformcent learning and a framework for our solution. We present our solution, the Arbi-Q command arbitration algorithm, and empirically demonstrate that it does not exhibit the same performance degradation as existing approaches to modular reinformcement learning.
+In this chapter we demonstrate the performance degradation of modular reinforcement learning agents whose module have incomparable reward scales. Arrow's Impssibility Theorem for social choice provides an explanation for the failure of existing approaches to modular reinformcent learning and a framework for our solution. We present our solution, the Arbi-Q command arbitration algorithm, and empirically demonstrate that it does not exhibit the same performance degradation as existing approaches to modular reinformcement learning.
 
 \section{Modular reinforcement learning}
 
@@ -18,28 +18,28 @@ Difficulty arises when multiple single goals are being combined in a larger, mul
 
 \subsection{Ideal Arbitration is Impossible}
 
-Aside from the practical challenges cited above, Bhat, et., al.  \cite{bhat2006on-the-difficulty} showed that ideal arbitration is impossible in full generality because command arbitration reduces to Arrow's Paradox \cite{arrow1963social}: an agent is a ``society'' of subagents, and command arbitration is social choice.  The problem is that we want the arbitrator to have the following reasonable properties:
+Aside from the practical challenges cited above, Bhat, et., al.  \cite{bhat2006on-the-difficulty} showed that ideal arbitration is impossible in full generality because command arbitration reduces to Arrow's Paradox \cite{arrow1963social}: an agent is a ``society'' of modules, and command arbitration is social choice.  The problem is that we want the arbitrator to have the following reasonable properties:
 
 \begin{itemize}
 
 \item \textbf{Universality}: the ability to handle any possible set of
-  subagents.
+  modules.
 
-\item \textbf{Unanimity}: guarantee that if every subagent prefers
+\item \textbf{Unanimity}: guarantee that if every module prefers
   action A, so will the arbitrator.
 
 \item \textbf{Independence of Irrelevant Alternatives}: each
-  subagent's preference for actions A and B are independent of the
+  module's preference for actions A and B are independent of the
   availability of any other action C, prevents any particular
-  subagent from affecting the global action choice by dishonestly
+  module from affecting the global action choice by dishonestly
   reporting its own preference ordering.
 
-\item \textbf{Scale Invariance}: ability to scale any subagent's
+\item \textbf{Scale Invariance}: ability to scale any module's
   Q-values without affecting the arbitrator's choice.  This is the
-  crucial property that allows separately authored subagents with
+  crucial property that allows separately authored modules with
   incomparable reward signals.
 
-\item \textbf{Non-Dictatorship}: no subagent gets its way all the time.
+\item \textbf{Non-Dictatorship}: no module gets its way all the time.
 
 \end{itemize}
 
@@ -47,12 +47,9 @@ According to Arrow's Paradox, if $|A|\geq 3$, then there does not exist an arbit
 
 \section{Reformulating MRL}
 
-Bhat, et., al., \cite{bhat2006on-the-difficulty} argued for a ``benevolent dictator'' arbitrator function but left the arbitration algorithm unspecified.  The contribution of this work is to show that a first-cut arbitration algorithm embodying the ideas in \cite{bhat2006on-the-difficulty} performs competitively with other MRL algorithms and shows superior robustness to subagent modification.  This robustness to subagent modification is the chief enabler of truly modular reinforcement learning in which subagents can be transferred from one system to another without having to re-engineer the reward signals to fit the new host system.
+Bhat, et., al., \cite{bhat2006on-the-difficulty} argued for a ``benevolent dictator'' arbitrator function but left the arbitration algorithm unspecified.  The contribution of this work is to show that a first-cut arbitration algorithm embodying the ideas in \cite{bhat2006on-the-difficulty} performs competitively with other MRL algorithms and shows superior robustness to module modification.  This robustness to module modification is the chief enabler of truly modular reinforcement learning in which modules can be transferred from one system to another without having to re-engineer the reward signals to fit the new host system.
 
-In this work, we relax the dictatorship requirement in order to make a
-practical arbitrator-based learning algorithm feasible.  In the next
-section we present our Arbi-Q algorithm based on this practicalized
-arbitrator-based framework.
+In this work, we relax the dictatorship requirement in order to make a practical arbitrator-based learning algorithm feasible.  In the next section we present our Arbi-Q algorithm based on this practicalized arbitrator-based framework.
 
 %% This is a ``fix'' because it is a reformulation. It doesn't get around
 %% the impossibility result but instead defines a different thing to
@@ -78,33 +75,73 @@ arbitrator-based framework.
 
 \subsection{Formalization}
 
-Our reformulation of MRL adds an {\em arbitrator} \cite{brooks1986a-robust}.  The arbitrator has a state space that may the same as or different from the subagents' state spaces, an action set that represents choosing a subagent, $A_0 = {1 ... n}$, and a reward signal that represents the ``greater good.''
+Our reformulation of MRL adds a {\em command arbitrator} \cite{brooks1986a-robust}.  The arbitrator has a state space that may be the same as or different from the modules' state spaces, an action set that represents choosing a module, $A_{CA} = {1 ... n}$, and a reward signal that represents the ``greater good.'' The arbitrtator's reward function, $R_a(s)$, is independently defined rather than being derived from the module rewards.  It is now another part of the problem specification; in the partial programming setting, this corresponds to $R_a(s)$ being human-authored. Note that $R_a(s)$ may or may not be equal to the sum of the rewards of the agent's modules. In fact, the module rewards $R_i(s,a)$ may not have any correlation with the arbitrator's reward $R_a(s)$.
 
-The agent's policy is defined indirectly by the arbitrator's policy, $\pi_0(s, a)$, which assigns probabilities to the selection of each subagent's preferred action for each state.  This formulation relaxes the non-dictatorship requirement of ideal arbitration if you think of the arbitrator as a special subagent.  By Arrow's theorem, other properties will still hold.
+The agent's policy is defined indirectly by the arbitrator's policy, $\pi_{CA}(s, a)$, which assigns probabilities to the selection of each module's preferred action for each state.  This formulation relaxes the non-dictatorship requirement of ideal arbitration if you think of the arbitrator as a special module.  By Arrow's theorem, other properties will still hold.
 
 For the agent author, this formulation adds the requirement of authoring a dedicated reward signal for the arbitrator.  For our bunny agent, this is LiveLongProsper:
 
 \begin{itemize}
 \item {\em Why} avoid predator, {\em why} eat? To live longer.
-\item Encodes the tradeoffs between subagents -- perhaps food is more
+\item Encodes the tradeoffs between modules -- perhaps food is more
   important to some bunnies.
 \item The arbitrator could be hand-authored, or could be another RL
   agent.
 \end{itemize}
 
-For the small cost of authoring a reward signal that represents the ``greater good'' you get true modularity, that is, the ability to combine separately authored subagents with incomparable rewards.  This new reward signal is now the metric we use to measure the performance of the agent.
+For the small cost of authoring a reward signal that represents the ``greater good'' you get true modularity, that is, the ability to combine separately authored modules with incomparable rewards.  This new reward signal is now the metric we use to measure the performance of the agent.
+
+In our MRL framework an agent is an arbitrator plus a list of modules. Formally, an agent consists of the following elements:
+
+\begin{enumerate}
+\item A reward function for the command arbitrator, $R_{CA}(s)$,
+\item An action set $A$ for the agent as a whole, shared by each module,
+\item A set of reinforcement learning modules, $M$
+\item A state abstraction function, $moduleState_i$ for each module $m_i$
+\end{enumerate}
+
+In the next section we present a reinforcement learning-based command arbitration algorithm.
 
 \section{The Arbi-Q Command Arbitration Algorithm}\label{sec:mrl-arbiq}
 
-Formally, all we have changed in the traditional MRL formulation from Section \ref{sec:mrl-problem} is that $R(s,a)$ is now independently defined rather than being derived from the subgoal rewards.  It is now another part of the problem specification; in the partial programming setting, this corresponds to $R(s,a)$ being human-authored.  The solution to a MRL problem is a policy $\pi(s)$ which maximizes the long-term expected discounted reward under the arbitrator's reward $R(s,a)$.
+Our reformulation of MRL is based on an independently specified arbitrator \cite{brooks1986a-robust} that is itself a reinforcement learner. The state space for the arbitrator is the world state -- no state abstraction is used for the arbitrator. The arbitrator's action set, $A_{CA}$, is a set of integer indexes to the agent's list of modules (we use $CA$ in subscript to refer to the command arbitrator and numbers or $i$ to refer to modules).  As with any reinforcement learner, the arbitrator learns a policy. In the case of the arbitrator this policy, $\pi_{CA}$ is a mapping from states to modules. The modules' policies are mappings from abstracted module state to actions in the world, that is, the agent's actions. The policy defines which module chooses the agent's action in a particular state.
 
-Note that now $R(s,a)$ may or may not be equal to the sum of the rewards of its subgoals.  In fact, the subgoal rewards $R_j(s,a)$ may not have any correlation with the arbitrator's reward $R(s,a)$.
+Arbi-Q uses a Q-Learning algorithm to learn the arbitrator's policy. At each time step the arbitrator uses its policy to select a module, then the module uses its local policy to select an action that the agent executes. The Arbi-Q algorithm is detailed in Algorithm \ref{alg:arbiq}
 
-Arbi-Q uses the standard Q-Learning algorithm to learn a policy for choosing which of its $n$ subagents to delegate the task of selecting actions from $A$.  The arbitrator's action set $\widehat{A}$ is distinct from the set of primitive actions $A$.  To choose a primitive action to finally effect in the world, the agent first computes which subagent to delegate to, $j=\widehat{\pi}(\widehat{s})$, and then selects the primitive action given by the policy for subgoal $j$, namely $a=\pi_j(s_j)$, where $s_j \in S_j$.
+
+\begin{algorithm}
+  \caption{Arbi-Q}\label{alg:arbiq}
+  \begin{algorithmic}
+    \State $Q_{CA} \gets$ random initial values
+    \For{each module $i$}
+       \State $Q_{i} \gets$ random initial values
+    \EndFor
+    \For{each episode}
+      \State $s \gets$ world.initialState()
+      \State $m \gets \epsilon-$greedy action for $s$ from $\pi_{CA}$ derived from $Q_{CA}$ \Comment{choose module}
+      \State $s_{m} \gets moduleState(s)$ \Comment{abstract state for module}
+      \State $a \gets \epsilon-$greedy action for $s_{m}$ from $\pi_m$ derived from $Q_m$
+      \Repeat
+        \State Execute $a$, observe effects $r_{CA}$ and $s'$
+        \State $a' \gets \epsilon-$greedy action for $s'$ from $\pi$ derived from $Q$
+        \State $Q_{CA}(s, a) \gets Q_{CA}(s, a) + \alpha [R_{CA}(s) + \gamma Q_{CA}(s', a') - Q_{CA}(s, a)]$
+        \For{each module $i$}
+          \State $s'_{i} \gets moduleState(s')$ \Comment{abstract state for module}
+          \State $r_i \gets reward(s_i)$ \Comment{module-specific reward}
+          \State $Q_i(s, a) \gets Q_i(s, a) + \alpha [r_i + \gamma Q(s_i', a') - Q(s_i, a)]$
+        \EndFor
+        \State $s \gets s'$
+        \State $a \gets a'$
+      \Until $s$ is terminal
+    \EndFor
+  \end{algorithmic}
+\end{algorithm}
+
+Notice that Arbi-Q is learning its command arbitration policy at the same time the modules are learning their subtasks.
 
 \section{Experiments}
 
-Our principal claim is that Arbi-Q is robust to subagent modification.  Our experiments show that GM-Q/Q-decomposition degrades when a subagent is modified to have an incomparable reward signal and that Arbi-Q is robust to such modification.
+Our principal claim is that Arbi-Q is robust to modules with incomparable reward scales, which would be an authoring error in existing MRL approaches. Our experiments show that GM-Q/Q-decomposition degrades when a module is modified to have an incomparable reward scales and that Arbi-Q is robust to such modification.
 
 \subsection{Bunny-Wolf World}
 
@@ -112,36 +149,21 @@ We use a world derived from Sprague and Ballard ~\cite{sprague2003multiple-goal}
 
 \begin{itemize}
 
-\item Agent's overall goal (implemented in arbitrator):
-  LiveLongProsper.  For a given agent, being happy can mean dying
-  young with a full stomach, or dying old but less sated.  Either
-  conception of happiness requires the FindFood and AvoidWolf
-  subagents defined below.  The arbitrator, in a sense, encodes the
-  agent's ``value system'' by representing the relative weight the
-  agent assigns to its subagents.
-
-\item Subagent 1: FindFood.  The bunny agent must find food in order
+\item Module 1: FindFood.  The bunny agent must find food in order
   to continue living.  If an agent does not find food within some
   number of time steps, it starves, terminating the episode.
 
-\item Subagent 2: AvoidWolf.  The bunny agent must avoid the wolf.
+\item Module 2: AvoidWolf.  The bunny agent must avoid the wolf.
   Meeting the wolf terminates the episode.
+
+\item Agent's overall goal (implemented in arbitrator): LiveLongProsper.  For a given agent, being happy can mean dying young with a full stomach, or dying old but less sated.  Either conception of happiness requires the FindFood and AvoidWolf modules defined below.  The arbitrator, in a sense, encodes the agent's ``value system'' by representing the relative weight the agent assigns to its modules. To facilitate comparison to GM-Sarsa, LiveLongProsper's goal is to get as much food per time step as possible, which will require balancing food finding with wolf avoidance. This performance metric is essentially a composite of the comparably scaled modules of the GM-Sarsa agent.
 
 \end{itemize}
 
-\subsection{Methodology}
 
-%Show the update equations (Q-learning, Sarsa, gradient Sarsa)...with
-%references.
+We validate Arbi-Q's performance by comparing it with Greatest Mass Sarsa, which is a Q-decomposition algorithm that orders actions by their summed Q-value, $X_a=\sum_j Q_j(s,a)$. We evaluate each algorithm similarly to Sprague and Ballard \cite{sprague2003multiple-goal} by training for 100,000 time steps and evaluating performance every 10,000 steps.  Performance is evaluated by running the greedy policy in the world for 1000 episodes and calculating the average reward per episode.  Each algorithm used a discount rate of 0.9 and $\epsilon$-greedy action selection during training with $\epsilon$ linearly discounted from 0.4, as in Sprague and Ballard's experiments.
 
-We validate Arbi-Q's performance by comparing it with Greatest Mass Sarsa, which is a Q-decomposition algorithm that orders actions by their summed Q-value, $X_a=\sum_j Q_j(s,a)$. The arbitrator then selects the action with the largest $X_a$ value (the one with the
-  ``greatest mass'').
-
-We evaluate each algorithm similarly to Sprague and Ballard \cite{sprague2003multiple-goal} by training for 100,000 time steps and evaluating performance every 10,000 steps.  Performance is evaluated by running the greedy policy in the world for 1000 episodes and calculating the average reward per episode.  Each algorithm used a discount rate of 0.9 and $\epsilon$-greedy action selection during training.
-
-For baselines, GM and Arbi-Q algorithms used subagents with similarly scaled rewards.  Unlike the Predator world from Sprague and Ballard \cite{sprague2003multiple-goal}, our FindFood subagent reaches a terminal state (death by starvation) after a fixed number of time steps.  This modification forces the agent to pursue both subgoals simultaneously in order to achieve long life.  In previous work the agent could achieve long life by avoiding the predator to the exclusion of finding food.
-
-For robustness validation, we scaled the FindFood subagent reward by 10 to simulate the swapping out of separately-authored learning modules.  We believe that a truly modular arbitrator function should handle such subagent modification without serious degradation of performance.  Otherwise, any time a learning module were modified, the arbitrator, and possibly all the other modules, would need to be modified to ensure compatibility.
+For baselines, GM and Arbi-Q algorithms used modules with similarly scaled rewards. For robustness validation, we scaled the FindFood module reward by 10 to simulate the swapping out of separately-authored learning modules.  We believe that a truly modular arbitrator function should handle such module modification without serious degradation of performance.  Otherwise, any time a learning module were modified, the arbitrator, and possibly all the other modules, would need to be modified to ensure compatibility.
 
 \section{Results}
 
@@ -149,16 +171,16 @@ For robustness validation, we scaled the FindFood subagent reward by 10 to simul
   \begin{center}
     \scalebox{.75}{\includegraphics{gm-bunny-wolf.png}}
     \scalebox{.75}{\includegraphics{arbiq-bunny-wolf.png}}
-    \caption{Performance of Arbi-Q versus GM-Sarsa/Q-decomposition on the bunny-wolf problem. The top plot shows that Greatest Mass command arbitration degrades significantly when its subagent rewards are incomprable. Arbi-Q shows no degredation in performance when subagents have incomprable rewards, suggesting that it is amenable to ``swappable'' subagents.}
+    \caption{Performance of Arbi-Q versus GM-Sarsa/Q-decomposition on the bunny-wolf problem. The top plot shows that Greatest Mass command arbitration degrades significantly when its module rewards are incomprable. Arbi-Q shows no degredation in performance when modules have incomprable rewards, suggesting that it is amenable to ``swappable'' modules.}
   \end{center}
-  \label{fig:gmresults}
+  \label{fig:bunny-wolf-results}
 \end{figure}
 
-
-\section{Discussion}
-
+In
 
 
 \subsection{Related Work}
+
+Rohanimanesh and Mahadevan extended the options HRL framework to concurrent settings in which multiple agents executing multiple simultaneous actions \cite{rohanimanesh2001decision,rohanimanesh2002learning}. Their work differs from ours in that their framework applies to a single agent taking multiple actions or multiple agents taking simultaneous actions, whereas we are concerned with a single agent executing a single action that is descided by multiple reinforcement learning modules.
 
 Marthi and colleagues \cite{marthi2005concurrent} suggest extending their work in concurrent ALisp to include the Q-decomposition algorithm of Russel and Zimdars \cite{russell2003q-decomposition}, but this line of research was not pursued. Lau and colleagues developed a modular reinforcement learning system that uses a central coordinator for multiple concurrent MPDs \cite{lau2012coordination}. Lau's work differs form ours in that they develop a constraint system in the central coordinator that limits the allowable actions of the component reinforcement learners, thereby constraining their learning. Our approach does not require the arbitrator to know details of component learners, and component learners require no explicit or implicit knowledge of the arbitrator or the other components.

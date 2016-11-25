@@ -2,7 +2,7 @@
 
 \section{Background}
 
-\subsection{Why a Domain-Specific Embedded Language?}
+\subsection{Why an Embedded Domain-Specific Language?}
 
 \subsection{Why Scala?}
 
@@ -138,8 +138,6 @@ the module consists entirely of reporting a state observation to the
 module, asking the module for an action, and reporting to the module
 the effect of executing an action.
 
-
-
 \subsubsection{Adaptive Modules}
 
 An adaptive module employs learning algorithms under the hood to
@@ -157,66 +155,16 @@ providing for run-time adaptation.
 
 Command arbitrators take as input the action preferences of a set of
 modules, and selects one of the actions.  If the command arbitrator is
-part of a module, the action selected is the preferred actoin of the
+part of a module, the action selected is the preferred action of the
 module.  If the command arbitrator is part of the top-level agent,
 then the actoin selected is the action that will be executed by the
 agent.
-
-\paragraph{Knowledge-Based Arbitrators}
-
-A knowledge-based arbitrator uses hand-coded logic to decide from
-among the actions recommended by a set of modules.  Simple arbetrators
-with few modules to arbitrate can often be coded quite simply as
-knowledge-based arbitrators.  For example, consider an arbitrator for
-a simple agent consisting of two modules: AvoidWolf and FindFood.  A
-command arbitrator could contain simple logic to encode the rule "when
-the wolf is near, choose AvoidWolf's action, otherwise choose
-FindFood's action."
-
-
-\paragraph{Adaptive Arbitrators}
-
-Adaptive arbitrators use learning algorithms under the hood to
-automatically select actions from among a set of candidate actions.
-Like adaptive behavior modules, adpative arbitrators must be trained
-in the world with the set of modules it must arbitrate.  In effect, an
-adaptvei arbitrator learns which module to listen to in a given state.
-
-
-\subsubsection{Integrated Intelligence}
-
-Because an AFABL agent performs command arbitration over modules that
-support a behavioral interface (providing an action given a state
-observation), the modules themselves can employ any mechanism to
-decide on actions given a state.  This information hiding means that
-AFABL agents can be composed of a mixture of modules that use many
-different kinds of AI, including statistical learning, rule-based
-reasoning, or (reactive) planning.  AFABL is an integrated
-intelligence architecture.
-
-
-
-\subsubsection{Hierarchical Decomposition}
-
-
-Beacuse modules are themselves agents, modules can contain other
-modules and perform command arbitration over those modules just as the
-top-level agent does.  Agents can thus be decomposed recursively into
-behavioral subsystems.  This recursive behavior module decomposition
-provides the agent designer with great flexibility.  Recursive module
-composition is somewhat similar to the levels of competence in
-Brooks's subsumption architecture with an important difference: the
-internal workings of modules are never altered externally.  Modules
-are treated as black-boxes.  Command arbitration accomplishes the same
-result that output suppression does in classic subsumption.
 
 \section{Reinforcement Learning in AFABL}
 
 \subsection{AFABL Agents and Reinforcement Learning Agents}
 
 \subsection{Modular Reinforcement Learning}
-
-\subsection{Hierarchical Reinforcement Learning}
 
 \subsection{Automatic Adaptation}
 
@@ -252,14 +200,13 @@ Programmers will be randomly assigned to two equally-sized groups: one group wil
 \label{fig:bunny-picture}
 \end{figure}
 
-In this task each programmer will write an agent that controls a bunny character in a simple
-world, depicted in Figure~\ref{fig:bunny-picture}.  The bunny world works as follows:
+In this task each programmers wrote an agent that controls a bunny character in a simple world, depicted in Figure~\ref{fig:bunny-picture}.  The bunny world works as follows:
 
 \begin{itemize}
 
 \item The bunny world is a discrete grid of cells.  The bunny, wolf, and food each occupy one cell.
 
-\item During each time step the bunny may move north, south, east, or west.
+\item During each time step the bunny may move north, south, east, or west -- this is the bunny agent's action set.
 
 \item Every two time steps the wolf moves towards the bunny.
 
@@ -269,25 +216,25 @@ world, depicted in Figure~\ref{fig:bunny-picture}.  The bunny world works as fol
 
 \end{itemize}
 
-The simulation runs several episodes, keeping track of how much food the bunny eats and how long (how many time steps) the bunny ``lives'' in each episode.  Programmers will be asked to write bunny agents that live as long as possible and eat as much food as possible.
+Each programmer's Scala bunny and AFABL bunny were run for The simulation run, keeping track of how much food the bunny eats and how many times the bunny is eaten by the wolf.  Programmers will be asked to write bunny agents that live as long as possible and eat as much food as possible.
 
 \subsection{Task 2: Mating Bunny}\label{sec:task2}
 
-In this task each programmer will write a bunny agent for a world that is identical to the world in Task 1 except that the bunny must also find mates.  The world will include one static  potential mate that behaves similarly to the food.  When the bunny finds the potential mate, the bunny receives a signal that it has ``mated,'' the mate disappears (because it goes off to have babies), and another potential mate appears elsewhere.  The simulation runs as in Task 1, additionally keeping track of how many mates the bunny finds.  As in Task 1, programmers will be asked to write bunny agents that live as long as possible, eat as much food as possible, and find as many mates as possible.
+In this task each programmer will write a bunny agent for a world that is identical to the world in Task 1 except that the bunny must also find mates.  The world will include one static  potential mate that behaves similarly to the food.  When the bunny finds the potential mate, the bunny receives a signal that it has ``mated,'' the mate disappears, and another potential mate appears elsewhere.  The simulation runs as in Task 1, additionally keeping track of how many mates the bunny finds.  As in Task 1, programmers will be asked to write bunny agents that live as long as possible, eat as much food as possible, and find as many mates as possible.
 
-\subsection{Task 3: Adding Wind, Spoiling Food, and Picky Mates}\label{sec:task3}
+%% \subsection{Task 3: Adding Wind, Spoiling Food, and Picky Mates}\label{sec:task3}
 
-In this task each programmer will write a bunny agent for a world with the same elements as in Task 2 and with the same goals for the bunny, but the world is more complex.  In particular:
+%% In this task each programmer will write a bunny agent for a world with the same elements as in Task 2 and with the same goals for the bunny, but the world is more complex.  In particular:
 
-\begin{itemize}
+%% \begin{itemize}
 
-\item There is constant wind from an unchanging direction that affects the wolf's ability to find the bunny.  The wolf will only move toward the bunny if the wolf is downwind of the bunny.
+%% \item There is constant wind from an unchanging direction that affects the wolf's ability to find the bunny.  The wolf will only move toward the bunny if the wolf is downwind of the bunny.
 
-\item If food is not eaten within 15 time steps after it appears, it spoils.  Spoilage is represented by the food disappearing and new food appearing elsewhere.
+%% \item If food is not eaten within 15 time steps after it appears, it spoils.  Spoilage is represented by the food disappearing and new food appearing elsewhere.
 
-\item To simulate selection of fit bunnies, potential mates will only accept the bunny if the bunny has eaten within 10 time steps (a hungry bunny is an unsuccessful bunny and therefore not fit for mating).  Rejection will be represented by the potential mate remaining in place and the bunny not receiving a signal that mating has occurred.
+%% \item To simulate selection of fit bunnies, potential mates will only accept the bunny if the bunny has eaten within 10 time steps (a hungry bunny is an unsuccessful bunny and therefore not fit for mating).  Rejection will be represented by the potential mate remaining in place and the bunny not receiving a signal that mating has occurred.
 
-\end{itemize}
+%% \end{itemize}
 
 
 \subsubsection{Source Code Analysis}
@@ -302,10 +249,58 @@ The code submitted for each task will be analyzed to determine:
 
 \section{Results}
 
-The primary quantitative metric will be task completion effort in time and code quantity.  Tasks 2 and 3 will provide a measure of how much effort is required to adapt agents to new domains.  In addition, we will calculate qualitative metrics for programmer satisfaction, and mine the source code for design patterns.
+Time spent on Scala bunny versus AFABL bunny.
+
+McCabe cyclomatic complexity of Scala bunny versus AFABL bunny.
+
+Qualitative results of questionnaires.
 
 
 \section{Discussion}
+
+\subsection{Authorability and the Agent Programming Space}
+
+Authorability is the ease with which a programmer can author the behavior of agents.  Concretely, we suggest a framework for assessing authorability that considers domain knowledge requirements, algorithm knowledge requirements, and the adaptability of agents.
+
+{\bf Domain knowledge} refers to the world-specific details the agent author must program into the agent for a particular domain.  Examples of domain knowledge include representations of state and the dynamics of the world, that is, how actions cause transitions from one state to another.
+
+{\bf Algorithm knowledge} refers to the degree of algorithm detail that must be programmed in the agent.  An agent using a general-purpose programming language with no libraries to support agent programming would need to write the agent's behavior algorithms from scratch. Even an agent using an agent programming library would still likely need to encode a significant amount of algorithm knowledge in the agent. For example, an agent agent that uses a STRIPS planner for action selection would need to contain details of STRIPS operators and the mechanisms for selecting them in response to state perception.
+
+{\bf Adaptability} refers to the ease with which an agent, once authored, can adapt to a changing world or be reused in a different world.
+
+These factors are not completely orthogonal.  High domain knowledge requirements can hinder adaptability because agent agents need to be preprogrammed for worlds that have different dynamics.  Domain knowledge and algorithm knowledge often go hand-in-hand, for example in the encoding of heuristic functions.  Returning to our STRIPS example, STRIPS operators essentially encode world dynamics into the decision making algorithm, thereby coupling domain knowledge and algorithm knowledge.
+
+We say that authorability is high when required domain knowledge is low, algorithm knowledge is low, and adaptability is high.  Such an agent is easy to program in the first place, can adapt to a world with non-stationary dynamics, and can be reused in new worlds with minimal reprogramming.
+
+With this working framework for assessing the authorability of agent programming approaches we can map the agent programming space as a spectrum from fully scripted to fully learning approaches.
+
+\subsubsection{Fully scripted agent Programming}
+
+Fully scripted agents are the most common type of agents.  The scripts that control such agents specify every detail of the agent's behavior ahead of time.  While scripted agents can pursue goals and exhibit intelligence, the manner in which these goals are pursued must be written explicitly by the agent author, and if these goals are to be pursued using a particular algorithm, such as a planning algorithm, the algorithm itself must be encoded (or used as a library) from within the code.
+
+In terms of our authorability framework, fully scripted agents have the
+following properties.
+\begin{itemize}
+\item Domain knowledge: high. A fully scripted agent must specify a knowledge representation for perception and action that facilitates all the kinds of analyses and decisions the agent will make.  The dynamics of the world must be known in advance and encoded in he script to allow the agent to pursue goals.
+\item Algorithm knowledge: high.  Although the algorithms may be simple, such as big if-else ladders, the agent author must have complete knowledge of how the agent's behavior algorithms work.  More complex algorithms mean more complex knowledge for the agent author to manage, fully scripted approaches scale poorly to more complex agents.
+\item Adaptability: low.  Once an agent is fully scripted for a given environment, it must be reprogrammed for new environments with different dynamics.  Also, any run-time adaptivity must be scripted explicitly.
+\end{itemize}
+
+\subsubsection{Fully Machine Learning agent Programming}
+
+\begin{itemize}
+\item Domain knowledge: low. With a sufficiently abstract state
+  representation, the agent can have very little domain knowledge.
+\item Algorithm knowledge: low to moderate.  The choice of machine
+  learning algorithm and state representation determine the level of
+  algorithm knowledge necessary to author a fully machine learning
+  agent.
+\item Adaptability: high.  Adaptability is the key advantage of
+  machine learning.
+\end{itemize}
+
+Neither of these two endpoints of the agent authorability spectrum is desirable.  Fully scripted agents are laborious to write.  Fully machine learning agents typically exhibit a long period of decreasing incompetence until their learning algorithms have sufficient data.  What we want is something in between fully scripted and fully machine learning agents.
+
 
 {\bf Finding the NPC Authorability Sweet Spot with AFABL}
 

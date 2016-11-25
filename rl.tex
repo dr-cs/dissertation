@@ -139,25 +139,6 @@ Q*(s, a) = \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')
 
 which means that the value of taking action $a$ in state $s$ is the reward received from state $s$ plus the discounted probabilistic sum of the Q-values of successor states assuming that optimal successor actions $a'$ are taken in the successor states $s'$.
 
-\begin{algorithm}
-  \caption{General Q-Learning}\label{alg:general-q-learning}
-  \begin{algorithmic}
-    \State
-    \State $Q \gets$ random initial values
-    \For{each episode}
-      \State $s \gets$ world.initialState()
-      \State $a \gets \epsilon-$greedy action for $s$ from $\pi$ derived from $Q$
-      \Repeat
-        \State Execute $a$, observe effects $r$ and $s'$
-        \State $a' \gets \epsilon-$greedy action for $s'$ from $\pi$ derived from $Q$
-        \State $Q(s, a) \gets$ update using Q-learning rule \ref{eqn:q-update} or Sarsa rule \ref{eqn:sarsa-update}
-        \State $s \gets s'$
-        \State $a \gets a'$
-      \Until $s$ is terminal
-    \EndFor
-  \end{algorithmic}
-\end{algorithm}
-
 An important consequence of learning a Q-function instead of a state-value function is that, although Q-values can be defined as above, a reinforcement learning agent can approximate the Q-function using temporal difference learning which does not require the model. A reinforcement learning agent only needs to know the Q-values because the purpose is only to learn a policy which is derived directly from the Q-function. This is the idea behind the Q-learning algorithm, which uses the following temporal difference update rule:
 
 \begin{equation}\label{eqn:q-update}
@@ -165,6 +146,23 @@ Q(s, a) \leftarrow Q(s, a) + \alpha [R(s) + \gamma \max_{a'} Q(s', a') - Q(s, a)
 \end{equation}
 
 $\alpha$ is a learning rate parameter. Temporal difference algorithms like Q-learning use the differences between Q-values in successive states to update Q-values in each iteration. Like value and policy iteration, Q-learning has been shown to converge to $Q*$ in the limit with infinite exploration. In practice developing a close approximation to $Q*$ isn't necessary as long as the same policy results.
+
+\begin{algorithm}
+  \caption{General Q-Learning}\label{alg:q-learning}
+  \begin{algorithmic}
+    \State $Q \gets$ random initial values
+    \For{each episode}
+      \State $s \gets$ world.initialState()
+      \Repeat
+        \State $a \gets \epsilon-$greedy action for $s$ from $\pi$ derived from $Q$
+        \State Execute $a$, observe effects $r$ and $s'$
+        \State $Q(s, a) \gets Q(s, a) + \alpha [R(s) + \gamma \max_{a'} Q(s', a') - Q(s, a)]$
+        \State $s \gets s'$
+      \Until $s$ is terminal
+    \EndFor
+  \end{algorithmic}
+\end{algorithm}
+
 
 \subsubsection{Sarsa}
 
@@ -175,6 +173,24 @@ Q(s, a) \leftarrow Q(s, a) + \alpha [R(s) + \gamma Q(s', a') - Q(s, a))]
 \end{equation}
 
 Sarsa gets its name from the elements of its update rule: $s$, $a$, $r$, $s'$, $a'$. The key difference is that the $Q(s', a')$ from the agent's policy is used in the update rule.
+
+\begin{algorithm}
+  \caption{General Q-Learning}\label{alg:sarsa}
+  \begin{algorithmic}
+    \State $Q \gets$ random initial values
+    \For{each episode}
+      \State $s \gets$ world.initialState()
+      \State $a \gets \epsilon-$greedy action for $s$ from $\pi$ derived from $Q$
+      \Repeat
+        \State Execute $a$, observe effects $r$ and $s'$
+        \State $a' \gets \epsilon-$greedy action for $s'$ from $\pi$ derived from $Q$
+        \State $Q(s, a) \gets Q(s, a) + \alpha [R(s) + \gamma Q(s', a') - Q(s, a))]$
+        \State $s \gets s'$
+        \State $a \gets a'$
+      \Until $s$ is terminal
+    \EndFor
+  \end{algorithmic}
+\end{algorithm}
 
 Q-learning has the advantage of being able to learn an optimal policy even if the control policy during learning is poor. The advantage of Sarsa over Q-learning is that if the agent does not have full control over action selection selection, Sarsa will learn a policy that is optimal in the presence of external control over action selection, such as other (sub)agents. For this reason, Sarsa is used in modular reinforcement learning.
 
