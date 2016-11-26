@@ -164,52 +164,7 @@ For baselines, GM and Arbi-Q algorithms used modules with similarly scaled rewar
 
 \section{Results}
 
-Emprical results clearly show that the performance of GM-Sarsa degrades when the reward scales of the modules are not comparable. The learning curves depicted in Figure \ref{fig:gmsarsa-results} show that GM-Sarsa bunny agent with incomparable reward scales for its modules converges to a lower score than with comparable rewards. To see why this is the case, consider a simplified example of the composite Q-values computed by GM-Sarsa with comparable rewards (B is for bunny, F is for food, W is for wolf):
-
-\begin{center}
-\begin{tabular}{|p{1em}|p{1em}|p{1em}|p{1em}|p{1em}|}\hline
-  &   & B &   & F \\\hline
-  &   &   & W &   \\\hline
-  &   &   &   &   \\\hline
-  &   &   &   &   \\\hline
-  &   &   &   &   \\\hline
-\end{tabular}
-\end{center}
-
-With comparable rewards the Q-value of moving right and left for FindFood would be
-
-\begin{align*}
-Q^*(s, a) &= \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')
-\end{align*}
-
-With comparable rewards the Q-value of moving right and left for AvoidWolf would be
-
-\begin{align*}
-Q^*(s, a) &= \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')
-\end{align*}
-
-And the composite Q-value of moving right would be
-
-\begin{align*}
-Q^*(s, a) &= \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')
-\end{align*}.
-
-And the composite
-
-If we scale the FindFood by 10, the Q-values for moving right and left would be
-
-\begin{align*}
-Q^*(s, a) &= \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')
-\end{align*}.
-
-And the composite Q-values would be
-
-\begin{align*}
-Q^*(s, a) &= \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')
-\end{align*}.
-
-As you can see, scaling the FindFood module dominates the decision problem, resulting in the bunny getting eaten, which gives negative reward and loses the food.
-
+Emprical results clearly show that the performance of GM-Sarsa degrades when the reward scales of the modules are not comparable. The learning curves depicted in Figure \ref{fig:gmsarsa-results} show that GM-Sarsa bunny agent with incomparable reward scales for its modules converges to a lower score than with comparable rewards.
 
 \begin{figure}[ht]
   \begin{center}
@@ -219,8 +174,103 @@ As you can see, scaling the FindFood module dominates the decision problem, resu
   \label{fig:gmsarsa-results}
 \end{figure}
 
+\subsection{How GM-Sarsa Degrades with Incomprable Rewards}
 
-Arbi-Q does not exibit this problem because it does not use the Q-values of its modules directly. Instead, Arbi-Q learns when it should listen to a particular module. More precicely, Arbi-Q develops a probablity distribution for each state which says which module has the best advice. So Arbi-Q learns, for example, that when the wolf is close AvoidWolf should decide the bunny agent's action, and when the wolf is comfortably distant FindFood should decide the bunny agent's action.
+To illustrate how GM-Sarsa degrades when modules have incomparable reward scales, consider a simplified example of the composite Q-values computed by GM-Sarsa with comparable rewards (B is for bunny, F is for food, W is for wolf):
+
+\begin{center}
+\begin{tabular}{|p{1em}|p{1em}|p{1em}|p{1em}|p{1em}|}\hline
+  &   & B & W & F \\\hline
+  &   &   &   &   \\\hline
+  &   &   &   &   \\\hline
+  &   &   &   &   \\\hline
+  &   &   &   &   \\\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{FindFood with Comparable Reward Scales}
+
+With comparable rewards the Q-value of moving right for FindFood would be (we use deterministic state transition dynamics here for simplicity)
+
+\begin{align*}
+Q(s, Right) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+              &= -0.1 + 0.9 (1.0)\\
+              &= 0.8
+\end{align*}
+
+because the max next action would find the food. The value of moving left would be
+
+\begin{align*}
+Q(s, Left) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+             &= -0.1 + 0.9 (0.8)\\
+             &= 0.72
+\end{align*}
+
+because the max next action would be Right, to get closer to the food.
+
+\subsubsection{AvoidWolf with Comparable Reward Scales}
+
+With comparable rewards the Q-value of moving right for AvoidWolf would be
+
+\begin{align*}
+Q^*(s, Right) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+              &= 0.5 + 0.9 (-1.0)\\
+              &= -0.4
+\end{align*}
+
+because the next state meets the wolf. The value of moving left would be
+
+\begin{align*}
+Q(s, Left) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+             &= 0.5 + 0.9 (0.5)\\
+             &= 0.95
+\end{align*}
+
+because the max next action would again avoid the wolf.
+
+\subsubsection{Composite GM-Sarsa Q-values with Comparable Reward Scales}
+
+And the composite Q-values for the Right and Left actions would be
+
+\begin{align*}
+  Q(s, Right) &= 0.8 - 0.4 = 0.4\\
+  Q(s, Left) &= 0.72 + 0.95 = 1.67
+\end{align*}.
+
+And the next action decided by GM-Sarsa would be Left, which is correct because it avoids getting eaten by the wolf.
+
+\subsubsection{FindFood with Incomparable Reward Scales}
+
+If we scale the FindFood by 10, the Q-values for moving right and left would be
+
+\begin{align*}
+Q(s, Right) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+              &= -1.0 + 0.9 (10.0)\\
+              &= 8.0
+\end{align*}
+
+and
+
+\begin{align*}
+Q(s, Left) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+             &= -1.0 + 0.9 (8.0)\\
+             &= 6.2
+\end{align*}
+
+\subsubsection{Composite GM-Sarsa Q-values with Incomparable Reward Scales}
+
+Using the same AvoidWolf values as above and the scaled FindFood q-values using incomparable rewards the composite Q-values would be
+
+\begin{align*}
+  Q(s, Right) &= 8.0 - 0.4 = 7.6\\
+  Q(s, Left) &= 6.2 + 0.95 = 7.15
+\end{align*}.
+
+and the bunny would move right and get eaten by the wolf.
+
+As you can see, scaling the FindFood module dominates the decision problem, resulting in the bunny getting eaten, which gives negative reward and loses the food.
+
+\subsection{How Arbi-Q does not Degrade with Incomprable Rewards}
 
 \begin{figure}[ht]
   \begin{center}
@@ -230,9 +280,25 @@ Arbi-Q does not exibit this problem because it does not use the Q-values of its 
   \label{fig:arbiq--results}
 \end{figure}
 
+As Figure \ref{fig:arbiq-results} shows, Arbi-Q does not exibit any performance degradation when the agent's modules have incomparable reward scales. Arbi-Q does not use the Q-values of its modules directly. Instead, Arbi-Q learns when it should listen to a particular module. More precicely, Arbi-Q develops a probablity distribution for each state which says which module has the best advice in that state. Using the example above with incomparable reward scales, the modules would learn the same local policies using the same Q-values as above, but the arbitrator would learn a policy based on Q-values for selecting modules that chose actions that resulted in particular rewards {\it for the agent as a whole}. Our LiveLongProsper reward function assigned 0 for getting eaten by the wolf, 1.0 for finding food, and 0.5 for avoiding the wolf but not finding food. The resulting Q-values for the arbitrator for its actions of choosing FindFood and AvoidWolf would be
 
-For the comparable cases of both
+\begin{align*}
+Q(s, FindFood) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+               &= 0.5 + 0.9 (0)\\
+               &= 0.5
+\end{align*}
 
+and
+
+\begin{align*}
+Q(s, AvoidWolf) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+                &= 0.5 + 0.9 (0.5)\\
+                &= 0.95
+\end{align*}
+
+and in this state Arbi-Q would delegate to the AvoidWolf module, which would move left, which is correct.
+
+So Arbi-Q learns that when the wolf is close AvoidWolf should decide the bunny agent's action, and when the wolf is comfortably distant FindFood should decide the bunny agent's action.
 
 \subsection{Related Work}
 
@@ -244,4 +310,7 @@ Due to the curse of dimensionality, abstraction of various kinds has long been a
 
 Another thread in abstraction seeks to use models from the physical world to create abstracions of (simulated) physical state spaces. Cobo Rus and colleagues created abstractions of state spaces by organizing the state spaces into classes of objects and using non-optimal Q-functions to estimate the risk of ignoring certain classes of objects. Cobos Rus's Object-Focused Q-Learning (OFQ) acheived exponential speedups in some cases \cite{cobo-rus2013object}. Scholz and colleagues developed Physics-Based Reinforcement Learning \cite{scholz2014physics}, which uses computational physics engines succh as Box2D \cite{catto2013box2d} as model representations, resulting in more sample-efficient learning compared to traditional object-oriented MDP approaches. Physics-based reinforcement learning was then applied successfully in robotic mobile manipulation \cite{scholz2015learning} and robot navigation \cite{scholz2016navigating} applications.
 
+
 \section{Conclusion}
+
+In a software engineering sense modularity means compositionality and resusability in different contexts. To our knowledge, none of the other approaches to modular refinforcement learning permit general reuse of separately authored modules due to the requirement of reward scale comparability. In addition to state and reward function abstraction, the primary contribution of our reformulation of MRL and the Arbi-Q command arbitration algorithm is the reusability afforded by reward scale decoupling. The Arbi-Q command arbitration algorithm makes it possible for modules written by different porogrammers with different reward scales to be used together within the same modular reinforcement learning agent. As we'll see in the next chapter, reuse is an essential part of modern software engineering. With our MRL framework and the Arbi-Q algorithm it is now possible to integrate modular reinforcement learning into practical programming systems.

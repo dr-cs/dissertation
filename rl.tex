@@ -134,10 +134,10 @@ Implementing an exploration strategy in a reinforcement learning algorithm can b
 An alternative value function assigns values to state-action pairs instead of states. Such a function is called a {\it Q-function}, and the optimal Q-function is defined as:
 
 \begin{equation}
-Q^*(s, a) = \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')
+Q^*(s, a) = R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')
 \end{equation}
 
-which means that the value of taking action $a$ in state $s$ is the reward received from state $s$ plus the discounted probabilistic sum of the Q-values of successor states assuming that optimal successor actions $a'$ are taken in the successor states $s'$.
+which means that the value of taking action $a$ in state $s$ is the reward received from state $s$ plus the discounted probabilistic sum of the Q-values of successor states assuming that optimal successor action $a'$ are taken in the successor state $s'$.
 
 An important consequence of learning a Q-function instead of a state-value function is that, although Q-values can be defined as above, a reinforcement learning agent can approximate the Q-function using temporal difference learning which does not require the model. A reinforcement learning agent only needs to know the Q-values because the purpose is only to learn a policy which is derived directly from the Q-function. This is the idea behind the Q-learning algorithm \cite{watkins1989models}, which uses the following temporal difference update rule:
 
