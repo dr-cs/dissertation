@@ -1,6 +1,6 @@
 \chapter{Command Arbitration for Modular Reinforcement Learning}\label{ch:arbiq}
 
-In this chapter we demonstrate the performance degradation of modular reinforcement learning agents whose module have incomparable reward scales. Arrow's Impssibility Theorem for social choice provides an explanation for the failure of existing approaches to modular reinformcent learning and a framework for our solution. We present our solution, the Arbi-Q command arbitration algorithm, and empirically demonstrate that it does not exhibit the same performance degradation as existing approaches to modular reinformcement learning.
+In this chapter we demonstrate the performance degradation of modular reinforcement learning agents whose module have incomparable reward scales. Arrow's Impossibility Theorem for social choice provides an explanation for the failure of existing approaches to modular reinforcement learning and a framework for our solution. We present our solution, the Arbi-Q command arbitration algorithm, and empirically demonstrate that it does not exhibit the same performance degradation as existing approaches to modular reinforcement learning.
 
 \section{Modular reinforcement learning}
 
@@ -75,7 +75,7 @@ In this work, we relax the dictatorship requirement in order to make a practical
 
 \subsection{Formalization}
 
-Our reformulation of MRL adds a {\em command arbitrator} \cite{brooks1986a-robust}.  The arbitrator has a state space that may be the same as or different from the modules' state spaces, an action set that represents choosing a module, $A_{CA} = {1 ... n}$, and a reward signal that represents the ``greater good.'' The arbitrtator's reward function, $R_a(s)$, is independently defined rather than being derived from the module rewards.  It is now another part of the problem specification; in the partial programming setting, this corresponds to $R_a(s)$ being human-authored. Note that $R_a(s)$ may or may not be equal to the sum of the rewards of the agent's modules. In fact, the module rewards $R_i(s,a)$ may not have any correlation with the arbitrator's reward $R_a(s)$.
+Our reformulation of MRL adds a {\em command arbitrator} \cite{brooks1986a-robust}.  The arbitrator has a state space that may be the same as or different from the modules' state spaces, an action set that represents choosing a module, $A_{CA} = {1 ... n}$, and a reward signal that represents the ``greater good.'' The arbitrator's reward function, $R_a(s)$, is independently defined rather than being derived from the module rewards.  It is now another part of the problem specification; in the partial programming setting, this corresponds to $R_a(s)$ being human-authored. Note that $R_a(s)$ may or may not be equal to the sum of the rewards of the agent's modules. In fact, the module rewards $R_i(s,a)$ may not have any correlation with the arbitrator's reward $R_a(s)$.
 
 The agent's policy is defined indirectly by the arbitrator's policy, $\pi_{CA}(s, a)$, which assigns probabilities to the selection of each module's preferred action for each state.  This formulation relaxes the non-dictatorship requirement of ideal arbitration if you think of the arbitrator as a special module.  By Arrow's theorem, other properties will still hold.
 
@@ -106,7 +106,7 @@ In the next section we present a reinforcement learning-based command arbitratio
 
 Our reformulation of MRL is based on an independently specified arbitrator \cite{brooks1986a-robust} that is itself a reinforcement learner. The state space for the arbitrator is the world state -- no state abstraction is used for the arbitrator. The arbitrator's action set, $A_{CA}$, is a set of integer indexes to the agent's list of modules (we use $CA$ in subscript to refer to the command arbitrator and numbers or $i$ to refer to modules).  As with any reinforcement learner, the arbitrator learns a policy. In the case of the arbitrator this policy, $\pi_{CA}$ is a mapping from states to modules. The modules' policies are mappings from abstracted module state to actions in the world, that is, the agent's actions. The policy defines which module chooses the agent's action in a particular state.
 
-Arbi-Q uses thje Sarsa Q-Learning algorithm to learn the arbitrator's policy. At each time step the arbitrator uses its policy to select a module, then the module uses its local policy to select an action that the agent executes. The results of executing the action are communicated to the arbitrator as a consequence of the module selection, and to the modules as a consequence of action selection. Each module uses a state abstracion and function to transform the world state into the the subset of the state relevant to the module, and a reward function that is based on the module's state abstraction. In this way the modules are coupled to the world in which they operate -- the modules can only operate in worlds which contain the state features expected by its state abstraction function -- but the modules are not coupled to other modules or to an arbitrator. The Arbi-Q algorithm is detailed in Algorithm \ref{alg:arbiq}
+Arbi-Q uses the Sarsa Q-Learning algorithm to learn the arbitrator's policy. At each time step the arbitrator uses its policy to select a module, then the module uses its local policy to select an action that the agent executes. The results of executing the action are communicated to the arbitrator as a consequence of the module selection, and to the modules as a consequence of action selection. Each module uses a state abstraction and function to transform the world state into the the subset of the state relevant to the module, and a reward function that is based on the module's state abstraction. In this way the modules are coupled to the world in which they operate -- the modules can only operate in worlds which contain the state features expected by its state abstraction function -- but the modules are not coupled to other modules or to an arbitrator. The Arbi-Q algorithm is detailed in Algorithm \ref{alg:arbiq}
 
 
 \begin{algorithm}
@@ -137,7 +137,7 @@ Arbi-Q uses thje Sarsa Q-Learning algorithm to learn the arbitrator's policy. At
   \end{algorithmic}
 \end{algorithm}
 
-Notice that Arbi-Q is learning its command arbitration policy at the same time the modules are learning their subtasks. While it is possible in principle to train the modules before training the arbitrator, emprical results show faster convergence when the arbitrator and modules are trained at the same time.
+Notice that Arbi-Q is learning its command arbitration policy at the same time the modules are learning their subtasks. While it is possible in principle to train the modules before training the arbitrator, empirical results show faster convergence when the arbitrator and modules are trained at the same time.
 
 \section{Experiments}
 
@@ -145,7 +145,7 @@ Our principal claim is that Arbi-Q is robust to modules with incomparable reward
 
 \subsection{Bunny-Wolf World}
 
-We use a world derived from Sprague and Ballard ~\cite{sprague2003multiple-goal}.  In Bunny-Wolf world, our agent is a bunny that must eat food and avoid being eaten by a wolf.  The bunny world is a continuing world rather than an episodic world. There is no specified start state and there is no termination of episides. When the bunny finds and eats food, a new food item appears elsewhere. When the wolf eats the bunny the bunny ``respawns'' in a new location, similar to video games. We can represent such a bunny agent in our formulation as follows:
+We use a world derived from Sprague and Ballard ~\cite{sprague2003multiple-goal}.  In Bunny-Wolf world, our agent is a bunny that must eat food and avoid being eaten by a wolf.  The bunny world is a continuing world rather than an episodic world. There is no specified start state and there is no termination of episodes. When the bunny finds and eats food, a new food item appears elsewhere. When the wolf eats the bunny the bunny ``respawns'' in a new location, similar to video games. We can represent such a bunny agent in our formulation as follows:
 
 \begin{itemize}
 
@@ -164,17 +164,17 @@ For baselines, GM and Arbi-Q algorithms used modules with similarly scaled rewar
 
 \section{Results}
 
-Emprical results clearly show that the performance of GM-Sarsa degrades when the reward scales of the modules are not comparable. The learning curves depicted in Figure \ref{fig:gmsarsa-results} show that GM-Sarsa bunny agent with incomparable reward scales for its modules converges to a lower score than with comparable rewards.
+Empirical results clearly show that the performance of GM-Sarsa degrades when the reward scales of the modules are not comparable. The learning curves depicted in Figure \ref{fig:gmsarsa-results} show that GM-Sarsa bunny agent with incomparable reward scales for its modules converges to a lower score than with comparable rewards.
 
 \begin{figure}[ht]
   \begin{center}
     \scalebox{.75}{\includegraphics{gm-bunny-wolf.png}}
-    \caption{Performance of GM-Sarsa/Q-decomposition on the bunny-wolf problem. The learning curves show that Greatest Mass command arbitration degrades significantly when its module rewards are incomprable.}
+    \caption{Performance of GM-Sarsa/Q-decomposition on the bunny-wolf problem. The learning curves show that Greatest Mass command arbitration degrades significantly when its module rewards are incomparable.}
   \end{center}
   \label{fig:gmsarsa-results}
 \end{figure}
 
-\subsection{How GM-Sarsa Degrades with Incomprable Rewards}
+\subsection{How GM-Sarsa Degrades with Incomparable Rewards}
 
 To illustrate how GM-Sarsa degrades when modules have incomparable reward scales, consider a simplified example of the composite Q-values computed by GM-Sarsa with comparable rewards (B is for bunny, F is for food, W is for wolf):
 
@@ -270,17 +270,17 @@ and the bunny would move right and get eaten by the wolf.
 
 As you can see, scaling the FindFood module dominates the decision problem, resulting in the bunny getting eaten, which gives negative reward and loses the food.
 
-\subsection{How Arbi-Q does not Degrade with Incomprable Rewards}
+\subsection{How Arbi-Q does not Degrade with Incomparable Rewards}
 
 \begin{figure}[ht]
   \begin{center}
     \scalebox{.75}{\includegraphics{arbiq-bunny-wolf.png}}
-    \caption{Performance of Arbi-Q on the bunny-wolf problem. Arbi-Q converges to similar scores as GM-Sarsa and shows no degredation in performance when modules have incomprable rewards, suggesting that it is amenable to ``swappable'' modules.}
+    \caption{Performance of Arbi-Q on the bunny-wolf problem. Arbi-Q converges to similar scores as GM-Sarsa and shows no degradation in performance when modules have incomparable rewards, suggesting that it is amenable to ``swappable'' modules.}
   \end{center}
   \label{fig:arbiq--results}
 \end{figure}
 
-As Figure \ref{fig:arbiq-results} shows, Arbi-Q does not exibit any performance degradation when the agent's modules have incomparable reward scales. Arbi-Q does not use the Q-values of its modules directly. Instead, Arbi-Q learns when it should listen to a particular module. More precicely, Arbi-Q develops a probablity distribution for each state which says which module has the best advice in that state. Using the example above with incomparable reward scales, the modules would learn the same local policies using the same Q-values as above, but the arbitrator would learn a policy based on Q-values for selecting modules that chose actions that resulted in particular rewards {\it for the agent as a whole}. Our LiveLongProsper reward function assigned 0 for getting eaten by the wolf, 1.0 for finding food, and 0.5 for avoiding the wolf but not finding food. The resulting Q-values for the arbitrator for its actions of choosing FindFood and AvoidWolf would be
+As Figure \ref{fig:arbiq-results} shows, Arbi-Q does not exhibit any performance degradation when the agent's modules have incomparable reward scales. Arbi-Q does not use the Q-values of its modules directly. Instead, Arbi-Q learns when it should listen to a particular module. More precisely, Arbi-Q develops a probability distribution for each state which says which module has the best advice in that state. Using the example above with incomparable reward scales, the modules would learn the same local policies using the same Q-values as above, but the arbitrator would learn a policy based on Q-values for selecting modules that chose actions that resulted in particular rewards {\it for the agent as a whole}. Our LiveLongProsper reward function assigned 0 for getting eaten by the wolf, 1.0 for finding food, and 0.5 for avoiding the wolf but not finding food. The resulting Q-values for the arbitrator for its actions of choosing FindFood and AvoidWolf would be
 
 \begin{align*}
 Q(s, FindFood) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
@@ -308,9 +308,9 @@ Marthi and colleagues \cite{marthi2005concurrent} suggest extending their work i
 
 Due to the curse of dimensionality, abstraction of various kinds has long been an active area of research in reinforcement learning. One thread in abstraction is to use examples to guide abstraction. Zang and colleagues used examples of nearly optimal action sequences, or trajectories, to dynamically discover options from data, delivering speedups of up to 30 times in some cases \cite{zang2009discovering}. Learning from demonstration \cite{zang2010batch} uses human input to improve reinforcement learning performance. Zang and colleagues developed a value function approximation algorithm that leveraged human input to speed convergence for function approximation-based reinforcement learning algorithms \cite{zang2010using}. Cobo Rus and colleagues' Abstraction from Demonstration technique uses human demonstrations to infer state abstractions and builds policies based on those state abstractions \cite{cobo-rus2011automatic,cobo-rus2012automatic,cobo-rus2014abstraction}.
 
-Another thread in abstraction seeks to use models from the physical world to create abstracions of (simulated) physical state spaces. Cobo Rus and colleagues created abstractions of state spaces by organizing the state spaces into classes of objects and using non-optimal Q-functions to estimate the risk of ignoring certain classes of objects. Cobos Rus's Object-Focused Q-Learning (OFQ) acheived exponential speedups in some cases \cite{cobo-rus2013object}. Scholz and colleagues developed Physics-Based Reinforcement Learning \cite{scholz2014physics}, which uses computational physics engines succh as Box2D \cite{catto2013box2d} as model representations, resulting in more sample-efficient learning compared to traditional object-oriented MDP approaches. Physics-based reinforcement learning was then applied successfully in robotic mobile manipulation \cite{scholz2015learning} and robot navigation \cite{scholz2016navigating} applications.
+Another thread in abstraction seeks to use models from the physical world to create abstractions of (simulated) physical state spaces. Cobo Rus and colleagues created abstractions of state spaces by organizing the state spaces into classes of objects and using non-optimal Q-functions to estimate the risk of ignoring certain classes of objects. Cobo Rus's Object-Focused Q-Learning (OFQ) achieved exponential speedups in some cases \cite{cobo-rus2013object}. Scholz and colleagues developed Physics-Based Reinforcement Learning \cite{scholz2014physics}, which uses computational physics engines such as Box2D \cite{catto2013box2d} as model representations, resulting in more sample-efficient learning compared to traditional object-oriented MDP approaches. Physics-based reinforcement learning was then applied successfully in robotic mobile manipulation \cite{scholz2015learning} and robot navigation \cite{scholz2016navigating} applications.
 
 
 \section{Conclusion}
 
-In a software engineering sense modularity means compositionality and resusability in different contexts. To our knowledge, none of the other approaches to modular refinforcement learning permit general reuse of separately authored modules due to the requirement of reward scale comparability. In addition to state and reward function abstraction, the primary contribution of our reformulation of MRL and the Arbi-Q command arbitration algorithm is the reusability afforded by reward scale decoupling. The Arbi-Q command arbitration algorithm makes it possible for modules written by different porogrammers with different reward scales to be used together within the same modular reinforcement learning agent. As we'll see in the next chapter, reuse is an essential part of modern software engineering. With our MRL framework and the Arbi-Q algorithm it is now possible to integrate modular reinforcement learning into practical programming systems.
+In a software engineering sense modularity means compositionality and reusability in different contexts. To our knowledge, none of the other approaches to modular reinforcement learning permit general reuse of separately authored modules due to the requirement of reward scale comparability. In addition to state and reward function abstraction, the primary contribution of our reformulation of MRL and the Arbi-Q command arbitration algorithm is the reusability afforded by reward scale decoupling. The Arbi-Q command arbitration algorithm makes it possible for modules written by different programmers with different reward scales to be used together within the same modular reinforcement learning agent. As we'll see in the next chapter, reuse is an essential part of modern software engineering. With our MRL framework and the Arbi-Q algorithm it is now possible to integrate modular reinforcement learning into practical programming systems.
