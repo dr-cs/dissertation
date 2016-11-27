@@ -3,8 +3,8 @@ unset log                    # remove anylog-scaling
 unset label                  # remove any previous labels
 set xtic auto                # set xtics automatically
 set ytic auto                # set ytics automatically
-set title 'Bunny Wolf'
-set xlabel 'Trials x 100'
+set title 'GM-Sarsa on the Bunny Wolf Problem'
+set xlabel 'Time Steps x 100'
 set ylabel 'Average Score per Time Step'
 set key bottom right
 set term png enh

@@ -272,7 +272,7 @@ This example demonstrates how scaling the FindFood module's rewards causes the p
     \scalebox{.75}{\includegraphics{arbiq-bunny-wolf.png}}
     \caption{Performance of Arbi-Q on the bunny-wolf problem. Arbi-Q converges to similar scores as GM-Sarsa and shows no degradation in performance when modules have incomparable rewards, suggesting that it is amenable to ``swappable'' modules.}
   \end{center}
-  \label{fig:arbiq--results}
+  \label{fig:arbiq-results}
 \end{figure}
 
 As Figure \ref{fig:arbiq-results} shows, Arbi-Q does not exhibit any performance degradation when the agent's modules have incomparable reward scales. Arbi-Q does not use the Q-values of its modules directly. Instead, Arbi-Q learns when it should listen to a particular module. More precisely, Arbi-Q develops a probability distribution for each state which says which module has the best advice in that state. Using the example above with incomparable reward scales, the modules would learn the same local policies using the same Q-values as above, but the arbitrator would learn a policy based on Q-values for selecting modules that chose actions that resulted in particular rewards {\it for the agent as a whole}. Our LiveLongProsper reward function assigned 0 for getting eaten by the wolf, 1.0 for finding food, and 0.5 for avoiding the wolf but not finding food. The resulting Q-values for the arbitrator for its actions of choosing FindFood and AvoidWolf would be
@@ -294,6 +294,19 @@ Q(s, AvoidWolf) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
 and in this state Arbi-Q would delegate to the AvoidWolf module, which would move left, which is correct.
 
 So Arbi-Q learns that when the wolf is close AvoidWolf should decide the bunny agent's action, and when the wolf is comfortably distant FindFood should decide the bunny agent's action.
+
+
+\subsection{Arbi-Q is Robust to Algorithm Choice}
+
+Sprague and Ballard showed that Greatest-Mass action selection acheived better learning performance when modules used Sarsa instead of Q-Learning becuase Sarsa is on-policy and Q-learning is off-policy, as we discuss in Section \ref{sec:mrl}. Although our primary aim here is to acheive robustness to incomparable reward scales in modules, Arbi-Q is also robust to the algorithm used in the modules. Unlike Greatest-Mass/Q-decomposition, Arbi-Q exhibits the same learning performance whether its modules use Sarsa or Q-Learning, and whether the arbitrator uses Sarsa or Q-learning to learn the delegation policy, as shown in Figure \ref{fig:arbiq-results-q-modules}.
+
+\begin{figure}[ht]
+  \begin{center}
+    \scalebox{.75}{\includegraphics{arbiq-bunny-wolf-q-modules.png}}
+    \caption{Performance of Arbi-Q on the bunny-wolf problem using Q-learning for the modules and Q-learning to learn the command arbitration policy. Arbi-Q exhibits the same learning performance using Q-learning, suggesting that it is not only robust to modules with incomparable reward scales, but to modules using different algorithms to learn their local policies.}
+  \end{center}
+  \label{fig:arbiq-results-q-modules}
+\end{figure}
 
 \section{Related Work}
 
