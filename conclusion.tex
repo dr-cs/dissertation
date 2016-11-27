@@ -5,7 +5,11 @@
 
 \subsection{Arbi-Q}
 
+PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
+
 \subsection{AFABL}
+
+PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
 
 \section{Limitations of Current Work}
 
@@ -74,6 +78,36 @@ internal workings of modules are never altered externally.  Modules
 are treated as black-boxes.  Command arbitration accomplishes the same
 result that output suppression does in classic subsumption.
 
+\begin{itemize}
+
+\item Task
+
+  A task is a temporally-extended action, a "mini-policy" that acheives a
+  subgoal.  Tasks are equivalent to subtasks (MaxQ), abstract machines
+  (PHAM), or options from hierarchical reinforcement learning.
+
+\item Constraint Module
+
+  A constraint module is a behavior module that runs throughout the
+  life of its containing agent and represents a state that an agent
+  should constantly avoid.  It is a constraint in the sense that, in
+  certain states, a constraint module will identify actions that should
+  *not* be executed.
+
+\item Drive Module
+
+  A drive module is a behavior module that runs throughout the
+  life of its containing agent and represents states that an agent
+  should constantly seek.
+
+\item Objective
+
+  A an objective is a short-term goal state that generates a drive
+  module that is active until its goal is achieved.  The command
+  arbitrator gives objective modules priority over drive modules, but
+  all modules are constrained by constraint modules.
+
+\end{itemize}
 
 \subsubsection{Aversion Module}
 
