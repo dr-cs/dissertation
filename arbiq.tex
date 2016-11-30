@@ -296,19 +296,26 @@ and in this state Arbi-Q would delegate to the AvoidWolf module, which would mov
 So Arbi-Q learns that when the wolf is close AvoidWolf should decide the bunny agent's action, and when the wolf is comfortably distant FindFood should decide the bunny agent's action.
 
 
-\subsection{Arbi-Q is Robust to Algorithm Choice}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Uncomment if committee requests it. Include in ICML paper.
 
-Sprague and Ballard showed that Greatest-Mass action selection acheived better learning performance when modules used Sarsa instead of Q-Learning becuase Sarsa is on-policy and Q-learning is off-policy, as we discuss in Section \ref{sec:mrl}. Although our primary aim here is to acheive robustness to incomparable reward scales in modules, Arbi-Q is also robust to the algorithm used in the modules. Unlike Greatest-Mass/Q-decomposition, Arbi-Q exhibits the same learning performance whether its modules use Sarsa or Q-Learning, and whether the arbitrator uses Sarsa or Q-learning to learn the delegation policy, as shown in Figure \ref{fig:arbiq-results-q-modules}.
+%% \subsection{Arbi-Q is Robust to Algorithm Choice}
 
-\begin{figure}[ht]
-  \begin{center}
-    \scalebox{.75}{\includegraphics{arbiq-bunny-wolf-q-modules.png}}
-    \caption{Performance of Arbi-Q on the bunny-wolf problem using Q-learning for the modules and Q-learning to learn the command arbitration policy. Arbi-Q exhibits the same learning performance using Q-learning, suggesting that it is not only robust to modules with incomparable reward scales, but to modules using different algorithms to learn their local policies.}
-  \end{center}
-  \label{fig:arbiq-results-q-modules}
-\end{figure}
+%% Sprague and Ballard showed that Greatest-Mass action selection acheived better learning performance when modules used Sarsa instead of Q-Learning becuase Sarsa is on-policy and Q-learning is off-policy, as we discuss in Section \ref{sec:mrl}. Although our primary aim here is to acheive robustness to incomparable reward scales in modules, Arbi-Q is also robust to the algorithm used in the modules. Unlike Greatest-Mass/Q-decomposition, Arbi-Q exhibits the same learning performance whether its modules use Sarsa or Q-Learning, and whether the arbitrator uses Sarsa or Q-learning to learn the delegation policy, as shown in Figure \ref{fig:arbiq-results-q-modules}.
+
+%% \begin{figure}[ht]
+%%   \begin{center}
+%%     \scalebox{.75}{\includegraphics{arbiq-bunny-wolf-q-modules.png}}
+%%     \caption{Performance of Arbi-Q on the bunny-wolf problem using Q-learning for the modules and Q-learning to learn the command arbitration policy. Arbi-Q exhibits the same learning performance using Q-learning, suggesting that it is not only robust to modules with incomparable reward scales, but to modules using different algorithms to learn their local policies.}
+%%   \end{center}
+%%   \label{fig:arbiq-results-q-modules}
+%% \end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Related Work}
+
+Zhang, Song and Ballard \cite{zhang2015global} build on Sprague's and Ballard's earlier work on GM-Sarsa to develop three algorithms for deriving a global policy from independent modules. Their first algorithm is simply GM-Sarsa/Q-decomposition. The second chooses the action of the module with the greatest ``weight'', where the weight of a module is defined as the standard deviation of the modules Q-values for a state. The intuition is that a module with higher standard deviation more strongly prefers its max action to alternative actions.  Their third algorithm is based on voting. Each module votes for its optimal action, but the vote is weighted by the weight measure calculated from its Q-values' standard deviation. All of these algorithms still rely on the internal Q-values of the modules and thus require comparable reward scales.
 
 Rohanimanesh and Mahadevan extended the options HRL framework to concurrent settings in which multiple agents executing multiple simultaneous actions \cite{rohanimanesh2001decision,rohanimanesh2002learning}. Their work differs from ours in that their framework applies to a single agent taking multiple actions or multiple agents taking simultaneous actions, whereas we are concerned with a single agent executing a single action that is decided by multiple reinforcement learning modules.
 

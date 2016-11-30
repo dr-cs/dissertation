@@ -204,17 +204,139 @@ PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOL
 
 \subsection{Modules}
 
+\begin{figure}[ht]
+\begin{center}
+
+\begin{lstlisting}[language=Scala]
+case class FindFoodState(bunny: Location, food: Location)
+
+val findFood = AfablModule(
+  world = new BunnyWorld,
+
+  stateAbstraction = (worldState: BunnyState) => {
+    FindFoodState(worldState.bunny, worldState.food)
+  },
+
+  moduleReward = (moduleState: FindFoodState) => {
+    if (moduleState.bunny == moduleState.food) 1.0
+    else -0.1
+  }
+)
+\end{lstlisting}
+
+\caption{}
+\end{center}
+\label{fig:find-food-code}
+\end{figure}
+
+\begin{figure}[ht]
+\begin{center}
+
+\begin{lstlisting}[language=Scala]
+case class AvoidWolfState(bunny: Location, wolf: Location)
+
+val avoidWolf = AfablModule(
+  world = new BunnyWorld,
+
+  stateAbstraction = (worldState: BunnyState) => {
+    AvoidWolfState(worldState.bunny, worldState.wolf)
+  },
+
+  moduleReward = (moduleState: AvoidWolfState) => {
+    if (moduleState.bunny == moduleState.wolf) -0.1
+    else 0.1
+  }
+)
+\end{lstlisting}
+
+\caption{}
+\end{center}
+\label{fig:avoid-wolf-code}
+\end{figure}
+
+
+
 PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
 
 \subsection{Agents}
 
-PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
+\begin{figure}[ht]
+\begin{center}
 
-\subsubsection{Command Arbitrators}
+\begin{lstlisting}[language=Scala]
+val bunny = AfablAgent(
+  world = new BunnyWorld,
+
+  modules = Seq(findFood, avoidWolf),
+
+  agentLevelReward = (state: BunnyState) => {
+    if (state.bunny == state.wolf) 0.0
+    else if (state.bunny == state.food) 1.0
+    else 0.5
+  }
+)
+\end{lstlisting}
+
+\caption{}
+\end{center}
+\label{fig:avoid-wolf-code}
+\end{figure}
+
 
 PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
 
 \subsection{An AFABL Bunny}
+
+\begin{figure}[ht]
+\begin{center}
+
+\begin{lstlisting}[language=Scala]
+case class AvoidWolfState(bunny: Location, wolf: Location)
+val avoidWolf = AfablModule(
+  world = new BunnyWorld,
+  stateAbstraction = (worldState: BunnyState) => {
+    AvoidWolfState(worldState.bunny, worldState.wolf)
+  },
+  moduleReward = (moduleState: AvoidWolfState) => {
+    if (moduleState.bunny == moduleState.wolf) -0.1
+    else 0.1
+  }
+)
+
+case class FindFoodState(bunny: Location, food: Location)
+val findFood = AfablModule(
+  world = new BunnyWorld,
+
+  stateAbstraction = (worldState: BunnyState) => {
+    FindFoodState(worldState.bunny, worldState.food)
+  },
+
+  moduleReward = (moduleState: FindFoodState) => {
+    if (moduleState.bunny == moduleState.food) 1.0
+    else -0.1
+  }
+)
+
+val bunny = AfablAgent(
+
+  world = new BunnyWorld,
+
+  modules = Seq(findFood, avoidWolf),
+
+  agentLevelReward = (state: BunnyState) => {
+    if (state.bunny == state.wolf) 0.0
+    else if (state.bunny == state.food) 1.0
+    else 0.5
+  }
+)
+\end{lstlisting}
+
+\caption{A complete bunny agent in the AFABL DSL. Code for the modules is repeated from previous figures to give a sense of the full quantity of code requred to write an agent with two behavior modules.}
+\end{center}
+\label{fig:afabl-bunny-code}
+\end{figure}
+
+A complete bunny agent using the AFABL DSL is shown in Figure \ref{fig:afabl-bunny-code}.
 
 PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
 
