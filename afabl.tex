@@ -1,22 +1,19 @@
 \chapter{AFABL: A Friendly Adaptive Behavior Language}\label{ch:afabl}
 
-PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
+AFABL is an internal domain-specific language shallowly embedded in the Scala programming language. In this chapter we explain why we chose to implement AFABL as a Scala-embedded DSL, present the basic elements of AFABL with examples, and report the results of a programmer study which confirm and quantify the usefulness of integrating reinforcement learning into a programming language.
 
-\section{Background}
+\section{Why an embedded DSL?}
 
-PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
+We chose to implement AFABL as a shallowly embedded domain-specific language because of the exploratory nature of this research. Our goal at this point is to confirm our expectation that integrating reinforcement learning is useful to programmers writing agents, to explore the nature of this integration, and to get qualitative feedback from programmers on their experience using a language that integrates reinforcement learning. Writing a full language with its own lexical and syntactic structure, internal representations, and language translators and tools (interpreters, compilers, linkers, etc.) would distract from the core questions we are trying to answer. As we discuss in Section \ref{sec:conclusion-full-language}, creating a full independent language is a direction for future research whcih will be guided by the results we present here, for which an embedded DSL is sufficient.
 
-\subsection{Why an Embedded Domain-Specific Language?}
+\section{Why Scala?}
 
-PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
+Hosting DSLs is a primary design goal of the Scala programming language. Scala is an expressive and concise language which already enables the expression of domain models with little syntactic baggage. By employing just a few Scala language features that are designed for writing expressive and convenient libraries, we can create a DSL that Scala programmers will find familiar and non-Scala programmers can use to encode adaptive agents. Indeed, the nature of Scala's syntax and language features is such that many Scala libraries that are not explicity labeled as DSLs qualify as shallow embedded DSLs.
 
-\subsection{Why Scala?}
-
-PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
 
 \section{AFABL Concepts}
 
-PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
+AFABL is a language for encoding adaptive (intelligent) agents. Before we present the AFABL language, we review basic adaptive agent concepts that can be encoded in AFABL.
 
 \subsection{Terminology}
 
@@ -24,79 +21,55 @@ PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOL
 
 \item State
 
-  A state is a configuration of all objects and agents in a world.
-  These configurations can include object locations and orientations,
-  mental or emotional dispositions of agents, or indications of the
-  occurrence of events (e.g., agent X just got shot).
+  A state is a configuration of all objects and agents in a world. These configurations can include object locations and orientations, mental or emotional dispositions of agents, or indications of the occurrence of events (e.g., agent X just got shot).
 
 \item Perception, or Percept
 
-  A subset of a world state that is perceived by an agent.
+  A subset of a world state that is perceived by an agent (or module).
 
 \item Action
 
-  An action is a one-shot state manipulation that can be executed by
-  an agent.  Sometimes called "primitives," actions acquire greater
-  meaning when they are executed (possibly in sequences) by behavior
-  modules to achieve a goal or satisfy a constraint.
+  An action is a one-shot state manipulation that can be executed by an agent.  Sometimes called "primitives," actions acquire greater meaning when they are executed (possibly in sequences) by behavior modules to achieve a goal or satisfy a constraint.
 
 
 \item World
 
-  Sometimes called an "environment," a world is a container for all
-  the things an agent can perceive and act upon, and possibly hidden
-  things.  Worlds are represented by states that specify the
-  configuration of all the things in a world at a given point in time.
+  Sometimes called an "environment," a world is a container for all the things an agent can perceive and act upon, and possibly hidden things.  Worlds are represented by states that specify the configuration of all the things in a world at a given point in time.
 
 \item World Dynamics
 
-  The dynamics of a world specifies the state transitions that are
-  made in response to the execution of actions.  World dynamics may be
-  deterministic or stochastic.  Markov Decision Processes are often
-  used to represent world dynamics.
+  The dynamics of a world specifies the state transitions that are made in response to the execution of actions.  World dynamics may be deterministic or stochastic.  Markov Decision Processes are often used to represent world dynamics.
 
 \item Behavior Module
 
-  A behavior module is a self-contained agent component that
-  recommends an action (response) for a given state perception
-  (stimulus).  Anything that produces a policy (a mapping from states
-  to actions and tasks) is a behavior module.  A behavior module is
-  sometimes called a "subagent" in modular reinforcement learning.
+  A behavior module is a self-contained agent component that recommends an action (response) for a given state perception (stimulus).  Anything that produces a policy (a mapping from states to actions and tasks) is a behavior module.  A behavior module is sometimes called a "subagent" in modular reinforcement learning.
 
 \item Agent
 
-  An agent is an entity that acts under its own control, perceiving
-  the state of its world and executing actions in response to these
-  perceived states.
+  An agent is an entity that acts under its own control, perceiving the state of its world and executing actions in response to these perceived states.
 
 \item Intelligent Agent
 
-  An intelligent agent is an agent that chooses its actions to achieve
-  goals or satisfy constraints.
+  An intelligent agent is an agent that chooses its actions to achieve goals or satisfy constraints.
 
 \item Adaptive Agent
 
-  An adaptive agent is an intelligent agent that can automatically
-  adapt its behaviors to different worlds (that is, choose different
-  actions sequences to achieve goals in worlds with different
-  dynamics), or adapt its behaviors at run-time to worlds in which the
-  dynamics change.
+  An adaptive agent is an intelligent agent that can automatically adapt its behaviors to different worlds (that is, choose different actions sequences to achieve goals in worlds with different dynamics), or adapt its behaviors at run-time to worlds in which the dynamics change.
 
 \item Modular Agent
 
-  A modular agent is an agent that consists of multiple behavior
-  modules and performs command arbitration to decide which module's
-  preferred action to execute in a given state.
+  A modular agent is an agent that consists of multiple behavior modules and performs command arbitration to decide which module's preferred action to execute in a given state.
 
 \item Command Arbitration
 
   Command arbitration is the act of deciding, for a given state, which
-  behavior module's preferred action to execute in a given state.
+
+
 \end{itemize}
 
 \subsection{Agent Architecture}
 
-An AFABL agent is a behavorial agent that is composed of reusable behavior modules.  By "behavioral agent" we mean that the agent executes an action in resopnse to a stimulus, represented by a state observation.  Each behavior module is itself an agent that has a preferred action for each state.  AFABL agents perform command arbitration to choose one of the modules' recommended actions for each state.  The behavior modules recommend actions in each state, and the arbitrator chooses which module to "listen to" in each state.  The AFABL agent architecture is a subsumption architecture \cite{brooks1986a-layered}.
+An AFABL agent is a behavorial agent that is composed of reusable behavior modules.  By "behavioral agent" we mean that the agent executes an action in resopnse to a stimulus, represented by a state observation.  Each behavior module is itself an agent that has a preferred action for each state.  AFABL agents perform command arbitration to choose one of the modules' recommended actions for each state.  The behavior modules recommend actions in each state, and the arbitrator chooses which module to "listen to" in each state.  The AFABL agent architecture is a subsumption architecture \cite{brooks1986a-robust}.
 
 \subsubsection{Behavior Modules}
 
@@ -135,7 +108,7 @@ case class BunnyState(
 )
 \end{lstlisting}
 
-\caption{}
+\caption{Scala code to represent states in the bunny world.}
 \end{center}
 \label{fig:bunny-state-code}
 \end{figure}
@@ -156,7 +129,7 @@ object BunnyAction extends Enumeration {
 }
 \end{lstlisting}
 
-\caption{}
+\caption{Scala code to represent the actions that the bunny agent can take in the bunny world.}
 \end{center}
 \label{fig:bunny-action-code}
 \end{figure}
@@ -169,7 +142,6 @@ An agent executes actions in a world, and those actions potentially change the s
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
-\end{lstlisting}
 /** A stateful object representing world dynamics.
   */
 abstract class World[S, A] {
@@ -200,6 +172,7 @@ abstract class World[S, A] {
    */
   def act(action: A): S
 }
+\end{lstlisting}
 \caption{The abstract superclass of all world classes for AFABL agents.}
 \end{center}
 \label{fig:world-code}
@@ -253,6 +226,10 @@ class BunnyWorld(val width: Int = 5, val height: Int = 5)
 
 \subsection{Modules}
 
+Figure \ref{fig:find-food-code} shows a possible AFABL implementation of a behavior module that represents the goal of finding food. Here we see the value of splitting the world dynamics from the agent module's reward function. We can think of the world and the agent independently. In essence, the definition of a full MDP is split across the definition of a world, and the definition of an agent that acts in that world.
+
+Here we also begin to see syntactic conveniences afforded by the AFABL DSL. There are only two type annotations and one control structure (in the reward function. The rest of the types are inferred by Scala's type inferencer thanks to the way we've written the factory method that creates {\tt AfablModule}s. It's worth noting that we could have refined the DSL to further strip the few Scala syntactic artifacts (like the {\tt if} statement and the anonymous functions for {\tt stateAbstraction} and {\tt moduleReward}) but the syntactic overhead is minimal and there is a tradeoff between writing specific DSL syntax and using Scala's built-in syntax directly. Creating unique syntax for a DSL imposes cognitive burden on programmers who are proficient in the host language. The benefit of the unique syntax must outweigh this cognitive burden. Here we hope to strike the right balance between convenient domain-specific syntax and familiarity to programmers. Thanks to Scala's already concise and experssive language and idioms -- although this looks like a DSL -- there is no special syntax in this example. This code is a good example of shallow DSL embedding.
+
 \begin{figure}[ht]
 \begin{center}
 
@@ -273,38 +250,15 @@ val findFood = AfablModule(
 )
 \end{lstlisting}
 
-\caption{}
+\caption{AFABL code for a module that represents the goal of constantly finding food.}
 \end{center}
 \label{fig:find-food-code}
 \end{figure}
 
-\begin{figure}[ht]
-\begin{center}
-
-\begin{lstlisting}[language=Scala]
-case class AvoidWolfState(bunny: Location, wolf: Location)
-
-val avoidWolf = AfablModule(
-  world = new BunnyWorld,
-
-  stateAbstraction = (worldState: BunnyState) => {
-    AvoidWolfState(worldState.bunny, worldState.wolf)
-  },
-
-  moduleReward = (moduleState: AvoidWolfState) => {
-    if (moduleState.bunny == moduleState.wolf) -0.1
-    else 0.1
-  }
-)
-\end{lstlisting}
-
-\caption{}
-\end{center}
-\label{fig:avoid-wolf-code}
-\end{figure}
-
 
 \subsection{Agents}
+
+An AFABL agent is an agent that acts in a particular world, is composed of independent behavior modules pursuing their own continuing goals, and has a central command arbitrator that uses an agent level reward function to learn when it should listen to each module. As the code in Figure \ref{fig:afabl-bunny-code} shows, an AFABL agent allows programmers to express these components consicely, with very little cognitive distance between the concepts that make up the agent and the code that represents them. As with modules, {\tt AfablAgent} uses features of the Scala programming language to make the syntax more convenient. For example, there is only one explicit type annotation in the AFABL bunny agent code in Figure \ref{fig:afabl-bunny-code}, but behind the scenes a carefully written factory method in the companion object allows Scala's static type inferencer to infer type parameters of the {\tt AfablAgent} constructor, return types for anonymous functions, and assign a concrete type value to a path-dependent abstract type variable. Figuring out all this stuff and wrestling with Scala's type checker directly isn't easy. Writing an AFABL agent is easy.
 
 \begin{figure}[ht]
 \begin{center}
@@ -325,12 +279,14 @@ val bunny = AfablAgent(
 
 \caption{An AFABL agent that acts in a world, contains behavior modules, and has an agent level reward.}
 \end{center}
-\label{fig:avoid-wolf-code}
+\label{fig:afabl-bunny-code}
 \end{figure}
 
-An
 
-\subsection{An AFABL Bunny}
+
+\subsection{A Complete AFABL Bunny}
+
+A complete bunny agent using the AFABL DSL is shown in Figure \ref{fig:afabl-bunny-code}. This code would typically fit in a single editor window and represents a tremendous amount of functionality. This agent pursues two goals simultaneously and prioritizes them based on the relative locations of the bunny, the food, and the wolf.
 
 \begin{figure}[ht]
 \begin{center}
@@ -381,26 +337,19 @@ val bunny = AfablAgent(
 \label{fig:afabl-bunny-code}
 \end{figure}
 
-A complete bunny agent using the AFABL DSL is shown in Figure \ref{fig:afabl-bunny-code}.
 
-PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
+\section{Validation}
 
-
-\section{Adaptive Agent Software Engineering with AFABL}
-
-PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
-
-
-\subsubsection{Software Reuse with AFABL}
+\subsection{Software Reuse with AFABL}
 
 AFABL supports agent-based software abstractions that permit code to be reused in new domains.  This reuse is what we mean by adaptivity: existing AFABL code can adapt to new domains without modifying the code.  We will quantify the value of this reuse in a series of
 experiments described below.
 
-\section{Validation}
+\subsection{Experiments}
 
 Programmers will be randomly assigned to two equally-sized groups: one group will use Scala without AFABL first -- the Scala-first group -- and the other group will use Scala with AFABL first -- the AFABL-first group.  Each group will complete three programming tasks using Scala and AFABL in the order determined by their group.  For each task the programmers will be asked to design and implement elegant code that meets the requirements of the task as quickly as possible, balancing the quality of their solutions with time.  The idea is to get a good solution quickly, not a perfect solution in a long time.
 
-\subsection{Task 1: The Bunny-Wolf Domain}\label{sec:task1}
+\subsubsection{Task 1: The Bunny-Wolf Domain}\label{sec:task1}
 
 \begin{figure}[h]
 
@@ -435,7 +384,7 @@ In this task each programmers wrote an agent that controls a bunny character in 
 
 Each programmer's Scala bunny and AFABL bunny were run for The simulation run, keeping track of how much food the bunny eats and how many times the bunny is eaten by the wolf.  Programmers will be asked to write bunny agents that live as long as possible and eat as much food as possible.
 
-\subsection{Task 2: Mating Bunny}\label{sec:task2}
+\subsubsection{Task 2: Mating Bunny}\label{sec:task2}
 
 In this task each programmer will write a bunny agent for a world that is identical to the world in Task 1 except that the bunny must also find mates.  The world will include one static  potential mate that behaves similarly to the food.  When the bunny finds the potential mate, the bunny receives a signal that it has ``mated,'' the mate disappears, and another potential mate appears elsewhere.  The simulation runs as in Task 1, additionally keeping track of how many mates the bunny finds.  As in Task 1, programmers will be asked to write bunny agents that live as long as possible, eat as much food as possible, and find as many mates as possible.
 
@@ -453,25 +402,29 @@ In this task each programmer will write a bunny agent for a world that is identi
 
 %% \end{itemize}
 
+\section{A Typical Submission}
+
+\subsection{A Scala Bunny}
+
+\subsection{An AFABL Bunny}
+
+As you can see from Figure \ref{fig:afabl-submission}, most AFABL bunny agents look the same. There is one obvious way to implement a bunny agent that must pursue multiple goals. This uniformity is desirable. As Tim Peters says in the Zen of Python, ``There should be one-- and preferably only one --obvious way to do it.'' The fact that most AFABL solutions to a modular agent programming problem is an indication that AFABL provides the right abstractions to adaptive agent programmers.
+
 \section{Quantitative Results}
 
-We analyzed the code submitted for each task to determine:
+We analyzed the submissions of study participants to compare Scala agents to AFABL agents in terms of code size, time spent writing Scala versus AFABL agents, the complexity of Scala verus AFABL agent code, and the proformance of the agents on the assigned tasks.
 
 \subsection{Code Size}
 
-How much code was required for each task with and without AFABL.
-
-PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
+The size of a code base is often correlated with the level of effort required to write or understand the code. We computed the number of lines of code written by study participants for each agent, not including comments or the code that we provided.
 
 \subsection{Time}
 
-Time spent on Scala bunny versus AFABL bunny.
-
-PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
+Study participants used the IntelliJ IDEA IDE with a plugin that we wrote especially for this study. The plugin recorded timestamps each time the editor tab with the Scala bunny or AFABL bunny gained or lost the focus. We then processed these logs to add up the time deltas between gaining and losing focus as an indication of the time programmers spent writing the code for each bunny agent.
 
 \subsection{Cyclomatic Complexity}
 
-PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
+We computed a complexity measure for all the submitted bunny agents. For Scala code we employed the standard McCabe cyclomatic complexity measure. For AFABL agents we added the
 
 \section{Qualitative Results}
 
@@ -511,7 +464,9 @@ Rationale: in addition to objective analyses of task submissions, we want to kno
 
 \end{enumerate}
 
-\section{Discussion}
+\section{Adaptive Agent Software Engineering with AFABL}
+
+In this section we discuss the broader implications of adaptive agent programming with AFABL. We define an agent programming space and discuss how AFABL fits into that space.
 
 \subsection{Authorability and the Agent Programming Space}
 
