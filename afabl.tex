@@ -242,7 +242,9 @@ val findFood = AfablModule(
 \end{lstlisting}
 \end{center}
 
-The {\tt AfablModule} factory method takes three arguments: an instance of a {\tt World} that the module can act and learn in:
+The {\tt AfablModule} factory method takes three comma-separated arguments: an instance of a {\tt World} that the module can act and learn in, a {\tt stateAbstraction} function, and a {\tt moduleReward} function.
+
+The first argument to {\tt AfablModule} is the world:
 
 \begin{center}
 \begin{lstlisting}[language=Scala,frame=none]
@@ -250,7 +252,9 @@ world = new BunnyWorld
 \end{lstlisting}
 \end{center}
 
-a state abstraction function that takes a world state object parameter and returns an instance of our state abstraction class:
+The {\tt world} and {\tt =} are optional, but if included must be verbatim, i.e., considered part of the AFABL language.
+
+A state abstraction function that a world state object parameter and returns an instance of our state abstraction class:
 
 \begin{center}
 \begin{lstlisting}[language=Scala,frame=none]
@@ -260,7 +264,9 @@ stateAbstraction = (worldState: BunnyState) => {
 \end{lstlisting}
 \end{center}
 
-and a module reward function that takes an instance of our state abstraction class and returns the reward this module receives for begin in that state:
+The {\tt stateAbstraction} and {\tt =} are optional, but if included should be considered part of the AFABL language. {\tt worldState} is a user-chosen name, {\tt BunnyState} must match the state type defined for the world in which the module and agent operate, in this case it's the first type parameter to {\tt World} in the {\tt BunnyWorld} code in Figure \ref{fig:bunny-world-code}. The last expression in the body of the {\tt stateAbstraction} function must be an instance of a module state, in this case {\tt FindFoodState}.
+
+A module reward function takes an instance of our state abstraction class and returns the reward this module receives for begin in that state:
 
 \begin{center}
 \begin{lstlisting}[language=Scala,frame=none]
@@ -271,7 +277,9 @@ moduleReward = (moduleState: FindFoodState) => {
 \end{lstlisting}
 \end{center}
 
-These three components define a module specific learning problem on a subset of the world in which the module (and agent containing the module) may act. Internally AFABL creates a Sarsa learning algorithm that uses these components, using the algorithm parameters discussed in Chapter \ref{ch:arbiq}, but the programmer need not be aware of any details of reinforcement learning {\it algorithms}. The AFABL programmer need only be familiar with the reinforcement learning {\it problem}.
+The {\tt moduleReward} and {\tt =} are optional, but if included should be considered part of the AFABL language. {\tt moduleState} is a user-chosen name, but the parameter type, {\tt FindFoodState} in this example, must match the return type of the {\tt stateAbstraction} function. The last expression in the body of the {\tt moduleReward} function must be a {\tt Double} value. In this case, which is typical, the body of the {\tt moduleReward} function is an {\tt if} expression which simply returns the reward based on state predicates. This example is another case where we could have implemented DSL-specific syntax, such as a list of predicates and values, but the syntactic overhead of Scala's {\tt if} expression is minimal and the code is crystal clear to any Scala programmer.
+
+These three components -- world, state abstraction and module reward -- define a module specific learning problem on a subset of the world in which the module (and agent containing the module) may act. Internally, AFABL instantiates a Sarsa learning algorithm that uses these components using the algorithm parameters discussed in Chapter \ref{ch:arbiq}, but the programmer need not be aware of any details of reinforcement learning {\it algorithms}. The AFABL programmer need only be familiar with the reinforcement learning {\it problem}.
 
 \begin{figure}[ht]
 \begin{center}
@@ -386,14 +394,11 @@ val bunny = AfablAgent(
 
 \section{Validation}
 
-\subsection{Software Reuse with AFABL}
-
-AFABL supports agent-based software abstractions that permit code to be reused in new domains.  This reuse is what we mean by adaptivity: existing AFABL code can adapt to new domains without modifying the code.  We will quantify the value of this reuse in a series of
-experiments described below.
+AFABL supports agent-based software abstractions that permit code to be reused in new domains.  This reuse is what we mean by adaptivity: existing AFABL code can adapt to new domains without modifying the code.  We will quantify the value of this reuse in the experiments described below.
 
 \subsection{Experiments}
 
-Programmers will be randomly assigned to two equally-sized groups: one group will use Scala without AFABL first -- the Scala-first group -- and the other group will use Scala with AFABL first -- the AFABL-first group.  Each group will complete three programming tasks using Scala and AFABL in the order determined by their group.  For each task the programmers will be asked to design and implement elegant code that meets the requirements of the task as quickly as possible, balancing the quality of their solutions with time.  The idea is to get a good solution quickly, not a perfect solution in a long time.
+Programmers were randomly assigned to two equally-sized groups: one group used Scala without AFABL first -- the Scala-first group -- and the other group used AFABL first -- the AFABL-first group.  Each group completed two programming tasks using Scala and AFABL in the order determined by their group.  For each task the programmers were asked to design and implement elegant code that meets the requirements of the task as quickly as possible, balancing the quality of their solutions with time.  The idea was to get a good solution quickly, not a perfect solution in a long time.
 
 \subsubsection{Task 1: The Bunny-Wolf Domain}\label{sec:task1}
 
@@ -422,17 +427,17 @@ In this task each programmers wrote an agent that controls a bunny character in 
 
 \item Every two time steps the wolf moves towards the bunny.
 
-\item If the bunny moves to the cell currently occupied by the food, the bunny eats the food, receives a signal from the simulation that it has eaten the food, and new food appears elsewhere.
+\item If the bunny moves to the cell currently occupied by the food, the agent should be written to recognize this fact and give the agent an approporate reward signal. In any case the simulation assumes food is ``eaten'' and new food appears elsewhere.
 
-\item If the wolf moves to the cell currently occupied by the bunny it eats the bunny and the episode ends.
+\item If the wolf moves to the cell currently occupied by the bunny it eats the bunny and the bunny ``respawns'' in a new location.
 
 \end{itemize}
 
-Each programmer's Scala bunny and AFABL bunny were run for The simulation run, keeping track of how much food the bunny eats and how many times the bunny is eaten by the wolf.  Programmers will be asked to write bunny agents that live as long as possible and eat as much food as possible.
+Each programmer's Scala bunny and AFABL bunny were run for 1000 time steps and their average scores recorded. The score is based on how much food the bunny eats and how many times the bunny is eaten by the wolf.  Programmers were asked to write bunny agents that meet the wolf as little as possible and eat as much food as possible.
 
 \subsubsection{Task 2: Mating Bunny}\label{sec:task2}
 
-In this task each programmer will write a bunny agent for a world that is identical to the world in Task 1 except that the bunny must also find mates.  The world will include one static  potential mate that behaves similarly to the food.  When the bunny finds the potential mate, the bunny receives a signal that it has ``mated,'' the mate disappears, and another potential mate appears elsewhere.  The simulation runs as in Task 1, additionally keeping track of how many mates the bunny finds.  As in Task 1, programmers will be asked to write bunny agents that live as long as possible, eat as much food as possible, and find as many mates as possible.
+In this task each programmer wrote a bunny agent for a world that is identical to the world in Task 1 except that the bunny must also find mates.  This world includes one static  potential mate that behaves similarly to the food.  When the bunny finds the potential mate, the simulation assumes that the bunny has ``mated,'' the mate disappears, and another potential mate appears elsewhere.  The simulation runs as in Task 1, and the scorer additionally keeps track of how many mates the bunny finds.  As in Task 1, programmers were asked to write bunny agents that meet the wolf as little as possible, eat as much food as possible, and find as many mates as possible.
 
 %% \subsection{Task 3: Adding Wind, Spoiling Food, and Picky Mates}\label{sec:task3}
 
@@ -448,13 +453,79 @@ In this task each programmer will write a bunny agent for a world that is identi
 
 %% \end{itemize}
 
-\section{A Typical Submission}
+\subsubsection{Provided Code}
 
-\subsection{A Scala Bunny}
+Study participants were given starter code so they couild focus on writing the behavior of their agents. We provided the worlds for each task and the files in which to write their code. Participants were also referred to AFABL documentation on \href{http://afabl.org/}{http://afabl.org/}.
 
-\subsection{An AFABL Bunny}
+Figure \ref{fig:scala-bunny1} shows the code given to participants for the Scala bunny on Task 1. Figure \ref{fig:afabl-bunny1} shows the code given to participants for the AFABL bunny on Task 1. It was up to participants to write state abstraction classes if they chose to do so.
 
-As you can see from Figure \ref{fig:afabl-submission}, most AFABL bunny agents look the same. There is one obvious way to implement a bunny agent that must pursue multiple goals. This uniformity is desirable. As Tim Peters says in the Zen of Python, ``There should be one-- and preferably only one --obvious way to do it.'' The fact that most AFABL solutions to a modular agent programming problem is an indication that AFABL provides the right abstractions to adaptive agent programmers.
+For Task 2 participants were encouraged to copy code from Task 1 if they found it helpful or refer to any objects defined for Task 1 that would be helpful, such as behavior modules. As we discuss below, doing so was straightforward for the AFABL agents but not for the Scala agents. Figure \ref{fig:scala-bunny2} shows the code given to participants for the Scala bunny on Task 2. Figure \ref{fig:afabl-bunny2} shows the code given to participants for the AFABL bunny on Task 2. As in Task 1, it was up to participants to write state abstraction classes if they chose to do so, but they could reuse any state abstraction classes written for Task 1.
+
+\section{A Typical Task 1 Submission}
+
+\subsection{Scala}
+
+\begin{figure}[ht]
+\begin{center}
+
+\begin{lstlisting}[language=Scala]
+
+\end{lstlisting}
+
+\caption{}
+\end{center}
+\label{fig:scala-task1-submission}
+\end{figure}
+
+
+\subsection{AFABL}
+
+\begin{figure}[ht]
+\begin{center}
+
+\begin{lstlisting}[language=Scala]
+
+\end{lstlisting}
+
+\caption{}
+\end{center}
+\label{fig:afabl-task1-submission}
+\end{figure}
+
+
+As you can see from Figure \ref{fig:afabl-submission}, most AFABL bunny agents look the same. There is one obvious way to implement a bunny agent that must pursue multiple goals. This uniformity is desirable. As Tim Peters says in the Zen of Python, ``There should be one-- and preferably only one --obvious way to do it.'' The similarity in most AFABL solutions to a particular modular agent programming problem is an indication that AFABL provides the right abstractions for adaptive agent programming.
+
+\section{A Typical Task 2 Submission}
+
+\subsection{Scala}
+
+\begin{figure}[ht]
+\begin{center}
+
+\begin{lstlisting}[language=Scala]
+
+\end{lstlisting}
+
+\caption{}
+\end{center}
+\label{fig:scala-task2-submission}
+\end{figure}
+
+
+\subsection{AFABL}
+
+\begin{figure}[ht]
+\begin{center}
+
+\begin{lstlisting}[language=Scala]
+
+\end{lstlisting}
+
+\caption{}
+\end{center}
+\label{fig:afabl-task2-submission}
+\end{figure}
+
 
 \section{Quantitative Results}
 
@@ -464,13 +535,51 @@ We analyzed the submissions of study participants to compare Scala agents to AFA
 
 The size of a code base is often correlated with the level of effort required to write or understand the code. We computed the number of lines of code written by study participants for each agent, not including comments or the code that we provided.
 
+We found that ...
+
 \subsection{Time}
 
 Study participants used the IntelliJ IDEA IDE with a plugin that we wrote especially for this study. The plugin recorded timestamps each time the editor tab with the Scala bunny or AFABL bunny gained or lost the focus. We then processed these logs to add up the time deltas between gaining and losing focus as an indication of the time programmers spent writing the code for each bunny agent.
 
+We found that ...
+
 \subsection{Cyclomatic Complexity}
 
-We computed a complexity measure for all the submitted bunny agents. For Scala code we employed the standard McCabe cyclomatic complexity measure. For AFABL agents we added the
+We computed a complexity measure for all the submitted bunny agents. For Scala code we employed the standard McCabe cyclomatic complexity measure.
+
+We found that ...
+
+\subsection{Summary}
+
+Quantitative results for Task 1 are summarized in Table \ref{tbl:task1-results}. Quantitative results for Task 2 are summarized in Table \ref{tbl:task2-results}.
+
+\begin{center}
+\begin{table}[h]
+\begin{tabular}{|l|r|r|r|}\hline
+                      & Scala Mean & AFABL Mean & p-value \\\hline
+Lines of Code         & 0.0        & 0.0        & 0.0 \\
+Time                  & 0.0        & 0.0        & 0.0 \\
+Cyclomatic complexity & 0.0        & 0.0        & 0.0 \\
+Cyclomatic complexity & 0.0        & 0.0        & 0.0 \\\hline
+\end{tabular}
+\caption{Quantitative results of Scala agent code versus AFABL agent code on Task 1. A p-value of less than .05 mean that the difference in means is statistically signifigant at the 95\% significance level, i.e. $H_0: \mu_1 = \mu_2$.}
+\label{tbl:task1-results}
+\end{table}
+\end{center}
+
+\begin{center}
+\begin{table}[h]
+\begin{tabular}{|l|r|r|r|}\hline
+                      & Scala Mean & AFABL Mean & p-value \\\hline
+Lines of Code         & 0.0        & 0.0        & 0.0 \\
+Time                  & 0.0        & 0.0        & 0.0 \\
+Cyclomatic complexity & 0.0        & 0.0        & 0.0 \\
+Cyclomatic complexity & 0.0        & 0.0        & 0.0 \\\hline
+\end{tabular}
+\caption{Quantitative results of Scala agent code versus AFABL agent code on Task 2. A p-value of less than .05 mean that the difference in means is statistically signifigant at the 95\% significance level, i.e. $H_0: \mu_1 = \mu_2$.}
+\label{tbl:task2-results}
+\end{table}
+\end{center}
 
 \section{Qualitative Results}
 
