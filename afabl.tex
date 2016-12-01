@@ -226,9 +226,52 @@ class BunnyWorld(val width: Int = 5, val height: Int = 5)
 
 \subsection{Modules}
 
-Figure \ref{fig:find-food-code} shows a possible AFABL implementation of a behavior module that represents the goal of finding food. Here we see the value of splitting the world dynamics from the agent module's reward function. We can think of the world and the agent independently. In essence, the definition of a full MDP is split across the definition of a world, and the definition of an agent that acts in that world.
+Figure \ref{fig:find-food-code} shows a possible AFABL implementation of a behavior module that represents the goal of finding food. First is the definition of a case class, {\tt FindFoodState}, to represent the state abstraction for FindFood modules. {\tt FindFoodState} includes only two of the three state variables in the bunny world.
 
-Here we also begin to see syntactic conveniences afforded by the AFABL DSL. There are only two type annotations and one control structure (in the reward function. The rest of the types are inferred by Scala's type inferencer thanks to the way we've written the factory method that creates {\tt AfablModule}s. It's worth noting that we could have refined the DSL to further strip the few Scala syntactic artifacts (like the {\tt if} statement and the anonymous functions for {\tt stateAbstraction} and {\tt moduleReward}) but the syntactic overhead is minimal and there is a tradeoff between writing specific DSL syntax and using Scala's built-in syntax directly. Creating unique syntax for a DSL imposes cognitive burden on programmers who are proficient in the host language. The benefit of the unique syntax must outweigh this cognitive burden. Here we hope to strike the right balance between convenient domain-specific syntax and familiarity to programmers. Thanks to Scala's already concise and experssive language and idioms -- although this looks like a DSL -- there is no special syntax in this example. This code is a good example of shallow DSL embedding.
+\begin{center}
+\begin{lstlisting}[language=Scala,frame=none]
+case class FindFoodState(bunny: Location, food: Location)
+\end{lstlisting}
+\end{center}
+
+We store a reference to an {\tt AfablModule} for FindFood in {\tt findFood}.
+
+\begin{center}
+\begin{lstlisting}[language=Scala,frame=none]
+val findFood = AfablModule(
+\end{lstlisting}
+\end{center}
+
+The {\tt AfablModule} factory method takes three arguments: an instance of a {\tt World} that the module can act and learn in:
+
+\begin{center}
+\begin{lstlisting}[language=Scala,frame=none]
+world = new BunnyWorld
+\end{lstlisting}
+\end{center}
+
+a state abstraction function that takes a world state object parameter and returns an instance of our state abstraction class:
+
+\begin{center}
+\begin{lstlisting}[language=Scala,frame=none]
+stateAbstraction = (worldState: BunnyState) => {
+  FindFoodState(worldState.bunny, worldState.food)
+}
+\end{lstlisting}
+\end{center}
+
+and a module reward function that takes an instance of our state abstraction class and returns the reward this module receives for begin in that state:
+
+\begin{center}
+\begin{lstlisting}[language=Scala,frame=none]
+moduleReward = (moduleState: FindFoodState) => {
+  if (moduleState.bunny == moduleState.food) 1.0
+  else -0.1
+}
+\end{lstlisting}
+\end{center}
+
+These three components define a module specific learning problem on a subset of the world in which the module (and agent containing the module) may act. Internally AFABL creates a Sarsa learning algorithm that uses these components, using the algorithm parameters discussed in Chapter \ref{ch:arbiq}, but the programmer need not be aware of any details of reinforcement learning {\it algorithms}. The AFABL programmer need only be familiar with the reinforcement learning {\it problem}.
 
 \begin{figure}[ht]
 \begin{center}
@@ -255,6 +298,9 @@ val findFood = AfablModule(
 \label{fig:find-food-code}
 \end{figure}
 
+Here we see the value of splitting the world dynamics from the agent module's reward function. We can think of the world and the agent independently. In essence, the definition of a full MDP is split across the definition of a world, and the definition of an agent that acts in that world.
+
+Here we also begin to see syntactic conveniences afforded by the AFABL DSL. There are only two type annotations and one control structure (in the reward function). The rest of the types are inferred by Scala's type inferencer thanks to the way we've written the factory method that creates {\tt AfablModule}s. It's worth noting that we could have refined the DSL to further strip the few Scala syntactic artifacts (like the {\tt if} statement and the anonymous functions for {\tt stateAbstraction} and {\tt moduleReward}) but the syntactic overhead is minimal and there is a tradeoff between writing specific DSL syntax and using Scala's built-in syntax directly. Creating unique syntax for a DSL imposes cognitive burden on programmers who are proficient in the host language. The benefit of the unique syntax must outweigh this cognitive burden. Here we hope to strike the right balance between convenient domain-specific syntax and familiarity to programmers. Thanks to Scala's already concise and experssive language and idioms -- although this looks like a DSL -- there is no special syntax in this example. This code is a good example of shallow DSL embedding.
 
 \subsection{Agents}
 
