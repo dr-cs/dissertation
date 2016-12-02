@@ -95,7 +95,7 @@ Every AFABL module and agent is designed to operate in a world. A world defines 
 
 The states of a world can be represented with any kind of Scala class. Case classes (\ref{sec:scala-case-classes}) are good for representing states because of their concise syntax and built-in equality methods. Figure \ref{fig:bunny-state-code} shows a case class for a state with three state variables: the locations of a bunny, wolf, and food.
 
-\begin{figure}[ht]
+\begin{figure}[h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -117,7 +117,7 @@ case class BunnyState(
 
 Actions are represented by objects which can be instances of any class. As with states, case classes make a good choice. Figure \ref{fig:bunny-action-code} shows actions for the bunny world implemented as a Scala enumeration (\ref{sec:scala-enumerations}).
 
-\begin{figure}[ht]
+\begin{figure}[h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -138,7 +138,7 @@ object BunnyAction extends Enumeration {
 
 An agent executes actions in a world, and those actions potentially change the state of the world. Having defined Scala representations for states and actions, we can define a world. Figure \ref{fig:world-code} shows the abstract class which defines the basic interface of world objects. As we discuss in Sections \ref{sec:afabl-modules} and \ref{sec:afabl-agents}, all modules and agents are defined to act in a particular instance of a world. As with states and actions, world representations make no advanced use of the Scala programming language.
 
-\begin{figure}[ht]
+\begin{figure}[h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -180,7 +180,7 @@ abstract class World[S, A] {
 
 Figure \ref{fig:bunny-world-code}
 
-\begin{figure}[ht]
+\begin{figure}[h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -281,7 +281,7 @@ The {\tt moduleReward} and {\tt =} are optional, but if included should be consi
 
 These three components -- world, state abstraction and module reward -- define a module specific learning problem on a subset of the world in which the module (and agent containing the module) may act. Internally, AFABL instantiates a Sarsa learning algorithm that uses these components using the algorithm parameters discussed in Chapter \ref{ch:arbiq}, but the programmer need not be aware of any details of reinforcement learning {\it algorithms}. The AFABL programmer need only be familiar with the reinforcement learning {\it problem}.
 
-\begin{figure}[ht]
+\begin{figure}[h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -314,7 +314,7 @@ Here we also begin to see syntactic conveniences afforded by the AFABL DSL. Ther
 
 An AFABL agent is an agent that acts in a particular world, is composed of independent behavior modules pursuing their own continuing goals, and has a central command arbitrator that uses an agent level reward function to learn when it should listen to each module. As the code in Figure \ref{fig:afabl-bunny-code} shows, an AFABL agent allows programmers to express these components consicely, with very little cognitive distance between the concepts that make up the agent and the code that represents them. As with modules, {\tt AfablAgent} uses features of the Scala programming language to make the syntax more convenient. For example, there is only one explicit type annotation in the AFABL bunny agent code in Figure \ref{fig:afabl-bunny-code}, but behind the scenes a carefully written factory method in the companion object allows Scala's static type inferencer to infer type parameters of the {\tt AfablAgent} constructor, return types for anonymous functions, and assign a concrete type value to a path-dependent abstract type variable. Figuring out all this stuff and wrestling with Scala's type checker directly isn't easy. Writing an AFABL agent is easy.
 
-\begin{figure}[ht]
+\begin{figure}[h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -342,7 +342,7 @@ val bunny = AfablAgent(
 
 A complete bunny agent using the AFABL DSL is shown in Figure \ref{fig:afabl-bunny-code}. This code would typically fit in a single editor window and represents a tremendous amount of functionality. This agent pursues two goals simultaneously and prioritizes them based on the relative locations of the bunny, the food, and the wolf.
 
-\begin{figure}[ht]
+\begin{figure}[h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -457,15 +457,70 @@ In this task each programmer wrote a bunny agent for a world that is identical t
 
 Study participants were given starter code so they couild focus on writing the behavior of their agents. We provided the worlds for each task and the files in which to write their code. Participants were also referred to AFABL documentation on \href{http://afabl.org/}{http://afabl.org/}.
 
-Figure \ref{fig:scala-bunny1} shows the code given to participants for the Scala bunny on Task 1. Figure \ref{fig:afabl-bunny1} shows the code given to participants for the AFABL bunny on Task 1. It was up to participants to write state abstraction classes if they chose to do so.
+Figure \ref{fig:scala-bunny1} shows the code given to participants for the Scala bunny on Task 1. Figure \ref{fig:afabl-bunny1} shows the code given to participants for the AFABL bunny on Task 1. The {\tt BunnyWorld1}, {\tt BunnyState1}, and {\tt BunnyAction} classes were also provided. It was up to participants to write state abstraction classes if they chose to do so.
 
-For Task 2 participants were encouraged to copy code from Task 1 if they found it helpful or refer to any objects defined for Task 1 that would be helpful, such as behavior modules. As we discuss below, doing so was straightforward for the AFABL agents but not for the Scala agents. Figure \ref{fig:scala-bunny2} shows the code given to participants for the Scala bunny on Task 2. Figure \ref{fig:afabl-bunny2} shows the code given to participants for the AFABL bunny on Task 2. As in Task 1, it was up to participants to write state abstraction classes if they chose to do so, but they could reuse any state abstraction classes written for Task 1.
+
+\begin{figure}[h]
+\begin{center}
+
+\begin{lstlisting}[language=Scala]
+class ScalaBunny1 extends Agent[BunnyState, BunnyAction.Value]
+    with Task1Scorer {
+
+  // Your code goes in the body of this method. This method defines
+  // your agent's behavior, that is, what action it takes in a given
+  // state. The last expression in this method must be a
+  // BunnyAction.  You may create as many helper functions as you
+  // like, but please do not alter any of the provided code.
+  def getAction(state: BunnyState, shouldExplore: Boolean = false) = {
+
+    // This is a placeholder to make the code compile. Please
+    // replace this with your code.
+    BunnyAction.Up
+  }
+}
+\end{lstlisting}
+
+\caption{}
+\end{center}
+\label{fig:scala-task1-provided}
+\end{figure}
+
+
+\begin{figure}[h]
+\begin{center}
+
+\begin{lstlisting}[language=Scala]
+object AfablTask1 {
+
+  // Use this val in your agent definitions.
+  val bunnyWorld = new BunnyWorld
+
+  // Please place all of your AFABL code for Task 1 in this singleton
+  // object.
+
+
+  // Your solution must assign your AFABL bunny agent for Task 1 to
+  // the val afablBuny1.
+  val afablBunny1 = ???
+}
+\end{lstlisting}
+
+\caption{}
+\end{center}
+\label{fig:afabl-task1-provided}
+\end{figure}
+
+
+The provided code for Task 2 was identical to the provided code for Task 1, except that {\tt BunnyWorld1} was changed to {\tt BunnyWorld2} and {\tt BunnyState1} was changed to {\tt BunnyState2}. For Task 2 participants were encouraged to copy code from Task 1 if they found it helpful or refer to any objects defined for Task 1 that would be helpful, such as behavior modules. As we discuss below, doing so was straightforward for the AFABL agents but not for the Scala agents. Figure \ref{fig:scala-bunny2} shows the code given to participants for the Scala bunny on Task 2. Figure \ref{fig:afabl-bunny2} shows the code given to participants for the AFABL bunny on Task 2. The {\tt BunnyWorld2}, {\tt BunnyState2}, and {\tt BunnyAction} (same as for Task 1) classes were also provided. As in Task 1, it was up to participants to write state abstraction classes if they chose to do so, but they could reuse any state abstraction classes written for Task 1.
+
+Each task had a main method which ran the agents in the worlds to evaluate their performance.
 
 \section{A Typical Task 1 Submission}
 
 \subsection{Scala}
 
-\begin{figure}[ht]
+\begin{figure}[h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -480,11 +535,46 @@ For Task 2 participants were encouraged to copy code from Task 1 if they found i
 
 \subsection{AFABL}
 
-\begin{figure}[ht]
+\begin{figure}[h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
+  case class FindFoodState(bunny: Location, food: Location)
+  val findFood = AfablModule(
+    world = bunnyWorld,
+    stateAbstraction = (worldState: BunnyState) => {
+      FindFoodState(worldState.bunny, worldState.food)
+    },
+    moduleReward = (moduleState: FindFoodState) => {
+      if (moduleState.bunny == moduleState.food) 1.0
+      else -0.1
+    }
+  )
 
+  case class AvoidWolfState(bunny: Location, wolf: Location)
+  val avoidWolf = AfablModule(
+    world = bunnyWorld,
+    stateAbstraction = (worldState: BunnyState) => {
+      AvoidWolfState(worldState.bunny, worldState.wolf)
+    },
+    moduleReward = (moduleState: AvoidWolfState) => {
+      if (moduleState.bunny == moduleState.wolf) -0.1
+      else 0.1
+    }
+  )
+
+  val afablBunny1 = AfablAgent(
+
+    world = bunnyWorld,
+
+    modules = Seq(findFood, avoidWolf),
+
+    agentLevelReward = (state: BunnyState) => {
+      if (state.bunny == state.wolf) 0.0
+      else if (state.bunny == state.food) 1.0
+      else 0.5
+    }
+  )
 \end{lstlisting}
 
 \caption{}
@@ -499,7 +589,7 @@ As you can see from Figure \ref{fig:afabl-submission}, most AFABL bunny agents l
 
 \subsection{Scala}
 
-\begin{figure}[ht]
+\begin{figure}[h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -514,11 +604,37 @@ As you can see from Figure \ref{fig:afabl-submission}, most AFABL bunny agents l
 
 \subsection{AFABL}
 
-\begin{figure}[ht]
+\begin{figure}[h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
+  case class FindMateState(bunny: Location, mate: Location)
+  val findMate = AfablModule(
+    world = bunnyWorld,
+    stateAbstraction = (state: BunnyState) => {
+      FindMateState(state.bunny, state.mate)
+    },
+    moduleReward = (state: FindMateState) => {
+      if (state.bunny == state.mate) 1.0
+      else -0.1
+    }
+  )
 
+  // Your solution must assign your AFABL bunny agent for Task 2 to
+  // the val afablBuny2.
+  val afablBunny2 = AfablAgent(
+
+    world = bunnyWorld,
+
+    modules = Seq(AfablTask1.findFood, AfablTask1.avoidWolf, findMate),
+
+    agentLevelReward = (state: BunnyState) => {
+      if (state.bunny == state.wolf) 0.0
+      else if (state.bunny == state.food) 1.0
+      else if (state.bunny == state.mate) 1.0
+      else 0.5
+    }
+  )
 \end{lstlisting}
 
 \caption{}
@@ -526,6 +642,7 @@ As you can see from Figure \ref{fig:afabl-submission}, most AFABL bunny agents l
 \label{fig:afabl-task2-submission}
 \end{figure}
 
+Figure \ref{fig:afabl-task2-submission} shows typical AFABL code for Task 2. Notice that the {\tt findFood} and {\tt avoidWolf} modules from Task 1 have been reused directly. This workds becuase the world, {\tt BunnyWorld}, is the same. In Task 1 the bunny was ignoring the mate. In Task 2 we adapt the bunny to find the mate, and all we need to do is add a {\tt findMate} module and add a line to the {\tt agentLevelReward} function.
 
 \section{Quantitative Results}
 
@@ -635,7 +752,7 @@ Authorability is the ease with which a programmer can author the behavior of age
 
 These factors are not completely orthogonal.  High domain knowledge requirements can hinder adaptability because agent agents need to be preprogrammed for worlds that have different dynamics.  Domain knowledge and algorithm knowledge often go hand-in-hand, for example in the encoding of heuristic functions.  Returning to our STRIPS example, STRIPS operators essentially encode world dynamics into the decision making algorithm, thereby coupling domain knowledge and algorithm knowledge.
 
-We say that authorability is high when required domain knowledge is low, algorithm knowledge is low, and adaptability is high.  Such an agent is easy to program in the first place, can adapt to a world with non-stationary dynamics, and can be reused in new worlds with minimal reprogramming.
+We say that authorability is high when required domain knowledge is low, algorithm knowledge is low, and adaptability is high.  Such an agent is easy to program in the first place and can be reused in new worlds with minimal reprogramming.
 
 With this working framework for assessing the authorability of agent programming approaches we can map the agent programming space as a spectrum from fully scripted to fully learning approaches.
 
@@ -643,8 +760,8 @@ With this working framework for assessing the authorability of agent programming
 
 Fully scripted agents are the most common type of agents.  The scripts that control such agents specify every detail of the agent's behavior ahead of time.  While scripted agents can pursue goals and exhibit intelligence, the manner in which these goals are pursued must be written explicitly by the agent author, and if these goals are to be pursued using a particular algorithm, such as a planning algorithm, the algorithm itself must be encoded (or used as a library) from within the code.
 
-In terms of our authorability framework, fully scripted agents have the
-following properties.
+In terms of our authorability framework, fully scripted agents have the following properties.
+
 \begin{itemize}
 \item Domain knowledge: high. A fully scripted agent must specify a knowledge representation for perception and action that facilitates all the kinds of analyses and decisions the agent will make.  The dynamics of the world must be known in advance and encoded in he script to allow the agent to pursue goals.
 \item Algorithm knowledge: high.  Although the algorithms may be simple, such as big if-else ladders, the agent author must have complete knowledge of how the agent's behavior algorithms work.  More complex algorithms mean more complex knowledge for the agent author to manage, fully scripted approaches scale poorly to more complex agents.
@@ -654,39 +771,20 @@ following properties.
 \subsubsection{Fully Machine Learning agent Programming}
 
 \begin{itemize}
-\item Domain knowledge: low. With a sufficiently abstract state
-  representation, the agent can have very little domain knowledge.
-\item Algorithm knowledge: low to moderate.  The choice of machine
-  learning algorithm and state representation determine the level of
-  algorithm knowledge necessary to author a fully machine learning
-  agent.
-\item Adaptability: high.  Adaptability is the key advantage of
-  machine learning.
+\item Domain knowledge: low. With a sufficiently abstract state representation, the agent can have very little domain knowledge.
+\item Algorithm knowledge: low to moderate.  The choice of machine learning algorithm and state representation determine the level of algorithm knowledge necessary to author a fully machine learning agent.
+\item Adaptability: high.  Adaptability is the key advantage of machine learning.
 \end{itemize}
 
 Neither of these two endpoints of the agent authorability spectrum is desirable.  Fully scripted agents are laborious to write.  Fully machine learning agents typically exhibit a long period of decreasing incompetence until their learning algorithms have sufficient data.  What we want is something in between fully scripted and fully machine learning agents.
 
 
-{\bf Finding the NPC Authorability Sweet Spot with AFABL}
+{\bf AFABL Hits the Agent Authorability Sweet Spot}
 
 AFABL's integrated reinforcement learning separates the dynamics of the world from the action-slection logic in the agent, freeing the programmer from writing domain-dependent code and facilitating the adaptation of agents to new worlds.
 
 \begin{itemize}
 \item Domain knowledge: as much or as little as you want.  You can program the parts you know how to program, and leave AFABL to learn the rest automatically.
-\item Algorithm knowledge: moderate.  AFABL is based on the agent and
-  reinforcement learning models.  Behaviors are programmed as actions
-  that execute in response to observed state (hence ``behavior''), and
-  automatic behaviors additionally specify reward signals that enable
-  AFABL to learn the best responses to particular states.
+\item Algorithm knowledge: moderate.  AFABL is based on the agent and reinforcement learning models.  Behaviors are programmed as actions that execute in response to observed state (hence ``behavior''), and automatic behaviors additionally specify reward signals that enable AFABL to learn the best responses to particular states.
 \item Adaptability: high.
-\end{itemize}
-
-
-\subsection{Contributions}
-
-\begin{itemize}
-\item AFABL, an adaptive agent programming framework/DSL that integrates MRL into the Scala language.
-\item Idioms and design patterns for using AFABL to program adaptive agents.
-\item Exploratory knowledge on the kinds of framework/language features and debugging tools that are useful in adaptive partial-programming, the roles they play in the development process, and the benefits they provide.
-\item Confirmatory knowledge that a programming language integrating MRL provides measurable adaptivity benefits for appropriate agent programming problems.
 \end{itemize}
