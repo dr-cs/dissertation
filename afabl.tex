@@ -495,18 +495,60 @@ Each task had a main method which ran the agents in the worlds to evaluate their
 
 \subsection{Scala}
 
+
+
 \begin{figure}[!h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
+class ScalaBunny1 extends Agent[BunnyState, BunnyAction.Value]
+    with Task1Scorer {
 
+  def getAction(state: BunnyState, shouldExplore: Boolean = false) = {
+    if (wolfNearFood(state))
+      moveAwayFromWolf(state)
+    else
+      moveTowardFood(state)
+   }
+
+  def wolfNearFood(state: BunnyState) = {
+    val wolfToFood = sqrt(pow(state.food.x - state.wolf.x, 2) +
+                          pow(state.food.y - state.wolf.y, 2))
+    val bunnyToFood = sqrt(pow(state.food.x - state.bunny.x, 2) +
+                           pow(state.food.y - state.bunny.y, 2))
+    wolfToFood < bunnyToFood
+  }
+
+  def moveTowardFood(state: BunnyState) = {
+    if (state.food.x > state.bunny.x)
+      BunnyAction.Right
+    else if (state.food.x < state.bunny.x)
+      BunnyAction.Left
+    else if (state.food.y < state.bunny.y)
+      BunnyAction.Up
+    else
+      BunnyAction.Down
+  }
+
+  def moveAwayFromWolf(state: BunnyState) = {
+    if (state.wolf.x < state.bunny.x)
+      BunnyAction.Right
+    else if (state.wolf.x > state.bunny.x)
+      BunnyAction.Left
+    else if (state.wolf.y > state.bunny.y)
+      BunnyAction.Up
+    else
+      BunnyAction.Down
+  }
+}
 \end{lstlisting}
 
-\caption{}
+\caption{Typical Scala submission for Task 1.}
 \end{center}
 \label{fig:scala-task1-submission}
 \end{figure}
 
+Figure \ref{fig:scala-task1-submission} shows a typical Scala submission for Task 1. The action selection strategy is about as simple as possible. For example, there is no determination of where the wolf is in relation to the bunny and food other than distance. If the wolf is closer to the food than the bunny, move away from the wolf, otherwise move toward to the food. The agent does not distinguish between cases where the wolf is between the wolf and the food, or if the wolf is closer but sufficiently far away. One could imaging writing code to calulate the projection of the wolf's position onto the line between the bunny and the food to determine safe closure rate of the wolf. However, this strategy is all that's need to acheive nearly optimal results. This Scala-only bunny agent acheives an average performance score of 0.54, the same as the AFABL bunny.
 
 \subsection{AFABL}
 
@@ -552,13 +594,13 @@ Each task had a main method which ran the agents in the worlds to evaluate their
   )
 \end{lstlisting}
 
-\caption{}
+\caption{Typical AFABL submission for Task 1.}
 \end{center}
 \label{fig:afabl-task1-submission}
 \end{figure}
 
+The AFABL solution to Task 1 contains 31 lines of code and has a cyclomatic complexity of 5 (4 predicates in decision structures). The Scala solution to Task 1 uses 34 lines of code and has a cyclomatic complexity of 8 (7 predicates in decision structures). Both programs acheive the same nearly optimal level of performance (scores of ~0.54). While the difference on Task 1
 
-As you can see from Figure \ref{fig:afabl-task1-submission}, most AFABL bunny agents look the same. Submitted AFABL bunnies were very similar to the example code we present earlier in this chapter. There is one obvious way to implement a bunny agent that must pursue multiple goals. This uniformity is desirable. As Tim Peters says in the Zen of Python, ``There should be one-- and preferably only one --obvious way to do it.'' The similarity in most AFABL solutions to a particular modular agent programming problem is an indication that AFABL provides the right abstractions for adaptive agent programming.
 
 \section{A Typical Task 2 Submission}
 
@@ -571,7 +613,7 @@ As you can see from Figure \ref{fig:afabl-task1-submission}, most AFABL bunny ag
 
 \end{lstlisting}
 
-\caption{}
+\caption{Typical Scala submission for Task 2.}
 \end{center}
 \label{fig:scala-task2-submission}
 \end{figure}
@@ -612,7 +654,7 @@ As you can see from Figure \ref{fig:afabl-task1-submission}, most AFABL bunny ag
   )
 \end{lstlisting}
 
-\caption{}
+\caption{Typical AFABL submission for Task 2.}
 \end{center}
 \label{fig:afabl-task2-submission}
 \end{figure}
@@ -711,55 +753,6 @@ Rationale: in addition to objective analyses of task submissions, we want to kno
 
 \end{enumerate}
 
-\section{Adaptive Agent Software Engineering with AFABL}
+\section{Conclusion}
 
-In this section we discuss the broader implications of adaptive agent programming with AFABL. We define an agent programming space and discuss how AFABL fits into that space.
-
-\subsection{Authorability and the Agent Programming Space}
-
-Authorability is the ease with which a programmer can author the behavior of agents.  Concretely, we suggest a framework for assessing authorability that considers domain knowledge requirements, algorithm knowledge requirements, and the adaptability of agents.
-
-{\bf Domain knowledge} refers to the world-specific details the agent author must program into the agent for a particular domain.  Examples of domain knowledge include representations of state and the dynamics of the world, that is, how actions cause transitions from one state to another.
-
-{\bf Algorithm knowledge} refers to the degree of algorithm detail that must be programmed in the agent.  An agent using a general-purpose programming language with no libraries to support agent programming would need to write the agent's behavior algorithms from scratch. Even an agent using an agent programming library would still likely need to encode a significant amount of algorithm knowledge in the agent. For example, an agent agent that uses a STRIPS planner for action selection would need to contain details of STRIPS operators and the mechanisms for selecting them in response to state perception.
-
-{\bf Adaptability} refers to the ease with which an agent, once authored, can adapt to a changing world or be reused in a different world.
-
-These factors are not completely orthogonal.  High domain knowledge requirements can hinder adaptability because agent agents need to be preprogrammed for worlds that have different dynamics.  Domain knowledge and algorithm knowledge often go hand-in-hand, for example in the encoding of heuristic functions.  Returning to our STRIPS example, STRIPS operators essentially encode world dynamics into the decision making algorithm, thereby coupling domain knowledge and algorithm knowledge.
-
-We say that authorability is high when required domain knowledge is low, algorithm knowledge is low, and adaptability is high.  Such an agent is easy to program in the first place and can be reused in new worlds with minimal reprogramming.
-
-With this working framework for assessing the authorability of agent programming approaches we can map the agent programming space as a spectrum from fully scripted to fully learning approaches.
-
-\subsubsection{Fully scripted agent Programming}
-
-Fully scripted agents are the most common type of agents.  The scripts that control such agents specify every detail of the agent's behavior ahead of time.  While scripted agents can pursue goals and exhibit intelligence, the manner in which these goals are pursued must be written explicitly by the agent author, and if these goals are to be pursued using a particular algorithm, such as a planning algorithm, the algorithm itself must be encoded (or used as a library) from within the code.
-
-In terms of our authorability framework, fully scripted agents have the following properties.
-
-\begin{itemize}
-\item Domain knowledge: high. A fully scripted agent must specify a knowledge representation for perception and action that facilitates all the kinds of analyses and decisions the agent will make.  The dynamics of the world must be known in advance and encoded in he script to allow the agent to pursue goals.
-\item Algorithm knowledge: high.  Although the algorithms may be simple, such as big if-else ladders, the agent author must have complete knowledge of how the agent's behavior algorithms work.  More complex algorithms mean more complex knowledge for the agent author to manage, fully scripted approaches scale poorly to more complex agents.
-\item Adaptability: low.  Once an agent is fully scripted for a given environment, it must be reprogrammed for new environments with different dynamics.  Also, any run-time adaptivity must be scripted explicitly.
-\end{itemize}
-
-\subsubsection{Fully Machine Learning agent Programming}
-
-\begin{itemize}
-\item Domain knowledge: low. With a sufficiently abstract state representation, the agent can have very little domain knowledge.
-\item Algorithm knowledge: low to moderate.  The choice of machine learning algorithm and state representation determine the level of algorithm knowledge necessary to author a fully machine learning agent.
-\item Adaptability: high.  Adaptability is the key advantage of machine learning.
-\end{itemize}
-
-Neither of these two endpoints of the agent authorability spectrum is desirable.  Fully scripted agents are laborious to write.  Fully machine learning agents typically exhibit a long period of decreasing incompetence until their learning algorithms have sufficient data.  What we want is something in between fully scripted and fully machine learning agents.
-
-
-{\bf AFABL Hits the Agent Authorability Sweet Spot}
-
-AFABL's integrated reinforcement learning separates the dynamics of the world from the action-selection logic in the agent, freeing the programmer from writing domain-dependent code and facilitating the adaptation of agents to new worlds.
-
-\begin{itemize}
-\item Domain knowledge: as much or as little as you want.  You can program the parts you know how to program, and leave AFABL to learn the rest automatically.
-\item Algorithm knowledge: moderate.  AFABL is based on the agent and reinforcement learning models.  Behaviors are programmed as actions that execute in response to observed state (hence ``behavior''), and automatic behaviors additionally specify reward signals that enable AFABL to learn the best responses to particular states.
-\item Adaptability: high.
-\end{itemize}
+As you can see from Figure \ref{fig:afabl-task1-submission}, most AFABL bunny agents look the same. Submitted AFABL bunnies were very similar to the example code we present earlier in this chapter. There is one obvious way to implement a bunny agent that must pursue multiple goals. This uniformity is desirable. As Tim Peters says in the Zen of Python, ``There should be one-- and preferably only one --obvious way to do it.'' The similarity in most AFABL solutions to a particular modular agent programming problem is an indication that AFABL provides the right abstractions for adaptive agent programming.

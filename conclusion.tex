@@ -1,6 +1,5 @@
 \chapter{Conclusion}\label{ch:conclusion}
 
-
 \section{Review of Major Contributions}
 
 \subsection{Arbi-Q}
@@ -10,6 +9,60 @@ PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOL
 \subsection{AFABL}
 
 PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
+
+\section{Adaptive Agent Software Engineering with AFABL}
+
+In this section we discuss the broader implications of adaptive agent programming with AFABL. We define an agent programming space and discuss how AFABL fits into that space.
+
+\subsection{Authorability and the Agent Programming Space}
+
+Authorability is the ease with which a programmer can author the behavior of agents.  Concretely, we suggest a framework for assessing authorability that considers domain knowledge requirements, algorithm knowledge requirements, and the adaptability of agents.
+
+{\bf Domain knowledge} refers to the world-specific details the agent author must program into the agent for a particular domain.  Examples of domain knowledge include representations of state and the dynamics of the world, that is, how actions cause transitions from one state to another.
+
+{\bf Algorithm knowledge} refers to the degree of algorithm detail that must be programmed in the agent.  An agent using a general-purpose programming language with no libraries to support agent programming would need to write the agent's behavior algorithms from scratch. Even an agent using an agent programming library would still likely need to encode a significant amount of algorithm knowledge in the agent. For example, an agent agent that uses a STRIPS planner for action selection would need to contain details of STRIPS operators and the mechanisms for selecting them in response to state perception.
+
+{\bf Adaptability} refers to the ease with which an agent, once authored, can adapt to a changing world or be reused in a different world.
+
+These factors are not completely orthogonal.  High domain knowledge requirements can hinder adaptability because agent agents need to be preprogrammed for worlds that have different dynamics.  Domain knowledge and algorithm knowledge often go hand-in-hand, for example in the encoding of heuristic functions.  Returning to our STRIPS example, STRIPS operators essentially encode world dynamics into the decision making algorithm, thereby coupling domain knowledge and algorithm knowledge.
+
+We say that authorability is high when required domain knowledge is low, algorithm knowledge is low, and adaptability is high.  Such an agent is easy to program in the first place and can be reused in new worlds with minimal reprogramming.
+
+With this working framework for assessing the authorability of agent programming approaches we can map the agent programming space as a spectrum from fully scripted to fully learning approaches.
+
+\subsubsection{Fully scripted agent Programming}
+
+Fully scripted agents are the most common type of agents.  The scripts that control such agents specify every detail of the agent's behavior ahead of time.  While scripted agents can pursue goals and exhibit intelligence, the manner in which these goals are pursued must be written explicitly by the agent author, and if these goals are to be pursued using a particular algorithm, such as a planning algorithm, the algorithm itself must be encoded (or used as a library) from within the code.
+
+In terms of our authorability framework, fully scripted agents have the following properties.
+
+\begin{itemize}
+\item Domain knowledge: high. A fully scripted agent must specify a knowledge representation for perception and action that facilitates all the kinds of analyses and decisions the agent will make.  The dynamics of the world must be known in advance and encoded in he script to allow the agent to pursue goals.
+\item Algorithm knowledge: high.  Although the algorithms may be simple, such as big if-else ladders, the agent author must have complete knowledge of how the agent's behavior algorithms work.  More complex algorithms mean more complex knowledge for the agent author to manage, fully scripted approaches scale poorly to more complex agents.
+\item Adaptability: low.  Once an agent is fully scripted for a given environment, it must be reprogrammed for new environments with different dynamics.  Also, any run-time adaptivity must be scripted explicitly.
+\end{itemize}
+
+\subsubsection{Fully Machine Learning agent Programming}
+
+\begin{itemize}
+\item Domain knowledge: low. With a sufficiently abstract state representation, the agent can have very little domain knowledge.
+\item Algorithm knowledge: low to moderate.  The choice of machine learning algorithm and state representation determine the level of algorithm knowledge necessary to author a fully machine learning agent.
+\item Adaptability: high.  Adaptability is the key advantage of machine learning.
+\end{itemize}
+
+Neither of these two endpoints of the agent authorability spectrum is desirable.  Fully scripted agents are laborious to write.  Fully machine learning agents typically exhibit a long period of decreasing incompetence until their learning algorithms have sufficient data.  What we want is something in between fully scripted and fully machine learning agents.
+
+
+{\bf AFABL Hits the Agent Authorability Sweet Spot}
+
+AFABL's integrated reinforcement learning separates the dynamics of the world from the action-selection logic in the agent, freeing the programmer from writing domain-dependent code and facilitating the adaptation of agents to new worlds.
+
+\begin{itemize}
+\item Domain knowledge: as much or as little as you want.  You can program the parts you know how to program, and leave AFABL to learn the rest automatically.
+\item Algorithm knowledge: moderate.  AFABL is based on the agent and reinforcement learning models.  Behaviors are programmed as actions that execute in response to observed state (hence ``behavior''), and automatic behaviors additionally specify reward signals that enable AFABL to learn the best responses to particular states.
+\item Adaptability: high.
+\end{itemize}
+
 
 \section{Limitations of Current Work}
 
@@ -29,6 +82,27 @@ The error messages are under the control of the Scala compiler and run-time syst
 
 \subsection{General Agent Architecture}
 
+\subsubsection{Integrated Intelligence}
+
+Because an AFABL agent performs command arbitration over modules that
+support a behavioral interface (providing an action given a state
+observation), the modules themselves can employ any mechanism to
+decide on actions given a state.  This information hiding means that
+AFABL agents can be composed of a mixture of modules that use many
+different kinds of AI, including statistical learning, rule-based
+reasoning, or (reactive) planning.  AFABL is an integrated
+intelligence architecture.
+
+\paragraph{Knowledge-Based Modules}
+
+In a knowledge-based module, the decision making and adaptation
+mechanisms are coded explicitly in the form of rules, state machines,
+or other explicitly programmed logic.  If a knowledge-based module is
+adaptive, this adaptivity must be programmed by hand by the agent
+author.  Because adaptivity is not "free," and thus not typically done
+for knowledge-based modules, we distinguish between (possibly but not
+usuallly adaptive) knowledge-based modules, and adaptive modules which
+are always adaptive because the adaptivity is built-in.
 
 \paragraph{Knowledge-Based Arbitrators}
 
@@ -41,31 +115,7 @@ command arbitrator could contain simple logic to encode the rule "when
 the wolf is near, choose AvoidWolf's action, otherwise choose
 FindFood's action."
 
-
-\paragraph{Adaptive Arbitrators}
-
-Adaptive arbitrators use learning algorithms under the hood to
-automatically select actions from among a set of candidate actions.
-Like adaptive behavior modules, adpative arbitrators must be trained
-in the world with the set of modules it must arbitrate.  In effect, an
-adaptvei arbitrator learns which module to listen to in a given state.
-
-
-\subsubsection{Integrated Intelligence}
-
-Because an AFABL agent performs command arbitration over modules that
-support a behavioral interface (providing an action given a state
-observation), the modules themselves can employ any mechanism to
-decide on actions given a state.  This information hiding means that
-AFABL agents can be composed of a mixture of modules that use many
-different kinds of AI, including statistical learning, rule-based
-reasoning, or (reactive) planning.  AFABL is an integrated
-intelligence architecture.
-
-
-
-\subsubsection{Hierarchical Decomposition}
-
+\paragraph{Hierarchical Decomposition}
 
 Beacuse modules are themselves agents, modules can contain other
 modules and perform command arbitration over those modules just as the
@@ -78,38 +128,19 @@ internal workings of modules are never altered externally.  Modules
 are treated as black-boxes.  Command arbitration accomplishes the same
 result that output suppression does in classic subsumption.
 
-\begin{itemize}
+\subsubsection{Drama Manager Support}
 
-\item Task
+Activating and deactivating modules. Injecting new goals.
 
-  A task is a temporally-extended action, a "mini-policy" that acheives a
-  subgoal.  Tasks are equivalent to subtasks (MaxQ), abstract machines
-  (PHAM), or options from hierarchical reinforcement learning.
+\paragraph{Tasks}
 
-\item Constraint Module
+A task is a temporally-extended action, a "mini-policy" that acheives a subgoal.  Tasks are equivalent to subtasks (MaxQ), abstract machines (PHAM), or options from hierarchical reinforcement learning.
 
-  A constraint module is a behavior module that runs throughout the
-  life of its containing agent and represents a state that an agent
-  should constantly avoid.  It is a constraint in the sense that, in
-  certain states, a constraint module will identify actions that should
-  *not* be executed.
+\paragraph{Constraint Module}
 
-\item Drive Module
+A constraint module is a behavior module that runs throughout the life of its containing agent and represents a state that an agent should constantly avoid.  It is a constraint in the sense that, in certain states, a constraint module will identify actions that should *not* be executed.
 
-  A drive module is a behavior module that runs throughout the
-  life of its containing agent and represents states that an agent
-  should constantly seek.
-
-\item Objective
-
-  A an objective is a short-term goal state that generates a drive
-  module that is active until its goal is achieved.  The command
-  arbitrator gives objective modules priority over drive modules, but
-  all modules are constrained by constraint modules.
-
-\end{itemize}
-
-\subsubsection{Aversion Module}
+\paragraph{Aversion Module}
 
 An Aversion module is a behavior module that runs throughout the life
 of its conataining agent and represents a state that an agent should
@@ -117,33 +148,16 @@ constantly avoid.  It is a constraint in the sense that, in certain
 staes, a constraint module will identify actions that should *not* be
 executed.
 
-
-\subsubsection{Drive Module}
+\paragraph{Drive Module}
 
 A Drive module is a behavior module that runs throughout the life of
 its conataining agent and represents a state that an agent should
 constantly seek.
 
-\subsubsection{Knowledge-Based Modules}
+\paragraph{Objective}
 
-In a knowledge-based module, the decision making and adaptation
-mechanisms are coded explicitly in the form of rules, state machines,
-or other explicitly programmed logic.  If a knowledge-based module is
-adaptive, this adaptivity must be programmed by hand by the agent
-author.  Because adaptivity is not "free," and thus not typically done
-for knowledge-based modules, we distinguish between (possibly but not
-usuallly adaptive) knowledge-based modules, and adaptive modules which
-are always adaptive because the adaptivity is built-in.
-
-\subsection{Drama Management Integration}
-
-Activating and deactivating modules. Injecting new goals.
-
-\subsubsection{Objective}
-
-A an objective is a short-term goal state that generates a Drive module
-that is active until its goal is acheived.
+A an objective is a short-term goal state that generates a drive module that is active until its goal is achieved.  The command arbitrator gives objective modules priority over drive modules, but all modules are constrained by constraint modules.
 
 \subsection{Integrating Hierarchical Reinforcement Learning}
 
-\subsection{Independent Language}\label{sec:conclusion-full-language}
+\subsection{Independent (Non-Embedded) Language}\label{sec:conclusion-full-language}
