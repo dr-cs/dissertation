@@ -4,11 +4,11 @@ AFABL is an internal domain-specific language shallowly embedded in the Scala pr
 
 \section{Why an embedded DSL?}
 
-We chose to implement AFABL as a shallowly embedded domain-specific language because of the exploratory nature of this research. Our goal at this point is to confirm our expectation that integrating reinforcement learning is useful to programmers writing agents, to explore the nature of this integration, and to get qualitative feedback from programmers on their experience using a language that integrates reinforcement learning. Writing a full language with its own lexical and syntactic structure, internal representations, and language translators and tools (interpreters, compilers, linkers, etc.) would distract from the core questions we are trying to answer. As we discuss in Section \ref{sec:conclusion-full-language}, creating a full independent language is a direction for future research whcih will be guided by the results we present here, for which an embedded DSL is sufficient.
+We chose to implement AFABL as a shallowly embedded domain-specific language because of the exploratory nature of this research. Our goal at this point is to confirm our expectation that integrating reinforcement learning is useful to programmers writing agents, to explore the nature of this integration, and to get qualitative feedback from programmers on their experience using a language that integrates reinforcement learning. Writing a full language with its own lexical and syntactic structure, internal representations, and language translators and tools (interpreters, compilers, linkers, etc.) would distract from the core questions we are trying to answer. As we discuss in Section \ref{sec:conclusion-full-language}, creating a full independent language is a direction for future research which will be guided by the results we present here, for which an embedded DSL is sufficient.
 
 \section{Why Scala?}
 
-Hosting DSLs is a primary design goal of the Scala programming language. Scala is an expressive and concise language which already enables the expression of domain models with little syntactic baggage. By employing just a few Scala language features that are designed for writing expressive and convenient libraries, we can create a DSL that Scala programmers will find familiar and non-Scala programmers can use to encode adaptive agents. Indeed, the nature of Scala's syntax and language features is such that many Scala libraries that are not explicity labeled as DSLs qualify as shallow embedded DSLs.
+Hosting DSLs is a primary design goal of the Scala programming language. Scala is an expressive and concise language which already enables the expression of domain models with little syntactic baggage. By employing just a few Scala language features that are designed for writing expressive and convenient libraries, we can create a DSL that Scala programmers will find familiar and non-Scala programmers can use to encode adaptive agents. Indeed, the nature of Scala's syntax and language features is such that many Scala libraries that are not explicitly labeled as DSLs qualify as shallow embedded DSLs.
 
 
 \section{AFABL Concepts}
@@ -69,19 +69,19 @@ AFABL is a language for encoding adaptive (intelligent) agents. Before we presen
 
 \subsection{Agent Architecture}
 
-An AFABL agent is a behavorial agent that is composed of reusable behavior modules.  By "behavioral agent" we mean that the agent executes an action in resopnse to a stimulus, represented by a state observation.  Each behavior module is itself an agent that has a preferred action for each state.  AFABL agents perform command arbitration to choose one of the modules' recommended actions for each state.  The behavior modules recommend actions in each state, and the arbitrator chooses which module to "listen to" in each state.  The AFABL agent architecture is a subsumption architecture \cite{brooks1986a-robust}.
+An AFABL agent is a behavioral agent that is composed of reusable behavior modules.  By "behavioral agent" we mean that the agent executes an action in response to a stimulus, represented by a state observation.  Each behavior module is itself an agent that has a preferred action for each state.  AFABL agents perform command arbitration to choose one of the modules' recommended actions for each state.  The behavior modules recommend actions in each state, and the arbitrator chooses which module to "listen to" in each state.  The AFABL agent architecture is a subsumption architecture \cite{brooks1986a-robust}.
 
 \subsubsection{Behavior Modules}
 
-Behavior modules, sometimes called subagents in the modular reinforcement learning iterature, are agents that are meant to be combined to form larger agents.  Behavior modules are similar to the layers of Brooks's subsumption architecture with an important difference: autonomy.  The internal working of a behavior module is never altered externally.  A behavior module defines a state abstraction that converts the state observation it is given to a (possibly) simpler state that is used internally for decision making and learning.  The decision making and adaptation mechanisms inside a module remain completely under the module's control.  Interaction with the module consists entirely of reporting a state observation to the module, asking the module for an action, and reporting to the module the effect of executing an action.
+Behavior modules, sometimes called subagents in the modular reinforcement learning literature, are agents that are meant to be combined to form larger agents.  Behavior modules are similar to the layers of Brooks's subsumption architecture with an important difference: autonomy.  The internal working of a behavior module is never altered externally.  A behavior module defines a state abstraction that converts the state observation it is given to a (possibly) simpler state that is used internally for decision making and learning.  The decision making and adaptation mechanisms inside a module remain completely under the module's control.  Interaction with the module consists entirely of reporting a state observation to the module, asking the module for an action, and reporting to the module the effect of executing an action.
 
 \subsubsection{Adaptive Modules}
 
-An adaptive module employs learning algorithms under the hood to achieve automatic adaptivity.  By adaptive we mean two things: (1) adaptation to new worlds, and (2) run-time adaptaion.  A module that is programmed to work for worlds with a given state representation will work with any world that provides the same (or greater) state representation, even if the dynamics of the worlds differ.  An adaptive module need simply be retrained for the new world.  Once an adaptive module is running in an active agent, the module may continue to tune its internal learning models as the agent acts in the world, providing for run-time adaptation.
+An adaptive module employs learning algorithms under the hood to achieve automatic adaptivity.  By adaptive we mean two things: (1) adaptation to new worlds, and (2) run-time adaptation.  A module that is programmed to work for worlds with a given state representation will work with any world that provides the same (or greater) state representation, even if the dynamics of the worlds differ.  An adaptive module need simply be retrained for the new world.  Once an adaptive module is running in an active agent, the module may continue to tune its internal learning models as the agent acts in the world, providing for run-time adaptation.
 
 \subsubsection{Command Arbitrators}
 
-Command arbitrators take as input the action preferences of a set of modules, and selects one of the actions.  If the command arbitrator is part of a module, the action selected is the preferred action of the module.  If the command arbitrator is part of the top-level agent, then the actoin selected is the action that will be executed by the agent.
+Command arbitrators take as input the action preferences of a set of modules, and selects one of the actions.  If the command arbitrator is part of a module, the action selected is the preferred action of the module.  If the command arbitrator is part of the top-level agent, then the action selected is the action that will be executed by the agent.
 
 \section{The AFABL Language}
 
@@ -190,7 +190,7 @@ class BunnyWorld(val width: Int = 5, val height: Int = 5)
   // Initialize the world state
   var state = init()
 
-  // In Scala, defs can be overriden with vals
+  // In Scala, defs can be overridden with vals
   val states = {
     // Calculate every possible combination of locations for the
     // bunny, wolf, and food
@@ -200,7 +200,7 @@ class BunnyWorld(val width: Int = 5, val height: Int = 5)
   val actions = BunnyAction.values.toSeq
 
   def init(): BunnyState = {
-    // Caclulate initial locations for the bunny, wolf, and food.
+    // Calculate initial locations for the bunny, wolf, and food.
     //
   }
 
@@ -308,11 +308,11 @@ val findFood = AfablModule(
 
 Here we see the value of splitting the world dynamics from the agent module's reward function. We can think of the world and the agent independently. In essence, the definition of a full MDP is split across the definition of a world, and the definition of an agent that acts in that world.
 
-Here we also begin to see syntactic conveniences afforded by the AFABL DSL. There are only two type annotations and one control structure (in the reward function). The rest of the types are inferred by Scala's type inferencer thanks to the way we've written the factory method that creates {\tt AfablModule}s. It's worth noting that we could have refined the DSL to further strip the few Scala syntactic artifacts (like the {\tt if} statement and the anonymous functions for {\tt stateAbstraction} and {\tt moduleReward}) but the syntactic overhead is minimal and there is a tradeoff between writing specific DSL syntax and using Scala's built-in syntax directly. Creating unique syntax for a DSL imposes cognitive burden on programmers who are proficient in the host language. The benefit of the unique syntax must outweigh this cognitive burden. Here we hope to strike the right balance between convenient domain-specific syntax and familiarity to programmers. Thanks to Scala's already concise and experssive language and idioms -- although this looks like a DSL -- there is no special syntax in this example. This code is a good example of shallow DSL embedding.
+Here we also begin to see syntactic conveniences afforded by the AFABL DSL. There are only two type annotations and one control structure (in the reward function). The rest of the types are inferred by Scala's type inferencer thanks to the way we've written the factory method that creates {\tt AfablModule}s. It's worth noting that we could have refined the DSL to further strip the few Scala syntactic artifacts (like the {\tt if} statement and the anonymous functions for {\tt stateAbstraction} and {\tt moduleReward}) but the syntactic overhead is minimal and there is a tradeoff between writing specific DSL syntax and using Scala's built-in syntax directly. Creating unique syntax for a DSL imposes cognitive burden on programmers who are proficient in the host language. The benefit of the unique syntax must outweigh this cognitive burden. Here we hope to strike the right balance between convenient domain-specific syntax and familiarity to programmers. Thanks to Scala's already concise and expressive language and idioms -- although this looks like a DSL -- there is no special syntax in this example. This code is a good example of shallow DSL embedding.
 
 \subsection{Agents}
 
-An AFABL agent is an agent that acts in a particular world, is composed of independent behavior modules pursuing their own continuing goals, and has a central command arbitrator that uses an agent level reward function to learn when it should listen to each module. As the code in Figure \ref{fig:afabl-bunny-code} shows, an AFABL agent allows programmers to express these components consicely, with very little cognitive distance between the concepts that make up the agent and the code that represents them. As with modules, {\tt AfablAgent} uses features of the Scala programming language to make the syntax more convenient. For example, there is only one explicit type annotation in the AFABL bunny agent code in Figure \ref{fig:afabl-bunny-code}, but behind the scenes a carefully written factory method in the companion object allows Scala's static type inferencer to infer type parameters of the {\tt AfablAgent} constructor, return types for anonymous functions, and assign a concrete type value to a path-dependent abstract type variable. Figuring out all this stuff and wrestling with Scala's type checker directly isn't easy. Writing an AFABL agent is easy.
+An AFABL agent is an agent that acts in a particular world, is composed of independent behavior modules pursuing their own continuing goals, and has a central command arbitrator that uses an agent level reward function to learn when it should listen to each module. As the code in Figure \ref{fig:afabl-bunny-code} shows, an AFABL agent allows programmers to express these components concisely, with very little cognitive distance between the concepts that make up the agent and the code that represents them. As with modules, {\tt AfablAgent} uses features of the Scala programming language to make the syntax more convenient. For example, there is only one explicit type annotation in the AFABL bunny agent code in Figure \ref{fig:afabl-bunny-code}, but behind the scenes a carefully written factory method in the companion object allows Scala's static type inferencer to infer type parameters of the {\tt AfablAgent} constructor, return types for anonymous functions, and assign a concrete type value to a path-dependent abstract type variable. Figuring out all this stuff and wrestling with Scala's type checker directly isn't easy. Writing an AFABL agent is easy.
 
 \begin{figure}[h]
 \begin{center}
@@ -386,7 +386,7 @@ val bunny = AfablAgent(
 )
 \end{lstlisting}
 
-\caption{A complete bunny agent in the AFABL DSL. Code for the modules is repeated from previous figures to give a sense of the full quantity of code requred to write an agent with two behavior modules.}
+\caption{A complete bunny agent in the AFABL DSL. Code for the modules is repeated from previous figures to give a sense of the full quantity of code required to write an agent with two behavior modules.}
 \end{center}
 \label{fig:afabl-bunny-code}
 \end{figure}
@@ -427,7 +427,7 @@ In this task each programmers wrote an agent that controls a bunny character in 
 
 \item Every two time steps the wolf moves towards the bunny.
 
-\item If the bunny moves to the cell currently occupied by the food, the agent should be written to recognize this fact and give the agent an approporate reward signal. In any case the simulation assumes food is ``eaten'' and new food appears elsewhere.
+\item If the bunny moves to the cell currently occupied by the food, the agent should be written to recognize this fact and give the agent an appropriate reward signal. In any case the simulation assumes food is ``eaten'' and new food appears elsewhere.
 
 \item If the wolf moves to the cell currently occupied by the bunny it eats the bunny and the bunny ``respawns'' in a new location.
 
@@ -455,7 +455,7 @@ In this task each programmer wrote a bunny agent for a world that is identical t
 
 \subsubsection{Provided Code}
 
-Study participants were given starter code so they couild focus on writing the behavior of their agents. We provided the worlds for each task and the files in which to write their code. Participants were also referred to AFABL documentation on \href{http://afabl.org/}{http://afabl.org/}.
+Study participants were given starter code so they could focus on writing the behavior of their agents. We provided the worlds for each task and the files in which to write their code. Participants were also referred to AFABL documentation on \href{http://afabl.org/}{http://afabl.org/}.
 
 Figure \ref{fig:scala-bunny1} shows the code given to participants for the Scala bunny on Task 1. Figure \ref{fig:afabl-bunny1} shows the code given to participants for the AFABL bunny on Task 1. The {\tt BunnyWorld1}, {\tt BunnyState1}, and {\tt BunnyAction} classes were also provided. It was up to participants to write state abstraction classes if they chose to do so.
 
@@ -642,11 +642,11 @@ As you can see from Figure \ref{fig:afabl-submission}, most AFABL bunny agents l
 \label{fig:afabl-task2-submission}
 \end{figure}
 
-Figure \ref{fig:afabl-task2-submission} shows typical AFABL code for Task 2. Notice that the {\tt findFood} and {\tt avoidWolf} modules from Task 1 have been reused directly. This workds becuase the world, {\tt BunnyWorld}, is the same. In Task 1 the bunny was ignoring the mate. In Task 2 we adapt the bunny to find the mate, and all we need to do is add a {\tt findMate} module and add a line to the {\tt agentLevelReward} function.
+Figure \ref{fig:afabl-task2-submission} shows typical AFABL code for Task 2. Notice that the {\tt findFood} and {\tt avoidWolf} modules from Task 1 have been reused directly. This works because the world, {\tt BunnyWorld}, is the same. In Task 1 the bunny was ignoring the mate. In Task 2 we adapt the bunny to find the mate, and all we need to do is add a {\tt findMate} module and add a line to the {\tt agentLevelReward} function.
 
 \section{Quantitative Results}
 
-We analyzed the submissions of study participants to compare Scala agents to AFABL agents in terms of code size, time spent writing Scala versus AFABL agents, the complexity of Scala verus AFABL agent code, and the proformance of the agents on the assigned tasks.
+We analyzed the submissions of study participants to compare Scala agents to AFABL agents in terms of code size, time spent writing Scala versus AFABL agents, the complexity of Scala versus AFABL agent code, and the performance of the agents on the assigned tasks.
 
 \subsection{Code Size}
 
@@ -679,7 +679,7 @@ Time                  & 0.0        & 0.0        & 0.0 \\
 Cyclomatic complexity & 0.0        & 0.0        & 0.0 \\
 Cyclomatic complexity & 0.0        & 0.0        & 0.0 \\\hline
 \end{tabular}
-\caption{Quantitative results of Scala agent code versus AFABL agent code on Task 1. A p-value of less than .05 mean that the difference in means is statistically signifigant at the 95\% significance level, i.e. $H_0: \mu_1 = \mu_2$.}
+\caption{Quantitative results of Scala agent code versus AFABL agent code on Task 1. A p-value of less than .05 mean that the difference in means is statistically significant at the 95\% significance level, i.e. $H_0: \mu_1 = \mu_2$.}
 \label{tbl:task1-results}
 \end{table}
 \end{center}
@@ -781,7 +781,7 @@ Neither of these two endpoints of the agent authorability spectrum is desirable.
 
 {\bf AFABL Hits the Agent Authorability Sweet Spot}
 
-AFABL's integrated reinforcement learning separates the dynamics of the world from the action-slection logic in the agent, freeing the programmer from writing domain-dependent code and facilitating the adaptation of agents to new worlds.
+AFABL's integrated reinforcement learning separates the dynamics of the world from the action-selection logic in the agent, freeing the programmer from writing domain-dependent code and facilitating the adaptation of agents to new worlds.
 
 \begin{itemize}
 \item Domain knowledge: as much or as little as you want.  You can program the parts you know how to program, and leave AFABL to learn the rest automatically.
