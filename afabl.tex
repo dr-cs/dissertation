@@ -15,57 +15,35 @@ Hosting DSLs is a primary design goal of the Scala programming language. Scala i
 
 AFABL is a language for encoding adaptive (intelligent) agents. Before we present the AFABL language, we review basic adaptive agent concepts that can be encoded in AFABL.
 
-\subsection{Terminology}
+%% \subsection{Terminology}
 
-\begin{itemize}
+%% \begin{itemize}
 
-\item State
+%% \item State. A state is a configuration of all objects and agents in a world. These configurations can include object locations and orientations, mental or emotional dispositions of agents, or indications of the occurrence of events (e.g., agent X just got shot).
 
-  A state is a configuration of all objects and agents in a world. These configurations can include object locations and orientations, mental or emotional dispositions of agents, or indications of the occurrence of events (e.g., agent X just got shot).
+%% \item Perception, or Percept. A subset of a world state that is perceived by an agent (or module).
 
-\item Perception, or Percept
-
-  A subset of a world state that is perceived by an agent (or module).
-
-\item Action
-
-  An action is a one-shot state manipulation that can be executed by an agent.  Sometimes called "primitives," actions acquire greater meaning when they are executed (possibly in sequences) by behavior modules to achieve a goal or satisfy a constraint.
+%% \item Action. An action is a one-shot state manipulation that can be executed by an agent.  Sometimes called "primitives," actions acquire greater meaning when they are executed (possibly in sequences) by behavior modules to achieve a goal or satisfy a constraint.
 
 
-\item World
+%% \item World. Sometimes called an "environment," a world is a container for all the things an agent can perceive and act upon, and possibly hidden things.  Worlds are represented by states that specify the configuration of all the things in a world at a given point in time.
 
-  Sometimes called an "environment," a world is a container for all the things an agent can perceive and act upon, and possibly hidden things.  Worlds are represented by states that specify the configuration of all the things in a world at a given point in time.
+%% \item World Dynamics. The dynamics of a world specifies the state transitions that are made in response to the execution of actions.  World dynamics may be deterministic or stochastic.  Markov Decision Processes are often used to represent world dynamics.
 
-\item World Dynamics
+%% \item Behavior Module. A behavior module is a self-contained agent component that recommends an action (response) for a given state perception (stimulus).  Anything that produces a policy (a mapping from states to actions and tasks) is a behavior module.  A behavior module is sometimes called a "subagent" in modular reinforcement learning.
 
-  The dynamics of a world specifies the state transitions that are made in response to the execution of actions.  World dynamics may be deterministic or stochastic.  Markov Decision Processes are often used to represent world dynamics.
+%% \item Agent. An agent is an entity that acts under its own control, perceiving the state of its world and executing actions in response to these perceived states.
 
-\item Behavior Module
+%% \item Intelligent Agent. An intelligent agent is an agent that chooses its actions to achieve goals or satisfy constraints.
 
-  A behavior module is a self-contained agent component that recommends an action (response) for a given state perception (stimulus).  Anything that produces a policy (a mapping from states to actions and tasks) is a behavior module.  A behavior module is sometimes called a "subagent" in modular reinforcement learning.
+%% \item Adaptive Agent. An adaptive agent is an intelligent agent that can automatically adapt its behaviors to different worlds (that is, choose different actions sequences to achieve goals in worlds with different dynamics), or adapt its behaviors at run-time to worlds in which the dynamics change.
 
-\item Agent
+%% \item Modular Agent. A modular agent is an agent that consists of multiple behavior modules and performs command arbitration to decide which module's preferred action to execute in a given state.
 
-  An agent is an entity that acts under its own control, perceiving the state of its world and executing actions in response to these perceived states.
-
-\item Intelligent Agent
-
-  An intelligent agent is an agent that chooses its actions to achieve goals or satisfy constraints.
-
-\item Adaptive Agent
-
-  An adaptive agent is an intelligent agent that can automatically adapt its behaviors to different worlds (that is, choose different actions sequences to achieve goals in worlds with different dynamics), or adapt its behaviors at run-time to worlds in which the dynamics change.
-
-\item Modular Agent
-
-  A modular agent is an agent that consists of multiple behavior modules and performs command arbitration to decide which module's preferred action to execute in a given state.
-
-\item Command Arbitration
-
-  Command arbitration is the act of deciding, for a given state, which
+%% \item Command Arbitration. Command arbitration is the act of deciding, for a given state, which behavior module should choose the action for the agent.
 
 
-\end{itemize}
+%% \end{itemize}
 
 \subsection{Agent Architecture}
 
@@ -77,11 +55,11 @@ Behavior modules, sometimes called subagents in the modular reinforcement learni
 
 \subsubsection{Adaptive Modules}
 
-An adaptive module employs learning algorithms under the hood to achieve automatic adaptivity.  By adaptive we mean two things: (1) adaptation to new worlds, and (2) run-time adaptation.  A module that is programmed to work for worlds with a given state representation will work with any world that provides the same (or greater) state representation, even if the dynamics of the worlds differ.  An adaptive module need simply be retrained for the new world.  Once an adaptive module is running in an active agent, the module may continue to tune its internal learning models as the agent acts in the world, providing for run-time adaptation.
+An adaptive module employs learning algorithms under the hood to achieve automatic adaptivity.  By adaptive we mean two things: (1) adaptation to new worlds, and (2) run-time adaptation.  A module that is programmed to work for worlds with a given state representation will work with any world that provides the same state representation, even if the dynamics of the worlds differ.  An adaptive module need simply be retrained for the new world.  Once an adaptive module is running in an active agent, the module may continue to tune its internal learning models as the agent acts in the world, providing for run-time adaptation.
 
 \subsubsection{Command Arbitrators}
 
-Command arbitrators take as input the action preferences of a set of modules, and selects one of the actions.  If the command arbitrator is part of a module, the action selected is the preferred action of the module.  If the command arbitrator is part of the top-level agent, then the action selected is the action that will be executed by the agent.
+Command arbitrators take as input the state of the world and possibly the action preferences of a set of modules, and selects one of the modules or actions to be executed by the agent.
 
 \section{The AFABL Language}
 
@@ -89,13 +67,13 @@ AFABL is a framework for implementing adaptive agents in the Scala programming l
 
 \subsection{Worlds}
 
-Every AFABL module and agent is designed to operate in a world. A world defines the states and state transition dynamics for a given state type and action types. Details are discussed below.
+Every AFABL module and agent is designed to operate in a world. A world defines the states, actions and state transition dynamics for a given state type and action types. Details are discussed below.
 
 \subsubsection{States}
 
 The states of a world can be represented with any kind of Scala class. Case classes (\ref{sec:scala-case-classes}) are good for representing states because of their concise syntax and built-in equality methods. Figure \ref{fig:bunny-state-code} shows a case class for a state with three state variables: the locations of a bunny, wolf, and food.
 
-\begin{figure}[h]
+\begin{figure}[!h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -115,9 +93,9 @@ case class BunnyState(
 
 \subsubsection{Actions}
 
-Actions are represented by objects which can be instances of any class. As with states, case classes make a good choice. Figure \ref{fig:bunny-action-code} shows actions for the bunny world implemented as a Scala enumeration (\ref{sec:scala-enumerations}).
+Actions are represented by objects which can be instances of any class. As with states, case classes make a good choice for implementing actions. Figure \ref{fig:bunny-action-code} shows actions for the bunny world implemented as a Scala enumeration (\ref{sec:scala-enumerations}).
 
-\begin{figure}[h]
+\begin{figure}[!h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -136,53 +114,54 @@ object BunnyAction extends Enumeration {
 
 \subsubsection{World Dynamics}
 
-An agent executes actions in a world, and those actions potentially change the state of the world. Having defined Scala representations for states and actions, we can define a world. Figure \ref{fig:world-code} shows the abstract class which defines the basic interface of world objects. As we discuss in Sections \ref{sec:afabl-modules} and \ref{sec:afabl-agents}, all modules and agents are defined to act in a particular instance of a world. As with states and actions, world representations make no advanced use of the Scala programming language.
+An agent executes actions in a world, and those actions potentially change the state of the world. Having defined Scala representations for states and actions, we can define a world. Figure \ref{fig:world-code} shows the abstract class which defines the basic interface of world objects, which are instances of subclasses if {\tt World}. As we discuss in Sections \ref{sec:afabl-modules} and \ref{sec:afabl-agents}, all modules and agents are defined to act in a particular instance of a world. As with states and actions, world representations make no advanced use of the Scala programming language.
 
-\begin{figure}[h]
+%% \begin{figure}[p]
+%% \begin{center}
+%% \small
+%% \begin{lstlisting}[language=Scala]
+%% /** A stateful object representing world dynamics.
+%%   */
+%% abstract class World[S, A] {
+
+%%   /** Initialize the world to a start state.
+%%     */
+%%   def init(): S
+
+%%   /** Move agent to a start state, according to the rules of the
+%%     * implementing world. Useful for continuing worlds where there is
+%%     * no terminal state and the agent "respawns" after dying.
+%%     */
+%%   def resetAgent(): S
+
+%%   /** All the states of this world. Necessary for reinforcement learning
+%%     * agents.
+%%     */
+%%   def states: Seq[S]
+
+%%   /** All the actions an agent can execute in this world.  For
+%%     * simplicity this includes all the actions, and the actions that
+%%     * aren't available in a given state simply have no
+%%     * effect. Necessary for reinforcement learning agents.
+%%     */
+%%   def actions: Seq[A]
+
+%%   /** Execute action in the world, resulting in a (possibly) new state.
+%%    */
+%%   def act(action: A): S
+%% }
+%% \end{lstlisting}
+%% \normalsize
+%% \caption{The abstract superclass of all world classes for AFABL agents.}
+%% \end{center}
+%% \label{fig:world-code}
+%% \end{figure}
+
+Figure \ref{fig:bunny-world-code} shows some of the code for the Bunny World.
+
+\begin{figure}[!h]
 \begin{center}
-
-\begin{lstlisting}[language=Scala]
-/** A stateful object representing world dynamics.
-  */
-abstract class World[S, A] {
-
-  /** Initialize the world to a start state.
-    */
-  def init(): S
-
-  /** Move agent to a start state, according to the rules of the
-    * implementing world. Useful for continuing worlds where there is
-    * no terminal state and the agent "respawns" after dying.
-    */
-  def resetAgent(): S
-
-  /** All the states of this world. Necessary for reinforcement learning
-    * agents.
-    */
-  def states: Seq[S]
-
-  /** All the actions an agent can execute in this world.  For
-    * simplicity this includes all the actions, and the actions that
-    * aren't available in a given state simply have no
-    * effect. Necessary for reinforcement learning agents.
-    */
-  def actions: Seq[A]
-
-  /** Execute action in the world, resulting in a (possibly) new state.
-   */
-  def act(action: A): S
-}
-\end{lstlisting}
-\caption{The abstract superclass of all world classes for AFABL agents.}
-\end{center}
-\label{fig:world-code}
-\end{figure}
-
-Figure \ref{fig:bunny-world-code}
-
-\begin{figure}[h]
-\begin{center}
-
+\small
 \begin{lstlisting}[language=Scala]
 class BunnyWorld(val width: Int = 5, val height: Int = 5)
   extends World[BunnyState, BunnyAction.Value] with LazyLogging {
@@ -217,14 +196,14 @@ class BunnyWorld(val width: Int = 5, val height: Int = 5)
   // Helper functions ...
 }
 \end{lstlisting}
-
-\caption{Parts of the bunny world class showing important aspects of the implementation of the {\tt World} class.}
+\normalsize
+\caption{Parts of the bunny world class showing important aspects of the implementation of the {\tt World} abstract class.}
 \end{center}
 \label{fig:bunny-world-code}
 \end{figure}
 
 
-\subsection{Modules}
+\subsection{Modules}\label{sec:afabl-modules}
 
 Figure \ref{fig:find-food-code} shows a possible AFABL implementation of a behavior module that represents the goal of finding food. First is the definition of a case class, {\tt FindFoodState}, to represent the state abstraction for FindFood modules. {\tt FindFoodState} includes only two of the three state variables in the bunny world.
 
@@ -254,7 +233,7 @@ world = new BunnyWorld
 
 The {\tt world} and {\tt =} are optional, but if included must be verbatim, i.e., considered part of the AFABL language.
 
-A state abstraction function that a world state object parameter and returns an instance of our state abstraction class:
+The second argument is a state abstraction function that takes a world-state object as a parameter and returns an instance of our state abstraction class:
 
 \begin{center}
 \begin{lstlisting}[language=Scala,frame=none]
@@ -264,9 +243,9 @@ stateAbstraction = (worldState: BunnyState) => {
 \end{lstlisting}
 \end{center}
 
-The {\tt stateAbstraction} and {\tt =} are optional, but if included should be considered part of the AFABL language. {\tt worldState} is a user-chosen name, {\tt BunnyState} must match the state type defined for the world in which the module and agent operate, in this case it's the first type parameter to {\tt World} in the {\tt BunnyWorld} code in Figure \ref{fig:bunny-world-code}. The last expression in the body of the {\tt stateAbstraction} function must be an instance of a module state, in this case {\tt FindFoodState}.
+The {\tt stateAbstraction} and {\tt =} are optional, but if included should be considered part of the AFABL language. {\tt worldState} is a user-chosen name, {\tt BunnyState} must match the state type defined for the world in which the module and agent operate, in this case it is the first type parameter to {\tt World} in the {\tt BunnyWorld} code in Figure \ref{fig:bunny-world-code}. The last expression in the body of the {\tt stateAbstraction} function must be an instance of a module state, in this case {\tt FindFoodState}.
 
-A module reward function takes an instance of our state abstraction class and returns the reward this module receives for begin in that state:
+The third and final argument to the {\tt AfablModule} factory method is a module reward function that takes an instance of our state abstraction class and returns the reward this module receives for being in that state:
 
 \begin{center}
 \begin{lstlisting}[language=Scala,frame=none]
@@ -281,7 +260,7 @@ The {\tt moduleReward} and {\tt =} are optional, but if included should be consi
 
 These three components -- world, state abstraction and module reward -- define a module specific learning problem on a subset of the world in which the module (and agent containing the module) may act. Internally, AFABL instantiates a Sarsa learning algorithm that uses these components using the algorithm parameters discussed in Chapter \ref{ch:arbiq}, but the programmer need not be aware of any details of reinforcement learning {\it algorithms}. The AFABL programmer need only be familiar with the reinforcement learning {\it problem}.
 
-\begin{figure}[h]
+\begin{figure}[!h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -308,13 +287,13 @@ val findFood = AfablModule(
 
 Here we see the value of splitting the world dynamics from the agent module's reward function. We can think of the world and the agent independently. In essence, the definition of a full MDP is split across the definition of a world, and the definition of an agent that acts in that world.
 
-Here we also begin to see syntactic conveniences afforded by the AFABL DSL. There are only two type annotations and one control structure (in the reward function). The rest of the types are inferred by Scala's type inferencer thanks to the way we've written the factory method that creates {\tt AfablModule}s. It's worth noting that we could have refined the DSL to further strip the few Scala syntactic artifacts (like the {\tt if} statement and the anonymous functions for {\tt stateAbstraction} and {\tt moduleReward}) but the syntactic overhead is minimal and there is a tradeoff between writing specific DSL syntax and using Scala's built-in syntax directly. Creating unique syntax for a DSL imposes cognitive burden on programmers who are proficient in the host language. The benefit of the unique syntax must outweigh this cognitive burden. Here we hope to strike the right balance between convenient domain-specific syntax and familiarity to programmers. Thanks to Scala's already concise and expressive language and idioms -- although this looks like a DSL -- there is no special syntax in this example. This code is a good example of shallow DSL embedding.
+Here we also begin to see syntactic conveniences afforded by the AFABL DSL. There are only two type annotations and one control structure (in the reward function). The rest of the types are inferred by Scala's type inferencer thanks to the way we wrote the factory method that creates {\tt AfablModule}s. It's worth noting that we could have refined the DSL to further strip the few Scala syntactic artifacts (like the {\tt if} statement and the anonymous functions for {\tt stateAbstraction} and {\tt moduleReward}) but the syntactic overhead is minimal and there is a tradeoff between writing specific DSL syntax and using Scala's built-in syntax directly. Creating unique syntax for a DSL imposes cognitive burden on programmers who are proficient in the host language. The benefit of the unique syntax must outweigh this cognitive burden. Here we hope to strike the right balance between convenient domain-specific syntax and familiarity to programmers. Thanks to Scala's already concise and expressive language and idioms, although this looks like a DSL there is no special syntax in this example. This code is a good example of shallow DSL embedding.
 
-\subsection{Agents}
+\subsection{Agents}\label{sec:afabl-agents}
 
-An AFABL agent is an agent that acts in a particular world, is composed of independent behavior modules pursuing their own continuing goals, and has a central command arbitrator that uses an agent level reward function to learn when it should listen to each module. As the code in Figure \ref{fig:afabl-bunny-code} shows, an AFABL agent allows programmers to express these components concisely, with very little cognitive distance between the concepts that make up the agent and the code that represents them. As with modules, {\tt AfablAgent} uses features of the Scala programming language to make the syntax more convenient. For example, there is only one explicit type annotation in the AFABL bunny agent code in Figure \ref{fig:afabl-bunny-code}, but behind the scenes a carefully written factory method in the companion object allows Scala's static type inferencer to infer type parameters of the {\tt AfablAgent} constructor, return types for anonymous functions, and assign a concrete type value to a path-dependent abstract type variable. Figuring out all this stuff and wrestling with Scala's type checker directly isn't easy. Writing an AFABL agent is easy.
+An AFABL agent is an agent that acts in a particular world, is composed of independent behavior modules pursuing their own continuing goals, and has a central command arbitrator that uses an agent level reward function to learn when it should listen to each module. As the code in Figure \ref{fig:afabl-bunny-code} shows, an AFABL agent allows programmers to express these components concisely, with very little cognitive distance between the concepts that make up the agent and the code that represents them. As with modules, {\tt AfablAgent} uses features of the Scala programming language to make the syntax more convenient. For example, there is only one explicit type annotation in the AFABL bunny agent code in Figure \ref{fig:afabl-bunny-code}, but behind the scenes a carefully written factory method in the companion object allows Scala's static type inferencer to infer type parameters of the {\tt AfablAgent} constructor, return types for anonymous functions, and assign a concrete type value to a path-dependent abstract type variable. Figuring out all this stuff and wrestling with Scala's type checker directly is not easy. Writing an AFABL agent is easy.
 
-\begin{figure}[h]
+\begin{figure}[!h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -342,7 +321,7 @@ val bunny = AfablAgent(
 
 A complete bunny agent using the AFABL DSL is shown in Figure \ref{fig:afabl-bunny-code}. This code would typically fit in a single editor window and represents a tremendous amount of functionality. This agent pursues two goals simultaneously and prioritizes them based on the relative locations of the bunny, the food, and the wolf.
 
-\begin{figure}[h]
+\begin{figure}[!h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -394,11 +373,11 @@ val bunny = AfablAgent(
 
 \section{Validation}
 
-AFABL supports agent-based software abstractions that permit code to be reused in new domains.  This reuse is what we mean by adaptivity: existing AFABL code can adapt to new domains without modifying the code.  We will quantify the value of this reuse in the experiments described below.
+AFABL supports a declarative style which makes it far easier to write action selection logic, and agent-based software abstractions that permit code to be reused in new domains. This reuse is one of the things we mean by adaptivity: existing AFABL code can adapt to new domains without modifying the code. We will quantify the value of AFABLs agent programming abstractions in the experiments discussed below.
 
 \subsection{Experiments}
 
-Programmers were randomly assigned to two equally-sized groups: one group used Scala without AFABL first -- the Scala-first group -- and the other group used AFABL first -- the AFABL-first group.  Each group completed two programming tasks using Scala and AFABL in the order determined by their group.  For each task the programmers were asked to design and implement elegant code that meets the requirements of the task as quickly as possible, balancing the quality of their solutions with time.  The idea was to get a good solution quickly, not a perfect solution in a long time.
+Programmers were randomly assigned to two equally-sized groups: one group used Scala without AFABL first -- the Scala-first group -- and the other group used AFABL first -- the AFABL-first group.  Each group completed two programming tasks using Scala and AFABL in the order determined by their group.  For each task the programmers were asked to write elegant code that meets the requirements of the task as quickly as possible, balancing the quality of their solutions with time.  The idea was to get a good solution quickly, not a perfect solution in a long time.
 
 \subsubsection{Task 1: The Bunny-Wolf Domain}\label{sec:task1}
 
@@ -409,11 +388,7 @@ Programmers were randomly assigned to two equally-sized groups: one group used S
 \end{center}
 
 
-\caption{In the grid world above, the bunny must pursue two goals
-  simultaneously: find food and avoid the wolf.  The bunny may move
-  north, south, east, or west.  When it finds food it consumes the
-  food and new food appears elsewhere in the grid world, when it meets
-  the wolf it is eaten and ``dies.''}
+\caption{In the grid world above, the bunny must pursue two goals simultaneously: find food and avoid the wolf.  The bunny may move north, south, east, or west.  When it finds food it consumes the food and new food appears elsewhere in the grid world, when it meets the wolf it is eaten and ``dies.''}
 \label{fig:bunny-picture}
 \end{figure}
 
@@ -433,7 +408,7 @@ In this task each programmers wrote an agent that controls a bunny character in 
 
 \end{itemize}
 
-Each programmer's Scala bunny and AFABL bunny were run for 1000 time steps and their average scores recorded. The score is based on how much food the bunny eats and how many times the bunny is eaten by the wolf.  Programmers were asked to write bunny agents that meet the wolf as little as possible and eat as much food as possible.
+Each programmer's Scala bunny and AFABL bunny were run for 1000 time steps and their average scores recorded. The score is based on how much food the bunny eats and how many times the bunny is eaten by the wolf. The score is normalized by the number of steps to indicate a sort of ``happiness index,'' a ration of rewards to lifespan. This score happens to correspond to the score used to validate Arbi-Q in Chapter \ref{ch:arbiq} to facilitate comparison between programmer authored agents and the performace of the algorithms we implemented for our reformulated MRL. Programmers were asked to write bunny agents that meet the wolf as little as possible and eat as much food as possible.
 
 \subsubsection{Task 2: Mating Bunny}\label{sec:task2}
 
@@ -455,12 +430,12 @@ In this task each programmer wrote a bunny agent for a world that is identical t
 
 \subsubsection{Provided Code}
 
-Study participants were given starter code so they could focus on writing the behavior of their agents. We provided the worlds for each task and the files in which to write their code. Participants were also referred to AFABL documentation on \href{http://afabl.org/}{http://afabl.org/}.
+Study participants were given starter code so they could focus on writing the behavior of their agents. We provided the world for each task and the files in which to write their code. Participants were also given general documentation for AFABL but assumed to already be proficient Scala programmers.
 
-Figure \ref{fig:scala-bunny1} shows the code given to participants for the Scala bunny on Task 1. Figure \ref{fig:afabl-bunny1} shows the code given to participants for the AFABL bunny on Task 1. The {\tt BunnyWorld1}, {\tt BunnyState1}, and {\tt BunnyAction} classes were also provided. It was up to participants to write state abstraction classes if they chose to do so.
+Figure \ref{fig:scala-task1-provided} shows the code given to participants for the Scala bunny on Task 1. Figure \ref{fig:afabl-task1-provided} shows the code given to participants for the AFABL bunny on Task 1. The {\tt BunnyWorld}, {\tt BunnyState}, and {\tt BunnyAction} classes were also provided. It was up to participants to write state abstraction classes if they chose to do so.
 
 
-\begin{figure}[h]
+\begin{figure}[!h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -474,7 +449,7 @@ class ScalaBunny1 extends Agent[BunnyState, BunnyAction.Value]
   // like, but please do not alter any of the provided code.
   def getAction(state: BunnyState, shouldExplore: Boolean = false) = {
 
-    // This is a placeholder to make the code compile. Please
+    // This is a stub to make the code compile. Please
     // replace this with your code.
     BunnyAction.Up
   }
@@ -487,7 +462,7 @@ class ScalaBunny1 extends Agent[BunnyState, BunnyAction.Value]
 \end{figure}
 
 
-\begin{figure}[h]
+\begin{figure}[!h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -512,7 +487,7 @@ object AfablTask1 {
 \end{figure}
 
 
-The provided code for Task 2 was identical to the provided code for Task 1, except that {\tt BunnyWorld1} was changed to {\tt BunnyWorld2} and {\tt BunnyState1} was changed to {\tt BunnyState2}. For Task 2 participants were encouraged to copy code from Task 1 if they found it helpful or refer to any objects defined for Task 1 that would be helpful, such as behavior modules. As we discuss below, doing so was straightforward for the AFABL agents but not for the Scala agents. Figure \ref{fig:scala-bunny2} shows the code given to participants for the Scala bunny on Task 2. Figure \ref{fig:afabl-bunny2} shows the code given to participants for the AFABL bunny on Task 2. The {\tt BunnyWorld2}, {\tt BunnyState2}, and {\tt BunnyAction} (same as for Task 1) classes were also provided. As in Task 1, it was up to participants to write state abstraction classes if they chose to do so, but they could reuse any state abstraction classes written for Task 1.
+The provided code for Task 2 was identical to the provided code for Task 1, except for the names of the files. For Task 2 participants were encouraged to copy code from Task 1 if they found it helpful or refer to any objects defined for Task 1 that would be helpful, such as behavior modules. As we discuss below, doing so was straightforward for the AFABL agents but not for the Scala agents. As in Task 1, it was up to participants to write state abstraction classes if they chose to do so, but they could reuse any state abstraction classes written for Task 1.
 
 Each task had a main method which ran the agents in the worlds to evaluate their performance.
 
@@ -520,7 +495,7 @@ Each task had a main method which ran the agents in the worlds to evaluate their
 
 \subsection{Scala}
 
-\begin{figure}[h]
+\begin{figure}[!h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -535,7 +510,7 @@ Each task had a main method which ran the agents in the worlds to evaluate their
 
 \subsection{AFABL}
 
-\begin{figure}[h]
+\begin{figure}[!h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -583,13 +558,13 @@ Each task had a main method which ran the agents in the worlds to evaluate their
 \end{figure}
 
 
-As you can see from Figure \ref{fig:afabl-submission}, most AFABL bunny agents look the same. There is one obvious way to implement a bunny agent that must pursue multiple goals. This uniformity is desirable. As Tim Peters says in the Zen of Python, ``There should be one-- and preferably only one --obvious way to do it.'' The similarity in most AFABL solutions to a particular modular agent programming problem is an indication that AFABL provides the right abstractions for adaptive agent programming.
+As you can see from Figure \ref{fig:afabl-task1-submission}, most AFABL bunny agents look the same. Submitted AFABL bunnies were very similar to the example code we present earlier in this chapter. There is one obvious way to implement a bunny agent that must pursue multiple goals. This uniformity is desirable. As Tim Peters says in the Zen of Python, ``There should be one-- and preferably only one --obvious way to do it.'' The similarity in most AFABL solutions to a particular modular agent programming problem is an indication that AFABL provides the right abstractions for adaptive agent programming.
 
 \section{A Typical Task 2 Submission}
 
 \subsection{Scala}
 
-\begin{figure}[h]
+\begin{figure}[!h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -604,7 +579,7 @@ As you can see from Figure \ref{fig:afabl-submission}, most AFABL bunny agents l
 
 \subsection{AFABL}
 
-\begin{figure}[h]
+\begin{figure}[!h]
 \begin{center}
 
 \begin{lstlisting}[language=Scala]
@@ -642,7 +617,7 @@ As you can see from Figure \ref{fig:afabl-submission}, most AFABL bunny agents l
 \label{fig:afabl-task2-submission}
 \end{figure}
 
-Figure \ref{fig:afabl-task2-submission} shows typical AFABL code for Task 2. Notice that the {\tt findFood} and {\tt avoidWolf} modules from Task 1 have been reused directly. This works because the world, {\tt BunnyWorld}, is the same. In Task 1 the bunny was ignoring the mate. In Task 2 we adapt the bunny to find the mate, and all we need to do is add a {\tt findMate} module and add a line to the {\tt agentLevelReward} function.
+Figure \ref{fig:afabl-task2-submission} shows typical AFABL code for Task 2. Notice that the {\tt findFood} and {\tt avoidWolf} modules from Task 1 have been reused directly. This works because the world, {\tt BunnyWorld}, is the same. In Task 1 the bunny was ignoring the mate. In Task 2 we adapt the bunny to find the mate, and all we need to do is add a {\tt findMate} module and add a line to the {\tt agentLevelReward} function so that the agent will value finding mates.
 
 \section{Quantitative Results}
 
@@ -656,7 +631,7 @@ We found that ...
 
 \subsection{Time}
 
-Study participants used the IntelliJ IDEA IDE with a plugin that we wrote especially for this study. The plugin recorded timestamps each time the editor tab with the Scala bunny or AFABL bunny gained or lost the focus. We then processed these logs to add up the time deltas between gaining and losing focus as an indication of the time programmers spent writing the code for each bunny agent.
+Study participants used the IntelliJ IDEA IDE with a plugin that we wrote especially for this study. The plugin recorded timestamps each time the editor tab with Task 1 or Task 2 files gained or lost the focus. We then processed these logs to add up the time deltas between gaining and losing focus as an indication of the time programmers spent writing the code for each bunny agent.
 
 We found that ...
 
@@ -679,7 +654,7 @@ Time                  & 0.0        & 0.0        & 0.0 \\
 Cyclomatic complexity & 0.0        & 0.0        & 0.0 \\
 Cyclomatic complexity & 0.0        & 0.0        & 0.0 \\\hline
 \end{tabular}
-\caption{Quantitative results of Scala agent code versus AFABL agent code on Task 1. A p-value of less than .05 mean that the difference in means is statistically significant at the 95\% significance level, i.e. $H_0: \mu_1 = \mu_2$.}
+\caption{Quantitative results of Scala agent code versus AFABL agent code on Task 1. A p-value of less than .05 mean that the difference in means is statistically significant at the 95\% significance level, i.e. we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different.}
 \label{tbl:task1-results}
 \end{table}
 \end{center}
@@ -693,7 +668,7 @@ Time                  & 0.0        & 0.0        & 0.0 \\
 Cyclomatic complexity & 0.0        & 0.0        & 0.0 \\
 Cyclomatic complexity & 0.0        & 0.0        & 0.0 \\\hline
 \end{tabular}
-\caption{Quantitative results of Scala agent code versus AFABL agent code on Task 2. A p-value of less than .05 mean that the difference in means is statistically signifigant at the 95\% significance level, i.e. $H_0: \mu_1 = \mu_2$.}
+\caption{Quantitative results of Scala agent code versus AFABL agent code on Task 2. A p-value of less than .05 mean that the difference in means is statistically signifigant at the 95\% significance level, i.e., we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different.}
 \label{tbl:task2-results}
 \end{table}
 \end{center}
