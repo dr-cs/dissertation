@@ -219,7 +219,7 @@ As with other kinds of machine learning, reinforcement learning must deal with t
 \label{fig:bunny-picture}
 \end{figure}
 
-The bunny, food, and wolf can be in one of 25 possible states. If the task of the bunny were only to reach a particular state, then the number of states would be 25. But if you add the task of avoiding a wolf that pursues the bunny, then the state space grows to $25^2 = 625$. Add the food that reappears in a new location after it is found and ``eaten'' and the state space grows to $25^3 = 15625$. If you model this problem as two separate modules, one in which the bunny avoids the wolf and another in which the bunny finds food, then each module solves a problem with a state space of $25^2 = 625$ states (bunny plus wolf and bunny plus food).
+The bunny, food, and wolf can be in one of 25 possible locations. If the task of the bunny were only to reach a particular location, then the number of states would be 25. But if you add the task of avoiding a wolf that pursues the bunny, then the state space grows to $25^2 = 625$. Add the food that reappears in a new location after it is found and ``eaten'' and the state space grows to $25^3 = 15625$. If you model this problem as two separate modules, one in which the bunny avoids the wolf and another in which the bunny finds food, then each module solves a problem with a state space of $25^2 = 625$ states (bunny plus wolf and bunny plus food).
 
 \subsection{Modular Reinforcement Learning}\label{sec:mrl}
 

@@ -131,7 +131,7 @@ Arbi-Q uses the Sarsa Q-Learning algorithm to learn the arbitrator's policy. At 
   \end{algorithmic}
 \end{algorithm}
 
-Notice that Arbi-Q is learning its command arbitration policy at the same time the modules are learning their subtasks. While it is possible in principle to train the modules before training the arbitrator, empirical results show faster convergence when the arbitrator and modules are trained at the same time.
+%% Notice that Arbi-Q is learning its command arbitration policy at the same time the modules are learning their subtasks. While it is possible in principle to train the modules before training the arbitrator, empirical results show faster convergence when the arbitrator and modules are trained at the same time.
 
 \section{Experiments}
 
@@ -159,7 +159,7 @@ For baselines, GM and Arbi-Q algorithms used modules with similarly scaled rewar
 
 \section{Results}
 
-Empirical results clearly show that the performance of GM-Sarsa degrades when the reward scales of the modules are not comparable. The learning curves depicted in Figure \ref{fig:gmsarsa-results} show that GM-Sarsa bunny agent with incomparable reward scales for its modules converges to a lower score than with comparable rewards.
+Empirical results show that the performance of GM-Sarsa degrades when the reward scales of the modules are not comparable. The learning curves depicted in Figure \ref{fig:gmsarsa-results} show that GM-Sarsa bunny agent with incomparable reward scales for its modules converges to a lower score than with comparable rewards.
 
 \begin{figure}[ht]
   \begin{center}
