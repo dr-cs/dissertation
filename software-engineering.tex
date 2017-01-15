@@ -2,168 +2,130 @@
 
 This chapter provides background in software engineering that relates to our work. First we provide a brief overview of software engineering and discuss the challenges of sofware engineering and the ways those challenges are typically met to situate our work within the landscape of software engineering. Then we discuss empirical and analytical software engineering research methods which we will use evaluate AFABL in the next chapter -- programmer usage studies and software complexity measures. Finally we close with a discussion of adaptive programming.
 
-\cite{polancic2010a-an-empirical}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders.
 
-\cite{buse2011a-benefits}
-
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders.
-
-\cite{lorenz2011a-code}
-
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
-
-\cite{basili1986a-experimentation}
-
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{gacek1995a-exploiting}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{runeson2009a-guidelines}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{shull2000a-investigating}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{dmitriev2004a-language}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
-\cite{,basili2007role}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
+
 
 \section{Software Reuse}
 
-Software reuse means means using an existing software artifact in a new software system without modification of the original artifact \cite{krueger1992a-software}.
+Software reuse means means using an existing software artifact in a new software system, ideally without modifying the original artifact. Abstraction is important -- cognitive distance is an intuitive measure of the effort required in to reuse \cite{krueger1992a-software}.
 
 \cite{gacek1995a-exploiting}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{mili1995a-reusing}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{frakes1996a-software}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
+\cite{frakes2005a-software}
+
+
 
 \cite{basili1996a-how-reuse}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
-\cite{frakes2005a-software}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
+
 
 \cite{shiva2007a-software}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{mohagheghi2008a-an-empirical}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{lorenz2011a-code}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \subsection{APIs: Libraries and Frameworks}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{polancic2010a-an-empirical}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \subsection{Domain-Specific Languages}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
+A domain-specific language (DSL) is a language that
+
+Specialized programming languages were alredy widespread when Landin proposed the first unified framework for designing domain specific languages in 1966 \cite{landin1966next}. In Landin's framework the design of a DSL consists of two independent parts: the written form of the language, and the kinds of abstractions that can be expressed in the language.
+
+Landin: Linguistic structure, syntax, semantic constraints on linguistic structure, outcome. Abstract syntax, axiomatization, and an underlying abstract machine.
+
+Perhaps the most successful DSL, with which every reasonably literate software engineer or computer scientist is familiar, is Structured Query Language (SQL) \cite{}. SQL was originally presented as SEQUEL in 1974 by Chamberline and Boyce of IBM Research \cite{chamberlin1974sequel} and today is .
+
+Domain-specific languages provide two primary benefits: improving programmer productivity and improving communication with domain experts \cite{fowler2011domain}. In Chapter \ref{ch:afabl} we show that AFABL imporoves programmer productivity by reducing the effort required to write agents and reducing the complexity of agent code. In Chapter \ref{ch:application} we present an application of AFABL to the domain of personality modeling in psychology.
 
 \cite{hudak1996building}
+\cite{hudak1998modular}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{lorenz2011a-code}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{taha2008domain-specific}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{deursen2000domain-specific}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{dmitriev2004a-language}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
-\cite{hudak1998modular}
-
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{spinellis2001notable}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{mitchell1993on-abstraction}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{odersky2008programming}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{simpkins2008towards}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{zang2007towards}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{mernik2005when}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \section{Software Complexity}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{mccabe1976complexity}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{gill1991cyclomatic}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{weyuker1988evaluating}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{mccabe1989design}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{kearney1986software}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 \cite{shao2003new}
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 
 \section{Adaptive Programming}
@@ -222,9 +184,42 @@ The essential characteristic of partial programming that makes it the right para
 \section{ALisp}
 
 
-This is a holder sentence meant to fill in the space that will likely be taken by the stuff I'm going to write about the reference citations places here as placeholders and reminders
 
 
 \section{Adaptation-Based Programming}
 
-Bauer's Ph.D. work in adaptation-based programming \cite{bauer2013adaptation} is the closest to ours in its focus on the practical application of adaptive programming. Bauer implemented libraries for automated adaptation as a Java library \cite{bauer2011adaptation} and as a Haskell embedded DSL \cite{bauer2011adaptation-haskell}. These systems used Q-learning internally but did use modular reinforcement learning. Bauer also did not conduct empirical software engineering studies of programmers to quantify and qualify the benefits of integrating reinforcement learning into a programming language. In the next chapter we present our language, AFABL, which integrates modular reinforcement learning with the results of a programmer study whcih demonstrates its value.
+Bauer's Ph.D. work in adaptation-based programming \cite{bauer2013adaptation} is the closest to ours in its focus on the practical application of adaptive programming. Bauer implemented libraries for automated adaptation as a Java library \cite{bauer2011adaptation} and as a Haskell embedded DSL \cite{bauer2011adaptation-haskell}. These systems used Q-learning internally but did not use modular reinforcement learning. Bauer also did not conduct empirical software engineering studies of programmers to quantify and qualify the benefits of integrating reinforcement learning into a programming language. In the next chapter we present our language, AFABL, which integrates modular reinforcement learning with the results of a programmer study whcih demonstrates its value.
+
+\section{Software Engineering Experimentation}
+
+Basili and colleagues have conducted many experiments and written extensively about the role of experiments in software engineering research and the kinds of knowledge that can be gained from experimentation \cite{basili2007role,basili1986a-experimentation}. In the next chapter we couch our programmer study of AFABL in their framework: Definition, Planning, Operation, and Interpretation. for software engineering experimentation. Review of . Framework:
+
+Definition
+---
+Motivation - assess advantage of AFABL, validate language-integrated RL
+Object - a programming language applied to a particular kin dof programming task
+Purpose -evaluate
+Perspective - user (of the programming language)
+Domain - programmer
+Scope - single project by single programmer
+
+Planning
+---
+Design - Randomized
+Criteria - size, complexity
+Measurement - Metric validation, subjective reflection
+
+Operation
+---
+Preparation - pilot study
+Execution - data collection: online-delivered programming tasks
+Analysis - quantitative: comparison of complexity metrics, complexities; qualitative
+
+Interpretation
+---
+Statistical framework - t-test
+Extrapolation -
+Impact
+
+
+Buse and colleagues, Benefits and Barriers of User Evaluation in SOftware Engineering Research \cite{buse2011a-benefits}
