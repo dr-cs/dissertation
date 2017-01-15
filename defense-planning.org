@@ -29,3 +29,77 @@ http://whenisgood.net/rxjxjn9/results/r8bnchz
 
 And use this link to edit your event ...
 http://whenisgood.net/rxjxjn9/edit/r8bnchz
+
+Announcement: Sent 12 January
+
+Title: Integrating Reinforcement Learning into a Programming Language
+
+Christopher Simpkins
+School of Interactive Computing
+College of Computing
+Georgia Institute of Technology
+
+Date: Thursday, 26 January 2016
+Time: 10:00 AM
+Location: TBD
+
+
+Committee:
+---
+Dr. Charles Isbell (Advisor, School of Interactive Computing, Georgia Tech)
+Dr. Douglas Bodner (Tennenbaum Institute, Georgia Tech)
+Dr. Mark Riedl (School of Interactive Computing, Georgia Tech)
+Dr. Spencer Rugaber (School of Computer Science, Georgia Tech)
+Dr. Andrea Thomaz (Electrical and Computer Engineering, University of Texas at Austin)
+
+Abstract:
+---
+
+Reinforcement learning is a promising solution to the intelligent agent problem, namely, given the state of the world, which action should an agent take to maximize goal attainment. However, reinforcement learning algorithms are slow to converge for larger state spaces and using reinforcement learning in agent programs requires detailed knowledge of reinforcement learning algorithms.
+
+One approach to solving the curse of dimensionality in reinforcement learning is decomposition. Modular reinforcement learning, as it is called in the literature, decomposes an agent into concurrently running reinforcement learning modules that each learn a "selfish" solution to a subset of the original problem. For example, a bunny agent might be decomposed into a module that avoids predators and a module that finds food. Current approaches to modular reinforcement learning support decomposition but, because the reward scales of the modules must be comparable, they are not composable -- a module written for one agent cannot be reused in another agent without modifying its reward function.
+
+This dissertation makes two contributions: (1) a command arbitration algorithm for modular reinforcement learning that enables composability by decoupling the reward scales of reinforcement learning modules, and (2) a Scala-embedded domain-specific language -- AFABL (A Friendly Adaptive Behavior Language) -- that integrates modular reinforcement learning in a way that allows programmers to use reinforcement learning without knowing much about reinforcement learning algorithms. We empirically demonstrate the reward comparability problem and show that our command arbitration algorithm solves it, and we present the results of a study in which programmers used AFABL and traditional programming to write a simple agent and adapt it to a new domain, demonstrating the promise of language-integrated reinforcement learning for practical agent software engineering.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(1) a reformulation of modular reinforcement learning based on command arbitration that supports composition by decoupling the reward scales of the modules that comprise a modular reinforcement learning agent, and a command arbitration algorithm taht implements this reformulation.
+
+
+This dissertation thesis claims that (1) modular reinforcement learning can be extended to support composability by decoupling the reward scales of the modules that comprise the agents, and (2) integrating modular reinforcement learning into a programming language makes it easier to write agent programs and easier to adapt them to new domains.
+
+Composability, an essential property oAf modularity in software engineering, allows components to be reused in new systems.  In the case of a modular reinforcement learning agent composability means being able to reuse behavior modules in new agents without modifying the modules.  The current state of the art in modular reinforcement learning supports decomposition but not composition, or module reuse.
+
+
+Programming language features are an excellent way to support software engineering in general. The second major contribution of this dissertation is a Scala-embedded domain-specific language -- AFABL (A Friendly Adaptive Behavior Language) -- that integrates modular reinforcement learning.  We show how this integration is useful in writing adaptive agent software by applying AFABL to agent programming tasks and measuring the benefit of AFABL programming compared to traditional programming.  This practical application and validation distinguishes our work with AFABL from previous work in integrating RL into programming languages such as ALisp.
