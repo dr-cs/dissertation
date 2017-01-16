@@ -1,17 +1,15 @@
-\chapter{Applications of AFABL and MRL}\label{ch:applications}
+\chapter{An Example Application: Deriving Behavior from Personality}\label{ch:applications}
 
-\section{Deriving Behavior from Personality: A Reinforcement Learning Approach}
-
-Creating artificial intelligent agents that are high-fidelity simulations of natural agents will require that behavioral scientists be able to write code themselves, not merely act as consultants with the ensuing knowledge acquisition bottleneck.  We are designing a system that will make it possible to create rich agents using concepts familiar to behavioral scientists, such as personality models from psychology.  However, translating personality models into the concrete behavior of an agent using currently available programming constructs would require a level of code complexity that would make the system inaccessible to behavioral scientists.  What we need is a way to derive the concrete actions of an agent directly from psychological personality models.  This paper describes a reinforcement learning approach to solving this problem in which we represent trait-theoretic personality models as reinforcement learning agents.  We validate our approach by creating a virtual reconstruction of a psychology experiment using human subjects and showing that our virtual agents exhibit similar behavior patterns.
+In this chapter we present an application of language-integrated reinforcement learning to the problem of personality simulation. Creating artificial intelligent agents that are high-fidelity simulations of natural agents will require that behavioral scientists be able to write code themselves, not merely act as consultants with the ensuing knowledge acquisition bottleneck. However, translating personality models into the concrete behavior of an agent using currently available programming constructs would require a level of code complexity that would make the system inaccessible to behavioral scientists.  What we need is a way to derive the concrete actions of an agent directly from psychological personality models.  This chapter describes a reinforcement learning approach to solving this problem in which we represent trait-theoretic personality models as reinforcement learning agents.  We validate our approach by creating a virtual reconstruction of a psychology experiment using human subjects and showing that our virtual agents exhibit similar behavior patterns. Note that this work was conducted and published before we finished the Arbi-Q command arbitration algorithm of Chapter \ref{ch:arbiq}, so the AFABL agents used the Greatest-Mass q-decomposition algorithm. We have also updated the code from our original work to use AFABL syntax.
 
 
 \subsection{Introduction}
 
 There is tremendous interest in creating synthetic agents that behave as closely as possible to natural (human) agents.  Rich, interactive intelligent agents will advance the state of the art in training simulations, interactive games and narratives, and social science simulations.  However, the programming systems for creating such rich synthetic agents are too complex, or rather too steeped in computational concepts, to be used directly by the behavioral scientists who are most knowledgeable in modeling natural agents. Engaging behavioral scientists more directly in the authoring of synthetic agents would go a long way towards improving the fidelity of synthetic agents.
 
-Our goal is to create a programming language that a behavioral scientist can use to write agent programs using concepts familiar to behavioral scientists.  This task is complicated by the fact that the most popular and best understood personality models from behavioral science do not lend themselves to direct translation into computer programs.  Requiring a behavioral scientist to specify behaviors in the detail required in even the most cutting edge purpose-built programming language would plunge the would-be behavioral scientist agent programmer right into a morass of complex computational concepts that lie outside the expertise of most dedicated behavioral experts. To solve this problem we need a way to get from personality models to behaviors, to derive specific agent actions in an environment from a personality model without having to program the derivation in great detail.
+What we need is a programming language that a behavioral scientist can use to write agent programs using concepts familiar to behavioral scientists.  This task is complicated by the fact that the most popular and best understood personality models from behavioral science do not lend themselves to direct translation into computer programs.  Requiring a behavioral scientist to specify behaviors in the detail required in even the most cutting edge purpose-built programming language would plunge the would-be behavioral scientist agent programmer right into a morass of complex computational concepts that lie outside the expertise of most dedicated behavioral experts. To solve this problem we need a way to get from personality models to behaviors, to derive specific agent actions in an environment from a personality model without having to program the derivation in great detail.
 
-In this paper, we describe a way to model motivational factors from trait-oriented personality theory by reinforcement learning components.  We describe a virtual agent simulation that reconstructs a human subject experiment from psychology, namely some of Atkinson's original work in achievement motivation and test anxiety, and show that our simulation exhibits the same general behavior patterns as the human subjects in Atkinson's experiments.  First, we briefly discuss relevant personality research and provide some background.
+In this chapter, we describe a way to model motivational factors from trait-oriented personality theory with reinforcement learning modules.  We describe a virtual agent simulation that reconstructs a human subject experiment from psychology, namely some of Atkinson's original work in achievement motivation and test anxiety, and show that our simulation exhibits the same general behavior patterns as the human subjects in Atkinson's experiments.  First, we briefly discuss relevant personality research and provide some background.
 
 \subsubsection{Personality}
 
@@ -21,37 +19,15 @@ Trait theories \cite{cervone2009personality}, the most well-known example of whi
 
 While debate continues about the merits and drawbacks of the different approaches to personality, the psychology community is also attempting to unify personality and motivation theory \cite{mischel2008handbook}. While the work we present here is focused on bridging the gap between the descriptive power of trait-oriented models and the behavior that arise from them, we consider this work to be complementary to work in encoding information processing theories.  In the future, rich computational agents may be built by combining approaches.
 
-\subsubsection{Reinforcement Learning}
-
-One can think of reinforcement learning (RL) as a machine learning approach to planning, that is, a way of finding a sequence of actions that achieves a goal.  In RL, problems of decision-making by agents interacting with uncertain environments are usually modeled as Markov decision processes (MDPs). In the MDP framework, at each time step the agent senses the state of the environment and executes an action from the set of actions available to it in that state. The agent's action (and perhaps other uncontrolled external events) cause a stochastic change in the state of the environment. The agent receives a (possibly zero) scalar reward from the environment. The agent's goal is to find a {\it policy}; that is, to choose actions so as to maximize the expected sum of rewards over some time horizon. An optimal policy is a mapping from states to actions that maximizes the long-term expected reward.  In short, a policy defines which action an agent should take in a given state to maximize its chances of reaching a goal.
-
-%% Many RL algorithms are guaranteed to
-%% converge to the optimal policy in the limit (as time increases),
-%% though in practice it may be advantageous to employ suboptimal yet
-%% more efficient algorithms.  Such algorithms find {\em satisficing}
-%% policies---that is, policies that are ``good enough''---similar to how
-%% real-world agents (like humans) act in the world.
-
-%% Many RL algorithms have been developed for learning good
-%% approximations to an optimal policy from the agent's experience in its
-%% environment. At a high level, most algorithms use this experience to
-%% learn value functions (or Q-values) that map state-action pairs to the
-%% maximal expected sum of reward that can be achieved by starting from
-%% that state-action pair and then following the optimal policy from that
-%% point on. The learned value function is used to choose actions.
-
-Reinforcement learning is a large and active area of research, but the preceding is all the reader needs to understand the work presented here.  More detail can be found in \cite{sutton1998reinforcement,kaelbling1996reinforcement}.
-
-
 \subsubsection{Modeling Personality with Reinforcement Learning}
 
-The essential idea behind modeling personality traits with reinforcement learning is that each motivational factor can be represented by a reinforcement learning component.  In psychology, the inherent desirability or attractiveness of a behavior or situation is referred to as {\em valence}.  For a person high in success approach motivation, behaviors or situations that provide an ``opportunity to excel'' will have high valence, while other behaviors will have lower valence.  The notion of valence translates fairly directly into the concept of reward in reinforcement learning.  Just as people with certain motivational factors will be attracted to high-valence behaviors, a reinforcement learner is attracted to high-reward behaviors.  This is the basis for modeling motivational factors with reinforcement learning components.  By encoding the valence of certain behaviors as a reward structure, reinforcement learners can learn the behavioral patterns that are associated with particular motivational factors.  This is a powerful idea, because it allows an agent author to write agent code using motivational factors while minimizing the need to encode the complex mechanisms by which such factors lead to concrete behavior.
+The essential idea behind modeling personality traits with reinforcement learning is that each motivational factor can be represented by a reinforcement learning module.  In psychology, the inherent desirability or attractiveness of a behavior or situation is referred to as {\em valence}.  For a person high in success approach motivation, behaviors or situations that provide an ``opportunity to excel'' will have high valence, while other behaviors will have lower valence.  The notion of valence translates fairly directly into the concept of reward in reinforcement learning.  Just as people with certain motivational factors will be attracted to high-valence behaviors, a reinforcement learner is attracted to high-reward behaviors.  This is the basis for modeling motivational factors with reinforcement learning modules.  By encoding the valence of certain behaviors as a reward structure, reinforcement learners can learn the behavioral patterns that are associated with particular motivational factors.  This is a powerful idea, because it allows an agent author to write agent code using motivational factors while minimizing the need to encode the complex mechanisms by which such factors lead to concrete behavior.
 
 A critical aspect of trait theory is that traits can have interactive effects.  It is clear that a person who is high in achievement motivation will ``go for it'' when given the opportunity and that a person who is high in avoidance motivation will be more reserved.  But what happens when a person is high in both motivations?  Such interactive effects cannot be ignored in a credible treatment of personality, but it is hard to predict the behavioral patterns that will arise from given combinations of motivational factors.  One can imagine the code complexity that might result from trying to model such interactive effects with production rules or other traditional programming constructs.  As we demonstrate later, our reinforcement learning approach handles such interactive effects automatically.
 
 It is important to note that we are not creating a new theory of personality.  We are creating a computational means of translating existing theories of personality from {\em psychology} (not computer science) into actions executed by synthetic agents.  We are also not committing to a particular theory from psychology, but rather supporting the general category of trait theories of personality which, until now, have not been directly realizable in computer agents.
 
-In the remainder of this paper we discuss some related work in agent modeling, present our virtual reconstruction of a human subject experiment using our reinforcement learning approach, and discuss the promising results and their implications for future work.
+In the remainder of this chapter we discuss some related work in agent modeling, present our virtual reconstruction of a human subject experiment using our reinforcement learning approach, and discuss the promising results and their implications for future work.
 
 
 \subsection{Related Work}\label{sec:related-work}
@@ -63,7 +39,7 @@ There is a large and rich body of work in believable agents.  Mateas and Stern b
 
 \subsection{Experiments}
 
-To test our claim that personality can be modeled by reinforcement learning components, we created a population of simple two-component multiple-goal reinforcement learning agents and ran them in a world that replicated experiments carried out with humans by psychologist John Atkinson.  First we describe Atkinson's original research, and then discuss our virtual reconstruction of his experiments.
+To test our claim that personality can be modeled by reinforcement learning modules, we created a population of simple two-module multiple-goal reinforcement learning agents and ran them in a world that replicated experiments carried out with humans by psychologist John Atkinson.  First we describe Atkinson's original research, and then discuss our virtual reconstruction of his experiments.
 
 \subsubsection{Atkinson's Ring Toss Experiment}\label{sec:ring-toss}
 
@@ -78,71 +54,73 @@ We reconstructed Atkinson's ring toss experiment in a computer simulation.  We c
 \begin{figure}[h]
 
 \begin{lstlisting}
-object Student((Achievement, 1.5 + X ~ N(0, 1) / 2),
-               (TestAnxiety, .5 + X ~ N(0, 1) / 2))
+val motivatedStudent = GmAgent(
+  world = RingTossWorld,
+
+  // Sequence of pairs where the second element of each pair
+  // is the weight of the pair, corresponding to the personality
+  // trait measure
+  modules = Seq((achievementMotivation, 1.5 + X ~ N(0, 1) / 2),
+                (testAnxiety, .5 + X ~ N(0, 1) / 2))
 }
 \end{lstlisting}
 
-\caption{An agent representing a success-oriented student in Atkinson's ring toss experiment, containing two RL components representing high achievement motivation and low test anxiety.  The code snippets presented here are simplified versions of the Scala code we used to run our experiments.}
+\caption{An agent representing a success-oriented student in Atkinson's ring toss experiment, containing two RL modules representing high achievement motivation and low test anxiety.  The code snippets presented here are simplified versions of the Scala code we used to run our experiments.}
 \label{fig:student}
 \end{figure}
 
-As discussed earlier, each of the motivational dimensions of the virtual subjects was implemented with reinforcement learning components that learned to satisfy the preference for perceived valence of behaviors (modeled as reward).  For example, in the achievement motivation component (see Figure \ref{fig:achievement}), the greater the distance from the peg, the greater the reward because it represents greater achievement.  Similarly, in the test anxiety component (see Figure \ref{fig:testanxiety}), greater reward is given to closer distances, because they minimize, or ``avoid'' the chance of failure from a long-distance toss.
+As discussed earlier, each of the motivational dimensions of the virtual subjects was implemented with reinforcement learning modules that learned to satisfy the preference for perceived valence of behaviors (modeled as reward).  For example, in the achievement motivation module (see Figure \ref{fig:achievement}), the greater the distance from the peg, the greater the reward because it represents greater achievement.  Similarly, in the test anxiety module (see Figure \ref{fig:testanxiety}), greater reward is given to closer distances, because they minimize, or ``avoid'' the chance of failure from a long-distance toss.
 
 \begin{figure}[h]
 \begin{lstlisting}
-object Achievement extends AbstractRlComponent {
+val achievementMotivation = AfablModule(
 
-  world = RingTossWorld
+  world = RingTossWorld,
 
-  rewards = (1_foot_line -> 1,
-             2_foot_line -> 2,
-             // ...
-             15_foot_line -> 15)
+  moduleReward = (state: RingTossState) => state match {
+    case OneFootLine => 1,
+    case TwoFootLine => 2,
+    ...
+    case FifteenFootLine => 15
+  }
 
-  actions = (play_1_foot_line,
-             play_2_foot_line,
-             // ...
-             play_15_foot_line)
-}
+)
 \end{lstlisting}
-\caption{A reinforcement learning component representing achievement motivation.}
+\caption{A reinforcement learning module representing achievement motivation.}
 \label{fig:achievement}
 \end{figure}
 
 \begin{figure}[h]
 
 \begin{lstlisting}
-object TestAnxiety extends AbstractRlComponent {
+val testAnxiety = AfablModule(
 
-  world = RingTossWorld
+  world = RingTossWorld,
 
-  rewards = (1_foot_line -> 15,
-             2_foot_line -> 4,
-             // ...
-             15_foot_line -> 1)
+  moduleReward = (state: RingTossState) => state match {
+    case OneFootLine => 15,
+    case TwoFootLine => 14,
+    ...
+    case FifteenFootLine => 1
+  }
 
-  actions = (play_1_foot_line,
-             play_2_foot_line,
-             // ...
-             play_15_foot_line)
-}
+)
 \end{lstlisting}
 
-\caption{A reinforcement learning component representing Test Anxiety (`avoidance motive, a.k.a. ``fear of failure'').  Note that the rewards are inverted from the achievement motivation component, that is, the valence of avoiding achievement is higher.}
+\caption{A reinforcement learning module representing Test Anxiety (`avoidance motive, a.k.a. ``fear of failure'').  Note that the rewards are inverted from the achievement motivation module, that is, the valence of avoiding achievement is higher.}
 \label{fig:testanxiety}
 \end{figure}
 
-Internally, each personality component is implemented with the standard Q-learning algorithm \cite{sutton1998reinforcement}.  The ring toss world consists of 16 states -- a start state and one state for each of the 15 distances, and 15 actions available in each state that represent playing (making a toss) from a particular distance.  For readers interested in such details, each reinforcement learning component used a step-size parameter of $\alpha = 0.1$, a discount factor of $\gamma = 0.9$ (though discounting wasn't important given that the 15 states representing playing lines were terminal states, since each play was a training episode), and employed an $\epsilon$-greedy action selection strategy with $\epsilon = 0.2$.  (Readers familiar with reinforcement learning will also notice that this game is roughly equivalent to a 15-armed bandit problem.)  We emphasize that the details of the reinforcement learning algorithms are not essential to modeling motivational factors, and those details are hidden inside the implementation of the components.  Indeed a major goal of our work is to simplify the task of writing synthetic agents by taking care of such details automatically.
+Internally, each personality module is implemented with the standard Q-learning algorithm \cite{sutton1998reinforcement}.  The ring toss world consists of 16 states -- a start state and one state for each of the 15 distances, and 15 actions available in each state that represent playing (making a toss) from a particular distance.  Each reinforcement learning module used a step-size parameter of $\alpha = 0.1$, a discount factor of $\gamma = 0.9$ (though discounting wasn't important given that the 15 states representing playing lines were terminal states, since each play was a training episode), and employed an $\epsilon$-greedy action selection strategy with $\epsilon = 0.2$.  (Readers familiar with reinforcement learning will also notice that this game is equivalent to a 15-armed bandit problem.)  We emphasize that the details of the reinforcement learning algorithms are not essential to modeling motivational factors, and those details are hidden inside the implementation of the modules.  Indeed a major goal of our work is to simplify the task of writing synthetic agents by taking care of such details automatically.
 
-Recall that reinforcement learning algorithms learn an action value for each action available in a given state.  An action value for a state represents the expected total reward that can be achieved from a state by executing that action and transitioning to a successor state. For each of the components -- Achievement and TestAnxiety -- the action values represent the learned utility of the actions in serving the motivational tendencies the components represent.  The Student agents take into account the preferences of the components -- represented by action values -- by summing their action values weighted by their component weights to get a composite action value for each action in a given state.  If we denote each component's action value by $Q(s, a)$ and the weights by $W$, then the composite, or overall, action value is:
+Recall that reinforcement learning algorithms learn an action value for each action available in a given state.  An action value for a state represents the expected total reward that can be achieved from a state by executing that action and transitioning to a successor state. For each of the modules -- Achievement and TestAnxiety -- the action values represent the learned utility of the actions in serving the motivational tendencies the modules represent.  The Student agents take into account the preferences of the modules -- represented by action values -- by summing their action values weighted by their module weights to get a composite action value for each action in a given state.  If we denote each module's action value by $Q(s, a)$ and the weights by $W$, then the composite, or overall, action value is:
 
 \begin{align}
 Q_{student}(s,a) =  & W_{Achievement} Q_{Achievement}(s,a) +\\
                    & W_{TestAnxiety} Q_{TestAnxiety}(s,a)
 \end{align}
 
-For the virtual experiments, each component -- Achievement and TestAnxiety -- was run to convergence and then the student agents simulated 10 plays of the ring toss game, just as in Atkinson's experiment.  We discuss the results of the experiment below.
+For the virtual experiments, each module -- Achievement and TestAnxiety -- was run to convergence and then the student agents simulated 10 plays of the ring toss game, just as in Atkinson's experiment.  We discuss the results of the experiment below.
 
 \subsection{Model Validation}
 
@@ -168,7 +146,7 @@ For the virtual experiments, each component -- Achievement and TestAnxiety -- wa
 %% behavior patterns that are very similar to those of the human subjects
 %% in Atkinson's original experiments, strongly supporting our claim that
 %% motivational factors can be modeled with reinforcement learning
-%% components.
+%% modules.
 
 %% 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8<
 
@@ -198,23 +176,23 @@ Range & Conf. Int. & Conf. Int. & Conf. Int. & Conf. Int. \\ \hline\hline
 \caption{Validation Results.  For each subject group the percentage of shots taken by Atkinson's human subjects and by our simulation from each of three ranges is presented along with a 95\% confidence interval for the mean percentage of shots in 10 simulated replications of Atkinson's experiment.}
 \label{tab:results}
 
-
 \end{center}
 \end{table*}
 
 The validation results are presented in Table \ref{tab:results}. Atkinson analyzed his experimental data by aggregating the shots taken by subjects into three ``buckets'' representing low, medium, and high difficulty.  In Atkinson's analyses the dividing lines between the three buckets were set in four different ways with each yielding similar results.  For brevity we present the division obtained by using both geographical distance and distribution of shots about the median shot of 9.8 ft, in other words, the dividing line one would choose by inspecting the histogram for distinct regions.  This strategy resulted in the three buckets listed in the left column of Table \ref{tab:results}.  Each cell of the four subject groups -- H-L, H-H, L-L, L-H - contains the percentage of shots taken by Atkinson's subjects, the mean percentage obtained by running 10 replications of our simulation of Atkinson's experiment, and a 95\% confidence interval for the mean percentage.  While our model did not achieve formal validation, the general patterns of behavior are quite similar to Atkinson's human subject experiment and we consider these results to be a good proof of concept.  We discuss some reasons behind these results and strategies for improvement below.
 
-
 \subsection{Discussion}
 
-We made several assumptions in our models that affected the validation results.  First, because we did not have access to Atkinson's original data, only summary presentations, we did not know the exact distribution of motivational factors among his subjects, or even the scales used in his measures.  We assumed normally distributed measures and tried several different scales before settling on the values used in the simulations reported here.  Second, it is not clear how the valence of behaviors should be translated into reward structures for RL agents.  We chose a simple linear reward structure in hopes that the system would be robust to naive encodings.  To make our approach widely useful we will need to address the manner in which reward structures are determined.  Third, we calculated aggregate action values by a simple weighted sum of component action values.  We are currently investigating optimal arbitration of multiple RL components and hope to report results within the next six months.
+We made several assumptions in our models that affected the validation results.  First, because we did not have access to Atkinson's original data, only summary presentations, we did not know the exact distribution of motivational factors among his subjects, or even the scales used in his measures.  We assumed normally distributed measures and tried several different scales before settling on the values used in the simulations reported here.  Second, it is not clear how the valence of behaviors should be translated into reward structures for RL agents.  We chose a simple linear reward structure in hopes that the system would be robust to naive encodings.  To make our approach widely useful we will need to address the manner in which reward structures are determined.
+
+%% Third, we calculated aggregate action values by a simple weighted sum of module action values.  We are currently investigating optimal arbitration of multiple RL modules and hope to report results within the next six months.
 
 We chose the Atkinson ring toss experiment on the advice of psychologists who recommended it as a well-known example of trait-oriented behavior theory, and because of its simplicity. However, our goal is to create large agent systems, so future work will need to address scalability -- to greater numbers of trait factors and more complex worlds -- and generalizability, or transferability, to other domains.
 
 %% More generally, there are broader issues to be understood about
 %% employing this method in practice.  From the psychology perspective, we
 %% need to understand how motivational factor scales translate into the
-%% weights on reinforcement learning components, e.g., they must be
+%% weights on reinforcement learning modules, e.g., they must be
 %% normalized somehow.  This issue is similar to the issue of reward
 %% comparability in reinforcement learning (discussed below).  Also, our
 %% example used two motivational factors.  How do we scale this approach
@@ -231,12 +209,10 @@ We chose the Atkinson ring toss experiment on the advice of psychologists who re
 %% matching of reinforcement learning algorithms to particular agent
 %% designs and virtual worlds?
 
-The algorithms we used also employed no optimization.  Reinforcement learning suffers from the curse of dimensionality, and many techniques are being actively pursued to cope with the size of state spaces for realistic-size domains.  Profitably employing reinforcement learning in agent programming systems will mean integrating scaling techniques such as function approximation (e.g., of action-value functions or state spaces) and decomposition techniques.
+%% The algorithms we used also employed no optimization.  Reinforcement learning suffers from the curse of dimensionality, and many techniques are being actively pursued to cope with the size of state spaces for realistic-size domains.  Profitably employing reinforcement learning in agent programming systems will mean integrating scaling techniques such as function approximation (e.g., of action-value functions or state spaces) and decomposition techniques.
 
-Finally, notice that the example code presented in this paper contains no logic for implementing behavior.  The agents and the components are defined declaratively by specifying a state space, an action set, and a reward structure.  The run-time system derives the concrete behavior of the agents automatically from these specifications.  This technique, sometimes called partial programming \cite{simpkins2008towards}, is a key concept that increases the usability of agent programming by allowing programmers to specify {\em what} an agent is to do without getting mired in {\em how} the agent should do it.
+Finally, notice that the example code presented in this paper contains no logic for implementing behavior.  The agents and the modules are defined declaratively by specifying a state space, an action set, and a reward structure.  The run-time system derives the concrete behavior of the agents automatically from these specifications.  This technique, sometimes called partial programming or adaptive programming\cite{simpkins2008towards}, is a key concept that increases the usability of agent programming by allowing programmers to specify {\em what} an agent is to do without getting mired in {\em how} the agent should do it.
 
 \subsection{Conclusions and Future Work}
 
-Reinforcement learning provides a promising approach to modeling personality traits and motivational factors in synthetic agents.  In particular, it provides us with a means to create agent programming systems that are accessible to behavioral scientists and harness their knowledge directly while minimizing the need for complex programming. Much work remains to make this vision a reality, and our work is progressing on three paths.  First, the integration of reinforcement learning into agent programming systems needs to be studied further so that we know when it is useful and how much detail can be hidden from the agent programmer.  Second, the examples presented here were written together so that the reward signals of each agent were directly comparable.  If we want to enable large-scale agent programming, we must be able to arbitrate the reward signals of separately-authored reinforcement learning components \cite{bhat2006on-the-difficulty}.  We are currently working on such an arbitration algorithm and hope to have results in the very near future.  Finally, once the implications of integrating reinforcement learning components into agent models are sufficiently well understood and separately authored components can be combined in a modular fashion using an appropriate arbitration algorithm, we believe the best way to realize these benefits is in a language that incorporates these features in a coherent design.  We are currently working on such a language, initially implemented as an internal domain-specific language (DSL) in Scala.
-
-% \bibliography{simpkins2010deriving}
+Much work remains to make accessible personality-based agent programming systems a reality, and our work is progressing on three paths.  First, the integration of reinforcement learning into agent programming systems needs to be studied further so that we know when it is useful and how much detail can be hidden from the agent programmer. This dissertation has confirmed what we already know, namely, that authoring reward functions is not straightforward. We need to be able to specify modules in simpler terms and let the reward structure be derived automatically (we will discuss this further in Chapter \ref{ch:conclusion}. Second, the examples presented here were written together so that the reward signals of each agent were directly comparable, which allowed us to use the Greatest-Mass q-decomposition algorithm for combining the modules. Now that we have an arbitration algorithm that is robust to incomparable reward scales, we can either use a {\tt GmAgent} for personality modeling, as we have done here, or extend AFABL with weighting to enable trait-oriented personality modeling. Finally, while AFABL is currently able to handle the personality modeling presented in this chapter, AFABL is still a shallowly-embedded Scala DSL and therefore beyond the programming capabilities of most psychologists. We will need to make AFABL simpler to use. Nevertheless, reinforcement learning provides a promising approach to modeling personality traits and motivational factors in synthetic agents.  In particular, it provides us with a means to create agent programming systems that are at least comprehensible by behavioral scientists and harness their knowledge directly while minimizing the need for complex programming.
