@@ -124,32 +124,6 @@ For the virtual experiments, each module -- Achievement and TestAnxiety -- was r
 
 \subsection{Model Validation}
 
-%% 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8<
-
-%% When stats are done, gonna scrap this in favor of the table containing
-%% confidence intervals.
-
-%% \begin{figure}[h]
-%%   \begin{center}
-%%     \scalebox{.8}{\includegraphics{atkinson}}
-%%     \scalebox{.4}{\includegraphics{iccm}}
-%%     \caption{The top plot shows the behavior patterns of human
-%%       subjects in Atkinson's Ring Toss experiment.  The bottom plot
-%%       shows the behavior patterns of our synthetic agents that
-%%       re-created Atkinson's experiment.  Note that Atkinson's plot is
-%%       smoothed, while ours is not.}
-%%   \end{center}
-%%   \label{fig:results}
-%% \end{figure}
-
-%% As Figure \ref{fig:results} shows, our synthetic agents exhibit
-%% behavior patterns that are very similar to those of the human subjects
-%% in Atkinson's original experiments, strongly supporting our claim that
-%% motivational factors can be modeled with reinforcement learning
-%% modules.
-
-%% 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8<
-
 A model is a set of explicit assumptions about how some system of interest works \cite{law2007simulation}.  In psychology the system of interest is (usually) a human or group of humans.  Our virtual reconstruction of Atkinson's experiments constitutes a computational representation of Atkinson's two-factor model of personality.  Thus, our agents are simulation models of Atkinson's subjects (the students in his ring toss experiment).  While the work presented here is only a proof of concept, we do hope to achieve a high level of validity as we refine our approach, so it will be useful to validate our models using techniques from simulation science \cite{law2007simulation}.
 
 As we described earlier, Atkinson divided his subjects into four groups according to their measures (high or low) on achievement motivation and test anxiety.  For each of these four groups -- H-L, H-H, L-L, L-H -- he recorded the percentage of shots that each group took from each of the 15 distances.  We ran 10 replications of our simulation and recorded the mean percentages for each group and distance.  For each percentage mean we calculated a 95\% confidence interval.  We consider a model to be valid if the confidence intervals calculated on the simulation percentage means contain the percentages obtained by Atkinson in his experiments with human subjects.
@@ -179,7 +153,24 @@ Range & Conf. Int. & Conf. Int. & Conf. Int. & Conf. Int. \\ \hline\hline
 \end{center}
 \end{table*}
 
-The validation results are presented in Table \ref{tab:results}. Atkinson analyzed his experimental data by aggregating the shots taken by subjects into three ``buckets'' representing low, medium, and high difficulty.  In Atkinson's analyses the dividing lines between the three buckets were set in four different ways with each yielding similar results.  For brevity we present the division obtained by using both geographical distance and distribution of shots about the median shot of 9.8 ft, in other words, the dividing line one would choose by inspecting the histogram for distinct regions.  This strategy resulted in the three buckets listed in the left column of Table \ref{tab:results}.  Each cell of the four subject groups -- H-L, H-H, L-L, L-H - contains the percentage of shots taken by Atkinson's subjects, the mean percentage obtained by running 10 replications of our simulation of Atkinson's experiment, and a 95\% confidence interval for the mean percentage.  While our model did not achieve formal validation, the general patterns of behavior are quite similar to Atkinson's human subject experiment and we consider these results to be a good proof of concept.  We discuss some reasons behind these results and strategies for improvement below.
+The validation results are presented in Table \ref{tab:results}. Atkinson analyzed his experimental data by aggregating the shots taken by subjects into three ``buckets'' representing low, medium, and high difficulty.  In Atkinson's analyses the dividing lines between the three buckets were set in four different ways with each yielding similar results.  For brevity we present the division obtained by using both geographical distance and distribution of shots about the median shot of 9.8 ft, in other words, the dividing line one would choose by inspecting the histogram for distinct regions.  This strategy resulted in the three buckets listed in the left column of Table \ref{tab:results}.  Each cell of the four subject groups -- H-L, H-H, L-L, L-H - contains the percentage of shots taken by Atkinson's subjects, the mean percentage obtained by running 10 replications of our simulation of Atkinson's experiment, and a 95\% confidence interval for the mean percentage.  While our model did not achieve formal validation, the general patterns of behavior are quite similar to Atkinson's human subject experiment, as shown in Figure \ref{fig:ring-toss-plots}, and we consider these results to be a good proof of concept.  We discuss some reasons behind these results and strategies for improvement below.
+
+%% 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8<
+
+\begin{figure}[!h]
+  \begin{center}
+    \scalebox{.8}{\includegraphics{atkinson}}
+    \scalebox{.4}{\includegraphics{iccm}}
+    \caption{The top plot shows the behavior patterns of human
+      subjects in Atkinson's Ring Toss experiment.  The bottom plot
+      shows the behavior patterns of our synthetic agents that
+      re-created Atkinson's experiment.  Note that Atkinson's plot is
+      smoothed, while ours is not.}
+  \end{center}
+  \label{fig:ring-toss-plots}
+\end{figure}
+
+%% 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8<
 
 \subsection{Discussion}
 
