@@ -1,60 +1,43 @@
 \chapter{Background in Software Engineering}\label{ch:se}
 
-This chapter provides background in software engineering that relates to our work. We discuss the issue of reuse in software engineering and relate reuse to domain-specific languages. Then we discuss empirical and analytical software engineering research methods which we will use evaluate AFABL in the next chapter -- programmer usage studies and software complexity measures. Finally we close with a discussion of adaptive programming.
+Software engineering is the process of creating software that is correct, reliable, and maintainable. This chapter provides background in software engineering that relates to our work. We discuss the issue of reuse in software engineering and relate reuse to domain-specific languages. Then we discuss empirical and analytical software engineering research methods which we will use evaluate AFABL in the next chapter -- programmer usage studies and software complexity measures. Finally we close with a discussion of adaptive programming.
 
 \section{Software Reuse}
 
 Software reuse was identified as a primary tool in imporoving software engineering practice since the birth of the field of software engineering in 1968 \cite{mcilroy1968mass}. Software reuse means means using an existing software artifact in a new software system, ideally without modifying the original artifact \cite{krueger1992a-software,frakes2005a-software}. Reusable artifacts may be source code libraries, components, programming languages, and application frameworks \cite{polancic2010a-an-empirical} as well as concepts such as software schemas, architectures, and design patterns. The benefits of software reuse seem obvious, and empirical studies have indeed shown that reuse reduces defect rates, reduces refactoring costs, and increases productivity \cite{basili1996a-how-reuse,mohagheghi2008a-an-empirical}. In the next chapter we also quantify the reduction in code complexity afforded by the AFABL DSL. DSLs, as we discuss below, are a particular kind of reusable artifict.
 
-Krueger presents a useful framework for understanding and assessing reuse techniques. Of particular interest to our work, he discusses reuse techniques in terms of cognitivce distance, which he defines as an intuitive measure of the effort required to use a reusable software artifact in the process of turning the concept of a software application into a working system. The smaller the cognitive distance between a reusable software artifact and the concept of the application program in which it is to be reused, the more successful the reuse. Thus, abstraction is crucial to software reuse, the higher the level of abstraction the better. Krueger proposes three techniques for minimizing the cognitive distance in reusable software artifacts: ``(1) using fixed and variable abstractions that are both succint and expressive, (2) maximizing the hidden parts of the abstractions, and (3) using automated mappings from abstraction specifications to abstraction realizations'' \cite{krueger1992a-software}. Krueger was the first to recognize that high level languages such as C and Java are themselves examples of software reuse -- language constructs are abstraction specifications, assemby language or byte code are abstraction realizations. DSLs (or VHLLs -- Very High Level Languages -- as he called them) are also examples of software reuse that raise the level of abstraction much higher, offering abstraction specifications that are entities in some problem domain such as set theory or circuit design. In the next chapter we will analyze AFABL according to Krueger's framework.
+Krueger presents a useful framework for understanding and assessing reuse techniques. Of particular interest to our work, he discusses reuse techniques in terms of cognitivce distance, which he defines as an intuitive measure of the effort required to use a reusable software artifact in the process of turning the concept of a software application into a working system. The smaller the cognitive distance between a reusable software artifact and the concept of the application program in which it is to be reused, the more successful the reuse. Thus, abstraction is crucial to software reuse, the higher the level of abstraction the better. Krueger proposes three techniques for minimizing the cognitive distance in reusable software artifacts: ``(1) using fixed and variable abstractions that are both succint and expressive, (2) maximizing the hidden parts of the abstractions, and (3) using automated mappings from abstraction specifications to abstraction realizations'' \cite{krueger1992a-software}. Krueger was the first to recognize that high level languages such as C and Java are themselves examples of software reuse -- language constructs are abstraction specifications, assemby language or byte code are abstraction realizations. DSLs (or VHLLs -- Very High Level Languages -- as he called them) are also examples of software reuse that raise the level of abstraction even higher, offering abstraction specifications that are entities in some problem domain such as set theory or circuit design. In the next chapter we will analyze AFABL according to Krueger's framework.
 
 Gacek argues for creating domain-specific reference architectures to facilitate reuse\cite{gacek1995a-exploiting}. A domain-specific application archetecure identifies all of the components that comprise a software application for a particular domain and the interactions between the components. A domain-specific language can be seen as a domain-specific architecture, whose components are modeled as language abstractions. AFABL, in this sense, is a domain-specific architecture for agents with multiple continuing goals.
 
-
-Code Reuse with Language Oriented Programming \cite{lorenz2011a-code}
-
-
 \subsection{Domain-Specific Languages}
 
-\cite{deursen2000domain-specific}
-
-A domain-specific language (DSL) is a language that
-
-Specialized programming languages were already widespread when Landin proposed the first unified framework for designing domain specific languages in 1966 \cite{landin1966next}. In Landin's framework the design of a DSL consists of two independent parts: the written form of the language, and the kinds of abstractions that can be expressed in the language.
-Every language has an abstract syntax, axiomatization, and an underlying abstract machine.
-
-
+A domain-specific language (DSL) is a language that provides constructs and sematics tailored to a specific problem domain. Specialized programming languages were already widespread when Landin proposed the first unified framework for designing domain specific languages in 1966 \cite{landin1966next}. In Landin's framework the design of a DSL consists of two independent parts: the written form of the language, and the kinds of abstractions that can be expressed in the language. Every language has an abstract syntax, axiomatization, and an underlying abstract machine. Today many DSLs are in widespread use for various application domains such as typesetting and manuscript prepatation (\TeX and \LaTeX), circuit design (VHDL), web page authoring (HTML and CSS), data exchange (JSON and XML), and many more.
 
 Perhaps the most successful DSL, with which every reasonably literate software engineer or computer scientist is familiar, is Structured Query Language (SQL) \cite{}. SQL was originally presented as SEQUEL in 1974 by Chamberline and Boyce of IBM Research \cite{chamberlin1974sequel}. Today is used in all significant relational databases and is currently in its ANSI/ISO standard is on its third version. SQL has succeeded so completely becuase it provides exactly the right abstractions and semantics for using relational databases.
 
-Domain-specific languages provide two primary benefits: improving programmer productivity and improving communication with domain experts \cite{fowler2011domain}. In Chapter \ref{ch:afabl} we show that AFABL imporoves programmer productivity by reducing the effort required to write agents and reducing the complexity of agent code. In Chapter \ref{ch:application} we present an application of AFABL to the domain of personality modeling in psychology.
+Domain-specific languages provide two primary benefits in software engineering: improving programmer productivity and improving communication with domain experts \cite{fowler2011domain}. In Chapter \ref{ch:afabl} we show that AFABL improves programmer productivity by reducing the effort required to write agents and reducing the complexity of agent code. In Chapter \ref{ch:applications} we present an application of AFABL to the domain of personality modeling in psychology to demonstrate AFABL's usefulness as a tool for bridging specialist knowledge from a non-computing domain with computational models.
+
+Hudak argued that a domain-specific language is the ``ultimate abstraction,'' providing abstractions and semantics tailored to a particular application domain, but that languages are typically difficult to implement and difficult to evolve as the domain is better understood and changes need to be made to the language \cite{hudak1996building}. To solve this problem Hudak argued for and demonstrated domain-specific {\it embedded} languages, that is, DSLs embedded in a general-purpose host langauge, inheriting the tooling, syntax, and semantics of the host language while adding domain-specific constructs. Hudak used Haskell and showed how higher-order typed languages were particularly well-suited for hosting DSELs \cite{hudak1998modular}. For AFABL we used Scala, which has similarities to Haskell, as we discuss in the next chapter.
+
+Ward \cite{ward1994language} proposed Language Oriented Programming as a way of organizing sofware development. Instead of developing reusbale libraries in a general purpose langauge the software engineer develops a formal domain-specific specification of the application, then implements this specification as a DSL. He calls the resulting software development process ``middle-out'' developement, where the DSL is created first (the middle layer) then the DSL is implemented (the lower layer) and specific applications are developed usign the DSL (the upper layer). He presents several examples of this approach, including \LaTeX \cite{lamport1986document} as a collection of \TeX \cite{knuth1984texbook} macros and Emacs \cite{stallman2014emacs}, which is essentilally a Lisp interpreter with addressable memory buffers -- what users think of as the editor is actually implemented as a collection of Emacs Lisp functions, making Emacs the most powerful editor in existence.
+Lorenz and collegues tie together the concept of code reuse with Language Orieted Programming in software engineering \cite{lorenz2011a-code}, comparing the effort and benefits of implementing and using internal versus external DSLs. They performed a case study in which they created an external DSL (using a langauge workbench system called Meta-Programming System MPS \cite{dmitriev2004language}) and internal DSL using the experimental LOP language Cedalion \cite{rosenan2010designing} for the same task (caclulator software product line) and found that both approaches achieved their code reuse goals but, while both DSLs took similar effort to use, the external DSL took four times longer to implement. They concluded that internal DSLs should be favored over external DSLs for most software development projects. Rosenan argues that host languages themselves can be designed with internal DSL creation in mind -- a kind of ``Language-Oroented Programming language'' -- and presents a LOP langauge as a proof of concept \cite{rosenan2010designing}. As we discuss in the next chapter, while not explicitly advertised as an LOP language, hosting DSLs has been a design goal of the Scala language that we use to host AFABL.
 
 
-Hudak argued that a domain-specific language is the ``ultimate abstraction,'' providing abstractions and semantics tailored to a particular application domain but that languages are typically difficult to implement and difficult to evolve as the domain is better understood and changes need to be made to the language \cite{hudak1996building}. To solve this problem Hudak argued for domain-specific {\it embedded} languages, that is, DSLs embedded in a general-purpose host langauge. Hudak used Haskell and showed how higher-order typed languages were particularly well-suited for hosting DSELs \cite{hudak1998modular}. For AFABL we used Scala, as we discuss in the next chapter.
+%% \cite{taha2008domain-specific}
+
+%% \cite{dmitriev2004a-language}
 
 
-\cite{taha2008domain-specific}
+%% \cite{mitchell1993on-abstraction}
+
+%% \cite{simpkins2008towards}
 
 
+%% \cite{zang2007towards}
 
 
-
-\cite{dmitriev2004a-language}
-
-
-
-
-
-\cite{mitchell1993on-abstraction}
-
-
-\cite{simpkins2008towards}
-
-
-\cite{zang2007towards}
-
-
-\cite{mernik2005when}
+%% \cite{mernik2005when}
 
 
 \section{Software Complexity}
