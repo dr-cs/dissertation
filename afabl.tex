@@ -389,6 +389,36 @@ val bunny = AfablAgent(
 
 \section{Experiments}
 
+%% Basili and colleagues have conducted many experiments and written extensively about the role of experiments in software engineering research and the kinds of knowledge that can be gained from experimentation \cite{basili2007role,basili1986a-experimentation}. In Table \ref{tab:basili-framework} we fit our experiments within Basili's framework.
+
+%% Definition
+%% ---
+%% Motivation - assess advantage of AFABL, validate language-integrated RL
+%% Object - a programming language applied to a particular kin dof programming task
+%% Purpose -evaluate
+%% Perspective - user (of the programming language)
+%% Domain - programmer
+%% Scope - single project by single programmer
+
+%% Planning
+%% ---
+%% Design - Randomized
+%% Criteria - size, complexity
+%% Measurement - Metric validation, subjective reflection
+
+%% Operation
+%% ---
+%% Preparation - pilot study
+%% Execution - data collection: online-delivered programming tasks
+%% Analysis - quantitative: comparison of complexity metrics, complexities; qualitative
+
+%% Interpretation
+%% ---
+%% Statistical framework - t-test
+%% Extrapolation -
+%% Impact
+
+
 AFABL supports a declarative style in which the agent programmer specifies which states are desirable and undesirable, but not how the agent should choose actions to pursue or avoid those states. Action selection logic is derived automatically by reinforcement learning algorithms that the AFABL programmer never sees. AFABL also provides agent-based software abstractions that permit code to be reused in new domains. This reuse is one of the things we mean by adaptivity: existing AFABL code can adapt to new domains without modifying the code. We quantify the value of AFABL's agent programming abstractions in the experiments discussed below.
 
 Programmers were randomly assigned to two equally-sized groups based on their demographics (see Appendix \ref{ch:programmer-study} for details): one group used Scala without AFABL first -- the Scala-first group -- and the other group used AFABL first -- the AFABL-first group.  Each group completed two programming tasks using Scala and AFABL in the order determined by their group.  For each task the programmers were asked to write elegant code that meets the requirements of the task as quickly as possible, balancing the quality of their solutions with time.  The idea was to get a good solution quickly, not a perfect solution in a long time.
