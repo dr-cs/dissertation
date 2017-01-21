@@ -2,7 +2,7 @@
 
 \section{Review of Major Contributions}
 
-This dissertation has reported on two primary contributions: a command arbitration algorithm for robust modular reinforcement learning, and a domain-specific language that integrates modular reinforcement learning, AFABL. The benefits of langauge-integrated reinforcement learning have been demonstrated in a study of programmers using AFABL compared to using a traditional programming language for the same tasks. AFABL agents are easier to write, are expressed in less complex code, and have more readily reused components than agents written in traditional programming languages. In the remainder of this chapter we discuss some implications of AFABL (as a representative first step in language-integrated modular reinforcement learning), limitations of the current work, and directions for future work.
+This dissertation has reported on two primary contributions: a command arbitration algorithm for robust modular reinforcement learning, and a domain-specific language that integrates modular reinforcement learning, AFABL. The benefits of langauge-integrated reinforcement learning have been demonstrated in a study of programmers' solutions to agent programming tasks using AFABL compared to using a traditional programming language. AFABL agents are easier to write, are expressed in less complex code, and have more readily reused components than agents written in traditional programming languages. In the remainder of this chapter we discuss some implications of AFABL (as a representative first step in language-integrated modular reinforcement learning), limitations of the current work, and directions for future work.
 
 \section{Adaptive Agent Software Engineering with AFABL}
 
@@ -50,7 +50,7 @@ AFABL's integrated reinforcement learning separates the dynamics of the world fr
 \begin{itemize}
 \item Domain knowledge: as much or as little as you want.  You can program the parts you know how to program, and leave AFABL to learn the rest automatically.
 \item Algorithm knowledge: moderate.  AFABL is based on the agent and reinforcement learning models.  Behaviors are programmed as actions that execute in response to observed state (hence ``behavior''), and automatic behaviors additionally specify reward signals that enable AFABL to learn the best responses to particular states.
-\item Adaptability: high.
+\item Adaptability: high. Adaptability is the key advantage of machine learning.
 \end{itemize}
 
 
@@ -97,7 +97,11 @@ A task is a temporally-extended action, a "mini-policy" that acheives a subgoal.
 
 \subsection{Simplified Syntax}
 
-The features listed above may make it possible to automatically author reward functions for modules. For example, the Bunny agent for Task 2 from Chapter \ref{ch:afabl} could be written with Drives and Aversions as follows:
+The features listed above may make it possible to automatically author reward functions for modules. For example, the Bunny agent for Task 2 from Chapter \ref{ch:afabl} could be written with Drives and Aversions as shown in Figure \ref{fig:simplified-afabl}
+
+
+\begin{figure}[!h]
+\begin{center}
 
 \begin{lstlisting}[language=Scala]
   val afablBunny2 = AfablAgent(
@@ -105,12 +109,12 @@ The features listed above may make it possible to automatically author reward fu
     world = bunnyWorld,
 
     drives = Drives(state: BunnyState) {
-      (BunnyState.bunny == BunnyState.food),
-      (BunnyState.bunny == BunnyState.mate)
+      (state.bunny == state.food),
+      (state.bunny == state.mate)
     },
 
     aversions = Aversions(state: BunnyState) {
-      (BunnyState.bunny == BunnyState.wolf),
+      (state.bunny == state.wolf)
     }
 
     agentLevelReward = (state: BunnyState) => {
@@ -121,6 +125,12 @@ The features listed above may make it possible to automatically author reward fu
     }
   )
 \end{lstlisting}
+
+\caption{Simplified AFABL syntax with drives and aversions.}
+\end{center}
+\label{fig:dimplified-afabl}
+\end{figure}
+
 
 Instead of writing code to specify modules, the programmer specifies states that are to be constantly sought or avoided -- expressed as state predicates -- and the modules are derived from them automatically. Note also that this proposed syntax does not include state abstraction functions in modules becuase they could be derived automatically from the states that are to be sought or avoided.
 

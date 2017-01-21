@@ -2,34 +2,132 @@
 
 \section{Hello, World!}
 
-\begin{lstlisting}[language=Scala]
-\end{lstlisting}
-
-\section{The REPL}
+``Hello, world!'' is as simple in Scala as it is in Python:
 
 \begin{lstlisting}[language=Scala]
+println("Hello, world!")
 \end{lstlisting}
 
+\subsection{The REPL}
 
-\section{Scala Scripts}
+Like other modern languages, Scala includes an interactive interpreter for expressions and defininitions commonly called a REPL for Read, Eval, Print, Loop.
 
 \begin{lstlisting}[language=Scala]
+$ scala
+Welcome to Scala 2.11.8 (OpenJDK 64-Bit Server VM, Java 1.8.0_111).
+Type in expressions for evaluation. Or try :help.
+
+scala> println("Hello, world!")
+Hello, world!
+
+scala>
 \end{lstlisting}
+
+
+\subsection{Scala Scripts}
+
+Like Python, Scala will execute a file of Scala code as a script. If you have a file with these contets:
+
+\begin{lstlisting}[language=Scala]
+println("Hello, world!")
+\end{lstlisting}
+
+You can run it as if it were an interpreted script:
+
+\begin{lstlisting}[language=Bash]
+$ scala hello.scala
+Hello, world!
+\end{lstlisting}
+
+If you include a shebang line, you can run it like other executables on the {\tt PATH}:
+
+\begin{lstlisting}[language=Scala]
+#!/usr/bin/env scala
+
+println("Hello, world!")
+\end{lstlisting}
+
+\begin{lstlisting}[language=Scala]
+$ chmod +x hello.scala
+$ ./hello.scala
+Hello, world!
+\end{lstlisting}
+
+
+\subsection{Scala Applications}
+
+A third way to run code, which is more common, is to create applications. An application is a collection of classes and objects (classes and objects have specific syntactic meaning in Scala, discussed below) where at least one object has a ``main'' method, similar to Java.
+
+\newpage
+
+\begin{lstlisting}[language=Scala]
+object Hello {
+
+  def main(args: Array[String]) = {
+    println("Hello, world!")
+  }
+}
+\end{lstlisting}
+
+
+This application can then be compiled and run with {\tt scalac} and {\tt scala}:
+
+\begin{lstlisting}[language=Bash]
+$ scalac HelloApp.scala
+$ scala Hello
+Hello, world!
+\end{lstlisting}
+
 
 \section{The Elements of Scala}
 
-\begin{lstlisting}[language=Scala]
-\end{lstlisting}
+For most of this section we will deomnstrate Scala basics with REPL sessions.
 
 \subsection{Values and Variables}
 
+{\tt val}s are named values in Scala, essentially constants.
+
 \begin{lstlisting}[language=Scala]
+scala> val x: Int = 1
+x: Int = 1
+
+scala> x = 2
+<console>:12: error: reassignment to val
+       x = 2
+         ^
 \end{lstlisting}
+
+{\tt var}s are reassignable, like variables in imperative langauges.
+
+\begin{lstlisting}[language=Scala]
+scala> var y = 2
+y: Int = 2
+
+scala> y = 3
+y: Int = 3
+\end{lstlisting}
+
+Notice the type inference. Scala inferred that the type of {\tt y} is {\tt Int} from the type of the {\tt Int} literal {\tt 1}.
+
 
 \subsection{Functions}
 
+Unlike Java and like Python, Scala allows functions in addition to methods. Blocks are sequences of Scala expressions enclosed in curly braces. The last expression in the block provides the value of the block. So the following function returns a {\tt String}.
+
 \begin{lstlisting}[language=Scala]
+scala> def add(x: Int, y: Int): String = {
+     |   val sum = x + y
+     |   s"The sum of $x and $y is $sum"
+     | }
+add: (x: Int, y: Int)String
+
+scala> add(2, 3)
+res0: String = The sum of 2 and 3 is 5
 \end{lstlisting}
+
+Note the Scala syntax for types, which are annoted following colons after {\tt val}s, {\tt var}s, function parameters, and function parameter lists to annotate return types.
+
+The final expression in the function above is an example of the concise syntax for interpolated strings in Scala. Interpolated strings a preceded by an {\tt s} and all identifiers in the string that are preceded by {\tt \$} are evaluated if there is a value in scope with that name.
 
 \subsection{Classes and Objects}
 
@@ -43,17 +141,15 @@
 
 \subsection{Enumerations}\label{sec:scala-enumerations}
 
+\begin{lstlisting}[language=Scala]
+\end{lstlisting}
+
 \subsection{Case Classes}\label{sec:scala-case-classes}
 
 \begin{lstlisting}[language=Scala]
 \end{lstlisting}
 
 \subsubsection{Pattern Matching}
-
-\begin{lstlisting}[language=Scala]
-\end{lstlisting}
-
-\section{Scala Libraries and Programs}
 
 \begin{lstlisting}[language=Scala]
 \end{lstlisting}
