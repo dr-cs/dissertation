@@ -2,21 +2,11 @@
 
 \section{Review of Major Contributions}
 
-\subsection{Arbi-Q}
-
-PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
-
-\subsection{AFABL}
-
-PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
+This dissertation has reported on two primary contributions: a command arbitration algorithm for robust modular reinforcement learning, and a domain-specific language that integrates modular reinforcement learning, AFABL. The benefits of langauge-integrated reinforcement learning have been demonstrated in a study of programmers using AFABL compared to using a traditional programming language for the same tasks. AFABL agents are easier to write, are expressed in less complex code, and have more readily reused components than agents written in traditional programming languages. In the remainder of this chapter we discuss some implications of AFABL (as a representative first step in language-integrated modular reinforcement learning), limitations of the current work, and directions for future work.
 
 \section{Adaptive Agent Software Engineering with AFABL}
 
-In this section we discuss the broader implications of adaptive agent programming with AFABL. We define an agent programming space and discuss how AFABL fits into that space.
-
-\subsection{Authorability and the Agent Programming Space}
-
-Authorability is the ease with which a programmer can author the behavior of agents.  Concretely, we suggest a framework for assessing authorability that considers domain knowledge requirements, algorithm knowledge requirements, and the adaptability of agents.
+In this section we discuss the broader implications of adaptive agent programming with AFABL. For the present discussion we define authorability is the ease with which a programmer can author the behavior of agents.  Concretely, we suggest a framework for assessing authorability that considers domain knowledge requirements, algorithm knowledge requirements, and the adaptability of agents.
 
 {\bf Domain knowledge} refers to the world-specific details the agent author must program into the agent for a particular domain.  Examples of domain knowledge include representations of state and the dynamics of the world, that is, how actions cause transitions from one state to another.
 
@@ -66,100 +56,90 @@ AFABL's integrated reinforcement learning separates the dynamics of the world fr
 
 \section{Limitations of Current Work}
 
-\subsection{Authoring and Training}
+% The work presented here is promising, but focused in scope.
 
-Using any reinforcement learning-based programming system requires the availability of a simulation environment to train the learning modules before being used ``in production.'' Using an untrained reinforcement learning agent and accepting that it will perform poorly until it learns is not practical because reinforcement learning algorithms typically require hundreds or thousands of iterations to reach an acceptable level of performance.
+\subsection{Reward Authoring}
+
+As many other researchers have noted, reward authoring is not straightforward for programmers not trained in reinforcement learning. Study participants spent much of their AFABL writing time trying out different reward structures in an effort to improve their agents' performance. Although we provided documentation with hints on how to author reward structures, writing good reward functions is too opaque for most programmers. In the next section we discuss a possible improvement to AFABL which would relieve programmers from writing the reward functions of modules.
+
+\subsection{Training}
+
+Using any reinforcement learning-based programming system requires the availability of a simulation environment to train the learning modules before being used ``in production.'' Using an untrained reinforcement learning agent and accepting that it will perform poorly until it learns is not practical because reinforcement learning algorithms typically require hundreds or thousands of iterations to reach an acceptable level of performance. Separate modules with local state abstractions and reward functions help speed up training, but finding good factorizations into modules is a potentially steep burden to place on the programmer for larger agents.
 
 \subsection{Host Language Limitations}
 
-Writing AFABL agents is writing Scala code.
+Writing AFABL agents is writing Scala code, so AFABL programmers must have at least basic competence with Scala and the Scala tool chain. Since it was outside the scope of the present work, we did not try to determine how much of the Scala tooling can be hidden or automated for AFABL programmers. We required study participants to use a recent version of IntelliJ IDEA and provided a pre-configured Scala/AFABL project and an IntelliJ plugin to automate the time tracking and submission process. Still, several participants had trouble running the study code smoothely, as is often the case with development tools. Many study participants who did not participate in a group session simply abandonded the study. We advertised the study to the Atlanta Scala Meetup, a group of local software engineers either using Scala professionally or interested in learning. Approximately 15 Scala Meetup members started the study and only one finished. Due to the amount of individual software issues I needed to help participants solve -- differing operationg systems, IntelliJ versions, etc -- I believe many of these dropouts were due to simple software setup issues.
 
-Must have at least basic competence with Scala tool chain.
-
-The error messages are under the control of the Scala compiler and run-time system.
+In addition to Scala tooling issues, AFABL programmers must deal with the Scala programming language. For example, when programmer makes a mistake in their code the error messages come from the Scala compiler and run-time system, not AFABL. Luckily, in the study few people had such issues with AFABL code itself. With more complex agents problems are more likely to occur, and the programmer may be faced with the famous complexity of the Scala type system. The AFABL programmer who is not also a competent Scala programmer has little hope of debugging non-trivial errors.
 
 \section{Directions for Future Work}
 
-Improvement in syntax.
 
-\subsection{General Agent Architecture}
+\subsection{Refined Module Types}
 
-\subsubsection{Integrated Intelligence}
+AFABL currently supports a narrow definition of an agent: a behaving entity with a set of states that must constantly be pursued or avoided. In reinforcement learning these kinds of modules are called called continuing tasks, as opposed to episodic goals. Previous version of AFABL supported a greater set of features but we removed them to focus on AFABL's core for the purpose of this work. With a cleaner core AFABL we could re-implement the features discussed below.
 
-Because an AFABL agent performs command arbitration over modules that
-support a behavioral interface (providing an action given a state
-observation), the modules themselves can employ any mechanism to
-decide on actions given a state.  This information hiding means that
-AFABL agents can be composed of a mixture of modules that use many
-different kinds of AI, including statistical learning, rule-based
-reasoning, or (reactive) planning.  AFABL is an integrated
-intelligence architecture.
+\paragraph{Drives}
 
-\paragraph{Knowledge-Based Modules}
+A Drive is a behavior module that runs throughout the life of its conataining agent and represents a state that an agent should constantly seek.
 
-In a knowledge-based module, the decision making and adaptation
-mechanisms are coded explicitly in the form of rules, state machines,
-or other explicitly programmed logic.  If a knowledge-based module is
-adaptive, this adaptivity must be programmed by hand by the agent
-author.  Because adaptivity is not "free," and thus not typically done
-for knowledge-based modules, we distinguish between (possibly but not
-usuallly adaptive) knowledge-based modules, and adaptive modules which
-are always adaptive because the adaptivity is built-in.
+\paragraph{Aversions}
 
-\paragraph{Knowledge-Based Arbitrators}
+An Aversion module is a behavior module that runs throughout the life of its conataining agent and represents a state that an agent should constantly avoid.  It is a constraint in the sense that, in certain states, a constraint module will identify actions that should *not* be executed.
 
-A knowledge-based arbitrator uses hand-coded logic to decide from
-among the actions recommended by a set of modules.  Simple arbetrators
-with few modules to arbitrate can often be coded quite simply as
-knowledge-based arbitrators.  For example, consider an arbitrator for
-a simple agent consisting of two modules: AvoidWolf and FindFood.  A
-command arbitrator could contain simple logic to encode the rule "when
-the wolf is near, choose AvoidWolf's action, otherwise choose
-FindFood's action."
-
-\paragraph{Hierarchical Decomposition}
-
-Beacuse modules are themselves agents, modules can contain other
-modules and perform command arbitration over those modules just as the
-top-level agent does.  Agents can thus be decomposed recursively into
-behavioral subsystems.  This recursive behavior module decomposition
-provides the agent designer with great flexibility.  Recursive module
-composition is somewhat similar to the levels of competence in
-Brooks's subsumption architecture with an important difference: the
-internal workings of modules are never altered externally.  Modules
-are treated as black-boxes.  Command arbitration accomplishes the same
-result that output suppression does in classic subsumption.
-
-\subsubsection{Drama Manager Support}
-
-Activating and deactivating modules. Injecting new goals.
-
-\paragraph{Tasks}
-
-A task is a temporally-extended action, a "mini-policy" that acheives a subgoal.  Tasks are equivalent to subtasks (MaxQ), abstract machines (PHAM), or options from hierarchical reinforcement learning.
-
-\paragraph{Constraint Module}
-
-A constraint module is a behavior module that runs throughout the life of its containing agent and represents a state that an agent should constantly avoid.  It is a constraint in the sense that, in certain states, a constraint module will identify actions that should *not* be executed.
-
-\paragraph{Aversion Module}
-
-An Aversion module is a behavior module that runs throughout the life
-of its conataining agent and represents a state that an agent should
-constantly avoid.  It is a constraint in the sense that, in certain
-staes, a constraint module will identify actions that should *not* be
-executed.
-
-\paragraph{Drive Module}
-
-A Drive module is a behavior module that runs throughout the life of
-its conataining agent and represents a state that an agent should
-constantly seek.
-
-\paragraph{Objective}
+\paragraph{Objectives}
 
 A an objective is a short-term goal state that generates a drive module that is active until its goal is achieved.  The command arbitrator gives objective modules priority over drive modules, but all modules are constrained by constraint modules.
 
-\subsection{Integrating Hierarchical Reinforcement Learning}
+\paragraph{Tasks}
+
+A task is a temporally-extended action, a "mini-policy" that acheives a subgoal.  Tasks are equivalent to subtasks (MaxQ), abstract machines (PHAM), or options from hierarchical reinforcement learning. Tasks could be manually authored, or algorithms from hierarchical reinforcement learning could be integrated into AFABL.
+
+\subsection{Simplified Syntax}
+
+The features listed above may make it possible to automatically author reward functions for modules. For example, the Bunny agent for Task 2 from Chapter \ref{ch:afabl} could be written with Drives and Aversions as follows:
+
+\begin{lstlisting}[language=Scala]
+  val afablBunny2 = AfablAgent(
+
+    world = bunnyWorld,
+
+    drives = Drives(state: BunnyState) {
+      (BunnyState.bunny == BunnyState.food),
+      (BunnyState.bunny == BunnyState.mate)
+    },
+
+    aversions = Aversions(state: BunnyState) {
+      (BunnyState.bunny == BunnyState.wolf),
+    }
+
+    agentLevelReward = (state: BunnyState) => {
+      if (state.bunny == state.wolf) 0.0
+      else if (state.bunny == state.food) 1.0
+      else if (state.bunny == state.mate) 1.0
+      else 0.5
+    }
+  )
+\end{lstlisting}
+
+Instead of writing code to specify modules, the programmer specifies states that are to be constantly sought or avoided -- expressed as state predicates -- and the modules are derived from them automatically. Note also that this proposed syntax does not include state abstraction functions in modules becuase they could be derived automatically from the states that are to be sought or avoided.
+
+\subsubsection{Drama Manager Support}
+
+The features discussed above would go along way toward supporting drama managers for intelligent interactive narratives. In addition, a drama manager would need to be able to activate and deactivate modules and inject new objectives to support particular story goals.
+
+\subsection{General Agent Architecture}
+
+The current version of AFABL focuses on integrated reinforcement learning but could easily be extended to support integrated intelligence, that is, mixing of agent modules that employ differnt kinds of AI algorithms. Because an AFABL agent performs command arbitration over modules that support a behavioral interface (providing an action given a state observation) as opposed to merging elements of reinformcenet learners (like Q-values), the modules themselves can employ any mechanism to decide on actions given a state.  This information hiding means that AFABL agents could be composed of a mixture of modules that use many different kinds of AI, including statistical learning, rule-based reasoning, or (reactive) planning.  In this sense AFABL would be an integrated intelligence architecture.
+
+\paragraph{Knowledge-Based Arbitrators}
+
+In addition to the modules the arbitrator itself could employ different kinds of algorithms for command arbitration. A knowledge-based arbitrator could use hand-coded logic to decide from among the actions recommended by an agent's modules.  Simple arbitrators with few modules to arbitrate can often be coded quite simply as knowledge-based arbitrators.
+
+\paragraph{Hierarchical Decomposition}
+
+Beacuse modules are themselves agents, modules can contain other modules and perform command arbitration over those modules just as the top-level agent does.  Agents can thus be decomposed recursively into behavioral subsystems.  This recursive behavior module decomposition would provide the agent designer with great flexibility.  Recursive module composition is somewhat similar to the levels of competence in Brooks's subsumption architecture with an important difference: the internal workings of modules are never altered externally.  Modules are treated as black-boxes.  Command arbitration accomplishes the same result that output suppression does in classic subsumption.
 
 \subsection{Independent (Non-Embedded) Language}\label{sec:conclusion-full-language}
+
+Finally, once the additions to the language are integrated into the internal DSL and studied and refined sufficiently, an external DSL could be considered. Although an external DSL is far more work to implement, the benefits could justify the cost. A stand-alone version of AFABL would have its own set of development tools, report agent-oriented error messages to the user, and potentially run faster than equivalent internal DSL code.
