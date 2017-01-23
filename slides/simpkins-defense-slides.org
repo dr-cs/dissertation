@@ -1,0 +1,79 @@
+#+TITLE:     Integrating Reinforcement Learning into a Programming Language
+#+AUTHOR:    Chris Simpkins
+#+EMAIL:
+#+DATE:      26 January 2017
+#+DESCRIPTION:
+#+KEYWORDS:
+#+LANGUAGE:  en
+#+OPTIONS: H:2 toc:nil num:t
+#+BEAMER_FRAME_LEVEL: 2
+#+COLUMNS: %40ITEM %10BEAMER_env(Env) %9BEAMER_envargs(Env Args) %4BEAMER_col(Col) %10BEAMER_extra(Extra)
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [smaller]
+#+LaTeX_HEADER: \usepackage{verbatim, multicol, tabularx,}
+#+LaTeX_HEADER: \usepackage{amsmath,amsthm, amssymb, latexsym, listings, qtree}
+#+LaTeX_HEADER: \lstset{frame=tb, aboveskip=1mm, belowskip=0mm, showstringspaces=false, columns=flexible, basicstyle={\ttfamily}, numbers=left, frame=single, breaklines=true, breakatwhitespace=true}
+#+LaTeX_HEADER: \setbeamertemplate{footline}[frame number]
+
+* Integrating Reinforcement Learning into a Programming Language
+
+** My Thesis
+
+This dissertation makes two contributions:
+
+1. A command arbitration algorithm for modular reinforcement learning that enables composability by decoupling the reward scales of reinforcement learning modules, and
+2.  a Scala-embedded domain-specific language -- AFABL (A Friendly Adaptive Behavior Language) -- that integrates modular reinforcement learning in a way that allows programmers to use reinforcement learning without knowing much about reinforcement learning algorithms.
+
+** Modular Reinforcement Learning
+
+- Learning agent, $M$, decomposed into $n$ modules, $M=\{M_j\}_{j=1}^n$
+- Each $M_j = (S_j,A,R_j)$ - shared action set, distinct state spaces and rewards
+
+State of the art: joint Q-function assuming additive rewards (Russel and Zimdars, 2003; Sprague and Ballard, 2003):
+
+#+BEGIN_CENTER
+$Q_{joint}(s, a) = \sum Q_i(s, a)$
+#+END_CENTER
+
+** Problem with State of the Art MRL
+
+Reward signals must be comparable.
+
+** Arbi-Q
+
+
+
+** Software Engineering
+
+** AFABL
+
+** Application: Personality Modeling
+
+** Application: NPC Programming
+
+** Limitations
+
+** Opportunities
+
+** Review of Contributions
+
+- Arbi-Q
+- AFABL
+
+
+** The Dissertator
+
+#+BEGIN_CENTER
+#+ATTR_LATEX: :height 1in
+[[file:dissertator.jpg]]
+#+END_CENTER
+
+Published
+
+- Towards Adaptive Programming: Integrating Reinforcement Learning into a Programming Language, OOPSLA Onward! 2008
+- Deriving Behavior from Personality: A Reinforcement Learning Approach, ICCM 2010
+
+To be published:
+
+- Command Arbitration for Robust Modular Reinforcement Learning, ICML 2017 (Deadline: 24 Feb 2017)
+- A Friendly Adaptive Behavior Language, OOPSLA 2017 (Deadline: 17 Apr 2017)
