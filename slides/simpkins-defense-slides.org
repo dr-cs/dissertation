@@ -39,8 +39,23 @@ $Q_{joint}(s, a) = \sum Q_i(s, a)$
 
 Reward signals must be comparable.
 
+
+** MRL Reformulation
+
+An agent is an arbitrator plus a list of modules. Formally:
+
+- An action set $A$ for the agent as a whole, shared by each module,
+- A set of reinforcement learning modules, $M$
+- A state abstraction function, $moduleState_i$ for each module $m_i$
+- A reward function, $reward_i$ for each module $m_i$
+- An arbitrator with:
+
+  - A reward function for the command arbitrator, $R_{CA}(s)$,
+  - Action set $A_{CA}$ that represents choosing a module in a given state
+
 ** Arbi-Q
 
+Arbi-Q uses a Q-learning algorithm to learn a policy mapping states to modules.
 
 
 ** Software Engineering
