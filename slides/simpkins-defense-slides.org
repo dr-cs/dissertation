@@ -37,7 +37,9 @@ $Q_{joint}(s, a) = \sum Q_i(s, a)$
 
 ** Problem with State of the Art MRL
 
-Reward signals must be comparable.
+[[file:../gm-bunny-wolf.png]]
+
+Rewards must be comparable between modules, otherwise performance degrades.
 
 
 ** MRL Reformulation
@@ -55,8 +57,14 @@ An agent is an arbitrator plus a list of modules. Formally:
 
 ** Arbi-Q
 
-Arbi-Q uses a Q-learning algorithm to learn a policy mapping states to modules.
+Arbi-Q is a command arbitration algorithm that uses a Q-learning algorithm to learn a policy mapping states to modules.
 
+
+** Arbi-Q Results
+
+[[file:../arbiq-bunny-wolf.png]]
+
+Rewards may be incomparable between modules -- no degradation of performance.
 
 ** Software Engineering
 
