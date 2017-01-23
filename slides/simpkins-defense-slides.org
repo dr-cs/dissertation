@@ -45,15 +45,38 @@ Reward signals must be comparable.
 
 ** Software Engineering
 
+Two important issues in software engineering:
+
+- Reuse
+- Complexity
+
 ** AFABL
+
+AFABL (A Friendly Adaptive Behavior Language) is a domain-specific langauge for ariting adaptive intelligent agents.
+
+- Improves reuse of problem domain concepts and application-specific code through domain-specific language
+- Reduces complexity with a declarative syntax
+
+Declarative agent code transformed into modular reinforcement learning agents by the DSL.
+
+** AFABL Example
+
+** AFABL Programmer Study
 
 ** Application: Personality Modeling
 
-** Application: NPC Programming
-
 ** Limitations
 
+- Need for simulation environment
+- Reward authoring
+- Host language limitations
+
 ** Opportunities
+
+- Simplified syntax removing most reward authoring
+- Integration of HRL
+- Drives, aversions, objectives, tasks
+- Drama manager features
 
 ** Review of Contributions
 
