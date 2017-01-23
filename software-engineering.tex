@@ -45,7 +45,7 @@ Neighbors was the first to propose {\it domain languages} specifically for the p
 A second goal of AFABL is reducing the complexity of agent code. For our purposes we define complexity as a measure of the effort required to understand, modify, or test a piece of code. Many kinds of complexity measures have been proposed, including function point analysis \cite{albrecht1979measuring}, Halstead's ``software science'' \cite{halstead1977elements}, information flow \cite{henry1981software} and many others. But perhaps the most widespread complexity measure is McCabe's cyclomatic complexity \cite{mccabe1976complexity,mccabe1989design}. Roughly speaking, the McCabe cyclomatic complexity number is a measure of the number of unique paths through a program.
 
 Though there are critiques of cyclomatic complexity
-\cite{gill1991cyclomatic} and proposed modifications \cite{weyuker1988evaluating}, McCabe's cyclomatic complexity measure is still in widespread use and and has been shown to be a useful and valid measure. Curtis and colleagues found that both Halstead and McCabe complexity metrics correlate with psychological complexity of code, especially for less experienced programmers \cite{curtis1979measuring}. Finally, McCabe's cyclomatic complexity number has a simple method of calculation, which we explain in the next chapter, which makes it particularly appealing.
+\cite{gill1991cyclomatic} and proposed modifications \cite{weyuker1988evaluating}, McCabe's cyclomatic complexity measure is still in widespread use and has been shown to be a useful and valid measure. Curtis and colleagues found that both Halstead and McCabe complexity metrics correlate with psychological complexity of code, especially for less experienced programmers \cite{curtis1979measuring}. Finally, McCabe's cyclomatic complexity number has a simple method of calculation which makes it particularly appealing. We explain McCabe's cyclomatic complexity in the next chapter.
 
 \section{Adaptive Programming}
 
@@ -64,6 +64,8 @@ In this work we are particularly interested in programming intelligent agents th
 Norvig identifies several requirements of adaptive soft\-ware---adaptive programming concerns, agent-oriented concerns, and software engineering concerns---and five key technologies---dynamic programming languages, agent technology, decision theory, reinforcement learning, and probabilistic networks---needed to realize adaptive software.  These requirements and technologies are embodied in his model of adaptive programming given in Table~\ref{tab:adaptive-model}.
 
 \begin{table}[h]
+
+\begin{center}
 \begin{tabular}{|c|c|}\hline
 Traditional Programming & Adaptive Programming \\ \hline
 Function/Class & Agent/Module \\
@@ -78,6 +80,8 @@ Pass test suite & Scientific method\\ \hline
 \caption{Peter Norvig's model of adaptive programming
   ~\cite{norvig1998decision}.}
 \label{tab:adaptive-model}
+\end{center}
+
 \end{table}
 
 AFABL integrates two of Norvig's key technologies: agent technology and reinforcement learning.

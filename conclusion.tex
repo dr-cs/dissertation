@@ -2,19 +2,19 @@
 
 \section{Review of Major Contributions}
 
-This dissertation has reported on two primary contributions: a command arbitration algorithm for robust modular reinforcement learning, and a domain-specific language that integrates modular reinforcement learning, AFABL. The benefits of langauge-integrated reinforcement learning have been demonstrated in a study of programmers' solutions to agent programming tasks using AFABL compared to using a traditional programming language. AFABL agents are easier to write, are expressed in less complex code, and have more readily reused components than agents written in traditional programming languages. In the remainder of this chapter we discuss some implications of AFABL (as a representative first step in language-integrated modular reinforcement learning), limitations of the current work, and directions for future work.
+This dissertation has reported on two primary contributions: a command arbitration algorithm for robust modular reinforcement learning, and a domain-specific language that integrates modular reinforcement learning, AFABL. The benefits of language-integrated reinforcement learning have been demonstrated in a study of programmers' solutions to agent programming tasks using AFABL compared to using a traditional programming language. AFABL agents are easier to write, are expressed in less complex code, and have more readily reused components than agents written in traditional programming languages. In the remainder of this chapter we discuss some implications of AFABL (as a representative first step in language-integrated modular reinforcement learning), limitations of the current work, and directions for future work.
 
 \section{Adaptive Agent Software Engineering with AFABL}
 
-In this section we discuss the broader implications of adaptive agent programming with AFABL. For the present discussion we define authorability is the ease with which a programmer can author the behavior of agents.  Concretely, we suggest a framework for assessing authorability that considers domain knowledge requirements, algorithm knowledge requirements, and the adaptability of agents.
+In this section we discuss the broader implications of adaptive agent programming with AFABL. For the present discussion we define authorability as the ease with which a programmer can author the behavior of agents.  Concretely, we suggest a framework for assessing authorability that considers domain knowledge requirements, algorithm knowledge requirements, and the adaptability of agents.
 
 {\bf Domain knowledge} refers to the world-specific details the agent author must program into the agent for a particular domain.  Examples of domain knowledge include representations of state and the dynamics of the world, that is, how actions cause transitions from one state to another.
 
-{\bf Algorithm knowledge} refers to the degree of algorithm detail that must be programmed in the agent.  An agent using a general-purpose programming language with no libraries to support agent programming would need to write the agent's behavior algorithms from scratch. Even an agent using an agent programming library would still likely need to encode a significant amount of algorithm knowledge in the agent. For example, an agent agent that uses a STRIPS planner for action selection would need to contain details of STRIPS operators and the mechanisms for selecting them in response to state perception.
+{\bf Algorithm knowledge} refers to the degree of algorithm detail that must be programmed in the agent.  An agent using a general-purpose programming language with no libraries to support agent programming would need to write the agent's behavior algorithms from scratch. Even an agent using an agent programming library would still likely need to encode a significant amount of algorithm knowledge in the agent. For example, an agent that uses a STRIPS planner for action selection would need to contain details of STRIPS operators and the mechanisms for selecting them in response to state perception.
 
 {\bf Adaptability} refers to the ease with which an agent, once authored, can adapt to a changing world or be reused in a different world.
 
-These factors are not completely orthogonal.  High domain knowledge requirements can hinder adaptability because agent agents need to be preprogrammed for worlds that have different dynamics.  Domain knowledge and algorithm knowledge often go hand-in-hand, for example in the encoding of heuristic functions.  Returning to our STRIPS example, STRIPS operators essentially encode world dynamics into the decision making algorithm, thereby coupling domain knowledge and algorithm knowledge.
+These factors are not completely orthogonal.  High domain knowledge requirements can hinder adaptability because agents need to be preprogrammed for worlds that have different dynamics.  Domain knowledge and algorithm knowledge often go hand-in-hand, for example in the encoding of heuristic functions.  Returning to our STRIPS example, STRIPS operators essentially encode world dynamics into the decision making algorithm, thereby coupling domain knowledge and algorithm knowledge.
 
 We say that authorability is high when required domain knowledge is low, algorithm knowledge is low, and adaptability is high.  Such an agent is easy to program in the first place and can be reused in new worlds with minimal reprogramming.
 
@@ -27,7 +27,7 @@ Fully scripted agents are the most common type of agents.  The scripts that cont
 In terms of our authorability framework, fully scripted agents have the following properties.
 
 \begin{itemize}
-\item Domain knowledge: high. A fully scripted agent must specify a knowledge representation for perception and action that facilitates all the kinds of analyses and decisions the agent will make.  The dynamics of the world must be known in advance and encoded in he script to allow the agent to pursue goals.
+\item Domain knowledge: high. A fully scripted agent must specify a knowledge representation for perception and action that facilitates all the kinds of analyses and decisions the agent will make.  The dynamics of the world must be known in advance and encoded in the script to allow the agent to pursue goals.
 \item Algorithm knowledge: high.  Although the algorithms may be simple, such as big if-else ladders, the agent author must have complete knowledge of how the agent's behavior algorithms work.  More complex algorithms mean more complex knowledge for the agent author to manage, fully scripted approaches scale poorly to more complex agents.
 \item Adaptability: low.  Once an agent is fully scripted for a given environment, it must be reprogrammed for new environments with different dynamics.  Also, any run-time adaptivity must be scripted explicitly.
 \end{itemize}
@@ -68,24 +68,24 @@ Using any reinforcement learning-based programming system requires the availabil
 
 \subsection{Host Language Limitations}
 
-Writing AFABL agents is writing Scala code, so AFABL programmers must have at least basic competence with Scala and the Scala tool chain. Since it was outside the scope of the present work, we did not try to determine how much of the Scala tooling can be hidden or automated for AFABL programmers. We required study participants to use a recent version of IntelliJ IDEA and provided a pre-configured Scala/AFABL project and an IntelliJ plugin to automate the time tracking and submission process. Still, several participants had trouble running the study code smoothely, as is often the case with development tools. Many study participants who did not participate in a group session simply abandonded the study. We advertised the study to the Atlanta Scala Meetup, a group of local software engineers either using Scala professionally or interested in learning. Approximately 15 Scala Meetup members started the study and only one finished. Due to the amount of individual software issues I needed to help participants solve -- differing operationg systems, IntelliJ versions, etc -- I believe many of these dropouts were due to simple software setup issues.
+Writing AFABL agents is writing Scala code, so AFABL programmers must have at least basic competence with Scala and the Scala tool chain. Since it was outside the scope of the present work, we did not try to determine how much of the Scala tooling can be hidden or automated for AFABL programmers. We required study participants to use a recent version of IntelliJ IDEA and provided a pre-configured Scala/AFABL project and an IntelliJ plugin to automate the time tracking and submission process. Still, several participants had trouble running the study code smoothly, as is often the case with development tools. Many study participants who did not participate in a group session simply abandoned the study. We advertised the study to the Atlanta Scala Meet-up, a group of local software engineers either using Scala professionally or interested in learning. Approximately 15 Scala Meet-up members started the study and only one finished. Due to the number of individual software issues we needed to help participants solve -- differing operating systems, IntelliJ versions, etc -- we believe many of these dropouts were due to simple software setup issues.
 
-In addition to Scala tooling issues, AFABL programmers must deal with the Scala programming language. For example, when programmer makes a mistake in their code the error messages come from the Scala compiler and run-time system, not AFABL. Luckily, in the study few people had such issues with AFABL code itself. With more complex agents problems are more likely to occur, and the programmer may be faced with the famous complexity of the Scala type system. The AFABL programmer who is not also a competent Scala programmer has little hope of debugging non-trivial errors.
+In addition to Scala tooling issues, AFABL programmers must deal with the Scala programming language. For example, when a programmer makes a mistake in their code the error messages come from the Scala compiler and run-time system, not AFABL. Luckily, in the study few people had such issues with AFABL code itself. With more complex agents problems are more likely to occur, and the programmer may be faced with the famous complexity of the Scala type system. The AFABL programmer who is not also a competent Scala programmer has little hope of debugging non-trivial errors.
 
 \section{Directions for Future Work}
 
 
 \subsection{Refined Module Types}
 
-AFABL currently supports a narrow definition of an agent: a behaving entity with a set of states that must constantly be pursued or avoided. In reinforcement learning these kinds of modules are called called continuing tasks, as opposed to episodic goals. Previous version of AFABL supported a greater set of features but we removed them to focus on AFABL's core for the purpose of this work. With a cleaner core AFABL we could re-implement the features discussed below.
+AFABL currently supports a narrow definition of an agent: a behaving entity with a set of states that must constantly be pursued or avoided. In reinforcement learning these kinds of modules are called called continuing tasks, as opposed to episodic goals. Previous versions of AFABL supported a greater set of features but we removed them to focus on AFABL's core for the purpose of this work. With a cleaner core AFABL we could re-implement some of these features and more, which we discuss below.
 
 \paragraph{Drives}
 
-A Drive is a behavior module that runs throughout the life of its conataining agent and represents a state that an agent should constantly seek.
+A Drive is a behavior module that runs throughout the life of its containing agent and represents a state that an agent should constantly seek.
 
 \paragraph{Aversions}
 
-An Aversion module is a behavior module that runs throughout the life of its conataining agent and represents a state that an agent should constantly avoid.  It is a constraint in the sense that, in certain states, a constraint module will identify actions that should *not* be executed.
+An Aversion module is a behavior module that runs throughout the life of its containing agent and represents a state that an agent should constantly avoid.  It is a constraint in the sense that, in certain states, a constraint module will identify actions that should *not* be executed.
 
 \paragraph{Objectives}
 
@@ -93,7 +93,7 @@ A an objective is a short-term goal state that generates a drive module that is 
 
 \paragraph{Tasks}
 
-A task is a temporally-extended action, a "mini-policy" that acheives a subgoal.  Tasks are equivalent to subtasks (MaxQ), abstract machines (PHAM), or options from hierarchical reinforcement learning. Tasks could be manually authored, or algorithms from hierarchical reinforcement learning could be integrated into AFABL.
+A task is a temporally-extended action, a "mini-policy" that achieves a subgoal.  Tasks are equivalent to subtasks (MaxQ), abstract machines (PHAM), or options from hierarchical reinforcement learning. Tasks could be manually authored, or algorithms from hierarchical reinforcement learning could be integrated into AFABL.
 
 \subsection{Simplified Syntax}
 
@@ -128,11 +128,11 @@ The features listed above may make it possible to automatically author reward fu
 
 \caption{Simplified AFABL syntax with drives and aversions.}
 \end{center}
-\label{fig:dimplified-afabl}
+\label{fig:simplified-afabl}
 \end{figure}
 
 
-Instead of writing code to specify modules, the programmer specifies states that are to be constantly sought or avoided -- expressed as state predicates -- and the modules are derived from them automatically. Note also that this proposed syntax does not include state abstraction functions in modules becuase they could be derived automatically from the states that are to be sought or avoided.
+Instead of writing code to specify modules, the programmer specifies states that are to be constantly sought or avoided -- expressed as state predicates -- and the modules are derived from them automatically. Note also that this proposed syntax does not include state abstraction functions in modules because they could be derived automatically from the states that are to be sought or avoided.
 
 \subsubsection{Drama Manager Support}
 
@@ -140,7 +140,7 @@ The features discussed above would go along way toward supporting drama managers
 
 \subsection{General Agent Architecture}
 
-The current version of AFABL focuses on integrated reinforcement learning but could easily be extended to support integrated intelligence, that is, mixing of agent modules that employ differnt kinds of AI algorithms. Because an AFABL agent performs command arbitration over modules that support a behavioral interface (providing an action given a state observation) as opposed to merging elements of reinformcenet learners (like Q-values), the modules themselves can employ any mechanism to decide on actions given a state.  This information hiding means that AFABL agents could be composed of a mixture of modules that use many different kinds of AI, including statistical learning, rule-based reasoning, or (reactive) planning.  In this sense AFABL would be an integrated intelligence architecture.
+The current version of AFABL focuses on integrated reinforcement learning but could easily be extended to support integrated intelligence, that is, mixing of agent modules that employ different kinds of AI algorithms. Because an AFABL agent performs command arbitration over modules that support a behavioral interface (providing an action given a state observation) as opposed to merging elements of reinforcement learners (like Q-values), the modules themselves can employ any mechanism to decide on actions given a state.  This information hiding means that AFABL agents could be composed of a mixture of modules that use many different kinds of AI, including statistical learning, rule-based reasoning, or (reactive) planning.  In this sense AFABL would be an integrated intelligence architecture.
 
 \paragraph{Knowledge-Based Arbitrators}
 
@@ -148,7 +148,7 @@ In addition to the modules the arbitrator itself could employ different kinds of
 
 \paragraph{Hierarchical Decomposition}
 
-Beacuse modules are themselves agents, modules can contain other modules and perform command arbitration over those modules just as the top-level agent does.  Agents can thus be decomposed recursively into behavioral subsystems.  This recursive behavior module decomposition would provide the agent designer with great flexibility.  Recursive module composition is somewhat similar to the levels of competence in Brooks's subsumption architecture with an important difference: the internal workings of modules are never altered externally.  Modules are treated as black-boxes.  Command arbitration accomplishes the same result that output suppression does in classic subsumption.
+Because modules are themselves agents, modules can contain other modules and perform command arbitration over those modules just as the top-level agent does.  Agents can thus be decomposed recursively into behavioral subsystems.  This recursive behavior module decomposition would provide the agent designer with great flexibility.  Recursive module composition is somewhat similar to the levels of competence in Brooks's subsumption architecture with an important difference: the internal workings of modules are never altered externally.  Modules are treated as black-boxes.  Command arbitration accomplishes the same result that output suppression does in classic subsumption.
 
 \subsection{Independent (Non-Embedded) Language}\label{sec:conclusion-full-language}
 
