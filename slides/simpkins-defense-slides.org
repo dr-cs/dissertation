@@ -19,6 +19,11 @@
 
 ** My Thesis
 
+(1)Modular reinforcement learning modules can be made composable and
+(2) integrating modular reinformcement learning into a programming language improves code reuse and reduces the complexity of certain kinds of intelligent agents.
+
+** Contributions
+
 This dissertation makes two contributions:
 
 1. A command arbitration algorithm for modular reinforcement learning that enables composability by decoupling the reward scales of reinforcement learning modules, and
@@ -29,18 +34,17 @@ This dissertation makes two contributions:
 - Learning agent, $M$, decomposed into $n$ modules, $M=\{M_j\}_{j=1}^n$
 - Each $M_j = (S_j,A,R_j)$ - shared action set, distinct state spaces and rewards
 
-State of the art: joint Q-function assuming additive rewards (Russel and Zimdars, 2003; Sprague and Ballard, 2003):
+State of the art: merged Q-function assuming additive rewards (Russel and Zimdars, 2003; Sprague and Ballard, 2003):
 
 #+BEGIN_CENTER
 $Q_{joint}(s, a) = \sum Q_i(s, a)$
 #+END_CENTER
 
-** Problem with State of the Art MRL
+** Problem 1: Current MRL is not composable
 
 [[file:../gm-bunny-wolf.png]]
 
 Rewards must be comparable between modules, otherwise performance degrades.
-
 
 ** MRL Reformulation
 
@@ -49,7 +53,7 @@ An agent is an arbitrator plus a list of modules. Formally:
 - An action set $A$ for the agent as a whole, shared by each module,
 - A set of reinforcement learning modules, $M$
 - A state abstraction function, $moduleState_i$ for each module $m_i$
-- A reward function, $reward_i$ for each module $m_i$
+- A reward function, $R_i(s)$ for each module $m_i$
 - An arbitrator with:
 
   - A reward function for the command arbitrator, $R_{CA}(s)$,
@@ -59,19 +63,26 @@ An agent is an arbitrator plus a list of modules. Formally:
 
 Arbi-Q is a command arbitration algorithm that uses a Q-learning algorithm to learn a policy mapping states to modules.
 
+- Each module gets single unweighted vote for an action in each state
+- Command arbitrator chooses one of the modules' actions
+
+Command arbitrator is a "benevolent dictator"
+
 
 ** Arbi-Q Results
 
 [[file:../arbiq-bunny-wolf.png]]
 
-Rewards may be incomparable between modules -- no degradation of performance.
+Rewards may be incomparable between modules -- no degradation of performance. So separately authored modules can be composed in the same agent, Problem 1 of my thesis statement.
 
 ** Software Engineering
 
 Two important issues in software engineering:
 
-- Reuse
-- Complexity
+- Reuse - makes software engineering more efficient and code more maintainable
+- Complexity - the effort required to understand or modify a piece of code
+
+Problem 2 of my thesis statement: intelligent agent code tends to be complex and not amenable to reuse.
 
 ** AFABL
 
@@ -80,18 +91,170 @@ AFABL (A Friendly Adaptive Behavior Language) is a domain-specific langauge for 
 - Improves reuse of problem domain concepts and application-specific code through domain-specific language
 - Reduces complexity with a declarative syntax
 
-Declarative agent code transformed into modular reinforcement learning agents by the DSL.
+Declarative agent code is transformed into modular reinforcement learning agents by the DSL.
 
 ** AFABL Example
 
-** AFABL Programmer Study
+#+BEGIN_SRC scala
+  case class FindFoodState(bunny: Location, food: Location)
+  val findFood = AfablModule(
+    world = bunnyWorld,
+    stateAbstraction = (worldState: BunnyState) => {
+      FindFoodState(worldState.bunny, worldState.food)
+    },
+    moduleReward = (moduleState: FindFoodState) => {
+      if (moduleState.bunny == moduleState.food) 1.0
+      else -0.1
+    }
+  )
+  // avoidWolf similar to findFood
+  val afablBunny1 = AfablAgent(
+    world = bunnyWorld,
+    modules = Seq(findFood, avoidWolf),
+    agentLevelReward = (state: BunnyState) => {
+      if (state.bunny == state.wolf) 0.0
+      else if (state.bunny == state.food) 1.0
+      else 0.5
+    }
+  )
+#+END_SRC
+
+** AFABL Programmer Study World
+
+#+BEGIN_CENTER
+#+ATTR_LATEX: :height 1.5in
+[[file:../bunny.png]]
+#+END_CENTER
+
+- Bunny must constantly find food and avoid the wolf.
+- Bunny actions are move up, down, left, or right.
+- Food is static, wolf moves one step towards bunny every other time step.
+- When bunny finds finds food it consumes the food and new food appears elsewhere in the grid world.
+- When bunny meets wolf it is eaten and ``respawns'' elsewhere.
+
+** AFABL Programmer Study Tasks
+
+Write agents for the following tasks in Scala and AFABL.
+
+1. Task 1: write a bunny agent that finds as much food as possible and avoids the wolf as much as possible.
+2. Task 2: same as Task 1, but add a mate that acts like the food (static, reappears after mating). Bunny ust find food, avoid wolf, and mate as much as possible.
+
+** AFABL Programmer Study Results
+
+Task 1:
+
+|                       | Scala Mean | AFABL Mean | p-value |
+|-----------------------+------------+------------+---------|
+| Lines of Code         |        0.0 |        0.0 |     0.0 |
+| Time                  |        0.0 |        0.0 |     0.0 |
+| Cyclomatic complexity |        0.0 |        0.0 |     0.0 |
+| Performance           |        0.0 |        0.0 |     0.0 |
+
+Task 2:
+
+|                       | Scala Mean | AFABL Mean | p-value |
+|-----------------------+------------+------------+---------|
+| Lines of Code         |        0.0 |        0.0 |     0.0 |
+| Time                  |        0.0 |        0.0 |     0.0 |
+| Cyclomatic complexity |        0.0 |        0.0 |     0.0 |
+| Performance           |        0.0 |        0.0 |     0.0 |
+
+
+Problem 2 of my thesis: AFABL agents were shorter, took less time to write, and were less complex than Scala agents for the same tasks.
+
+** AFABL Programmer Study Questionnaire Responses
+
+*** Questionnaire responses                                    :B_ignoreheading:BMCOL:
+    :PROPERTIES:
+    :BEAMER_env: ignoreheading
+    :BEAMER_col: 0.5
+    :END:
+
+    #+ATTR_LATEX: :height 1.25in
+    [[file:../reflection-q2-results.png]]
+
+    #+ATTR_LATEX: :height 1.25in
+    [[file:../reflection-q3-results.png]]
+
+*** Questionnaire responses                                    :B_ignoreheading:BMCOL:
+    :PROPERTIES:
+    :BEAMER_env: ignoreheading
+    :BEAMER_col: 0.5
+    :END:
+
+    #+ATTR_LATEX: :height 1.25in
+    [[file:../reflection-q4-results.png]]
+
+    #+ATTR_LATEX: :height 1.25in
+    [[file:../reflection-q5-results.png]]
+
+
+** AFABL Programmer Study Participant Reflections
+
+#+BEGIN_QUOTE
+While learning AFABL had some overhead for Task 1, being able to program in terms of rewards and punishments was much more intuitive than coding an algorithm from scratch that may or may not be correct.
+#+END_QUOTE
+
+#+BEGIN_QUOTE
+Being able to just add in another module and tack it onto the agent with AFABL was much easier and more elegant than having to go in and modify existing methods and logic in scala. Adding the addtional functionality with AFABL was much more convenient in this respect.
+#+END_QUOTE
 
 ** Application: Personality Modeling
 
-** Limitations
+Basic idea: trait-theoretic personality models can be translated into reinforcement learning framework.
 
-- Need for simulation environment
-- Reward authoring
+#+BEGIN_CENTER
+
+| Psychology          | Reinforcement Learning |
+|---------------------+------------------------|
+| Trait               | RL Module              |
+| Valence             | Reward                 |
+| Trait measure/score | Weight on RL module    |
+
+#+END_CENTER
+
+** Atkinson's Ring Toss Experiment
+
+#+BEGIN_CENTER
+#+ATTR_LATEX: :height 1.5in
+[[file:ring-toss-186x186.jpg]]
+#+END_CENTER
+
+- Atkinson and Litwin studied Achievement Motivation and Fear of Failure.
+- 49 Students classified as high or low in both Achievement Motivation and Test Anxiety (Fear of Failure).
+- Each student played a ring toss game at one of 15 distances from ring.
+
+** Simulating Atkinson's Experiment With AFABL Agents
+
+#+BEGIN_SRC scala
+val achievementMotivation = AfablModule(
+  world = RingTossWorld,
+  moduleReward = (state: RingTossState) => state match {
+    case OneFootLine => 1,
+    case TwoFootLine => 2,
+    ...
+    case FifteenFootLine => 15
+  }
+)
+val testAnxiety = AfablModule(
+  world = RingTossWorld,
+  moduleReward = (state: RingTossState) => state match {
+    case OneFootLine => 15,
+    case TwoFootLine => 14,
+    ...
+    case FifteenFootLine => 1
+  }
+)
+#+END_SRC
+
+
+- Ran 10 virtual replications of Atkinson's experiment.
+- Generated data similar to Atkinson's human subjects
+
+** Limitations of AFABL
+
+- Need for simulation environment to (pre)train agents
+- Reward authoring is not straightforward for programmers not trained in reinforcement learning
 - Host language limitations
 
 ** Opportunities
@@ -103,8 +266,11 @@ Declarative agent code transformed into modular reinforcement learning agents by
 
 ** Review of Contributions
 
-- Arbi-Q
-- AFABL
+Thesis: (1)Modular reinforcement learning modules can be made composable and
+(2) integrating modular reinformcement learning into a programming language improves code reuse and reduces the complexity of certain kinds of intelligent agents.
+
+- Arbi-Q makes modular reinforcement learning composable by decoupling the reward scales of modules
+- AFABL integrates MRL/Arbi-Q, which facilitates reuse and reduces complexity
 
 
 ** The Dissertator
