@@ -1,7 +1,7 @@
 #+TITLE:     Integrating Reinforcement Learning into a Programming Language
 #+AUTHOR:    Chris Simpkins
 #+EMAIL:
-#+DATE:      26 January 2017
+#+DATE:      2 February 2017
 #+DESCRIPTION:
 #+KEYWORDS:
 #+LANGUAGE:  en
@@ -31,8 +31,8 @@ This dissertation makes two contributions:
 
 ** Modular Reinforcement Learning
 
-- Learning agent, $M$, decomposed into $n$ modules, $M=\{M_j\}_{j=1}^n$
-- Each $M_j = (S_j,A,R_j)$ - shared action set, distinct state spaces and rewards
+- Learning agent, $M$, decomposed into $n$ modules, $M=\{M_i\}_{i=1}^n$
+- Each $M_i = (S_i,A,R_i)$ - shared action set, distinct state spaces and rewards
 
 State of the art: merged Q-function assuming additive rewards (Russel and Zimdars, 2003; Sprague and Ballard, 2003):
 
@@ -45,6 +45,124 @@ $Q_{joint}(s, a) = \sum Q_i(s, a)$
 [[file:../gm-bunny-wolf.png]]
 
 Rewards must be comparable between modules, otherwise performance degrades.
+
+** Why GM-Sarsa/Q-Decomposition Degrades
+
+Simplified bunny world example (B is for bunny, F is for food, W is for wolf):
+
+#+ATTR_LaTeX: :align |p{1em}|p{1em}|p{1em}|p{1em}|p{1em}|
+|---+---+---+---+---|
+|   |   | B | W | F |
+|---+---+---+---+---|
+|   |   |   |   |   |
+|---+---+---+---+---|
+|   |   |   |   |   |
+|---+---+---+---+---|
+|   |   |   |   |   |
+|---+---+---+---+---|
+|   |   |   |   |   |
+|---+---+---+---+---|
+
+- FindFood rewards: +1 for finding food, -0.1 otherwise
+- AvoidWolf rewards: -1 for meeting wolf, 0.1 otherwise
+
+** FindFood with Comparable Reward Scales
+
+With comparable rewards the Q-value of moving right for FindFood would be (we use deterministic state transition dynamics here for simplicity)
+
+\begin{align*}
+Q(s, Right) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+              &= -0.1 + 0.9 (1.0)\\
+              &= 0.8
+\end{align*}
+
+because the max next action would find the food.
+
+The value of moving left would be
+
+\begin{align*}
+Q(s, Left) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+             &= -0.1 + 0.9 (0.8)\\
+             &= 0.72
+\end{align*}
+
+because the max next action would be Right, to get closer to the food.
+
+** AvoidWolf with Comparable Reward Scales
+
+With comparable rewards the Q-value of moving right for AvoidWolf would be
+
+\begin{align*}
+Q(s, Right) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+            &= 0.5 + 0.9 (-1.0)\\
+            &= -0.4
+\end{align*}
+
+because the next state meets the wolf.
+
+The value of moving left would be
+
+\begin{align*}
+Q(s, Left) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+             &= 0.5 + 0.9 (0.5)\\
+             &= 0.95
+\end{align*}
+
+because the max next action would again avoid the wolf.
+
+** Composite GM-Sarsa Q-values with Comparable Rewards
+
+Given the module Q-values above, the composite Q-values for the Right and Left actions would be
+
+\begin{align*}
+Q(s, Left) &= Q_{FindFood}(s, Left) + Q_{AvoidWolf}(s, Left)\\
+           &= 0.72 + 0.95 = 1.67
+\end{align*}
+
+\begin{align*}
+Q(s, Right) &= Q_{FindFood}(s, Right) + Q_{AvoidWolf}(s, Right)\\
+            &= 0.8 - 0.4 = 0.4
+\end{align*}
+
+Given these composite Q-values the next action decided by GM-Sarsa would be Left, which is correct because it avoids getting eaten by the wolf.
+
+** FindFood with Incomparable Reward Scales
+
+If we scale the FindFood module's rewards by 10, the Q-values for moving right and left would be
+
+\begin{align*}
+Q(s, Right) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+              &= -1.0 + 0.9 (10.0)\\
+              &= 8.0
+\end{align*}
+
+and
+
+\begin{align*}
+Q(s, Left) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+             &= -1.0 + 0.9 (8.0)\\
+             &= 6.2
+\end{align*}
+
+** Composite GM-Sarsa Q-values with Incomparable Rewards
+
+Using the same AvoidWolf values as above and the scaled FindFood Q-values using incomparable rewards the composite Q-values would be
+
+\begin{align*}
+Q(s, Left) &= Q_{FindFood}(s, Left) + Q_{AvoidWolf}(s, Left)\\
+           &= 6.2 + 0.95 = 7.15
+\end{align*}
+
+and
+
+\begin{align*}
+Q(s, Right) &= Q_{FindFood}(s, Right) + Q_{AvoidWolf}(s, Right)\\
+            &= 8.0 - 0.4 = 7.6
+\end{align*}
+
+and the bunny would move right and get eaten by the wolf.
+
+This example demonstrates how scaling the FindFood module's rewards causes the preferences of FindFood to dominate action selection, resulting in the bunny getting eaten and not getting to the food.
 
 ** MRL Reformulation
 
@@ -197,6 +315,10 @@ While learning AFABL had some overhead for Task 1, being able to program in term
 
 #+BEGIN_QUOTE
 Being able to just add in another module and tack it onto the agent with AFABL was much easier and more elegant than having to go in and modify existing methods and logic in scala. Adding the addtional functionality with AFABL was much more convenient in this respect.
+#+END_QUOTE
+
+#+BEGIN_QUOTE
+You can much more clearly see the similarities between Task 1 and Task 2 in the AFABL version, for one thing. Second, it doesn't require modifying existing code nearly as much as the plain Scala version does. It's a delight to use, and as a programmer at a startup, I would much rather work with this format over what I have to do to work with AWS' Machine Learning program.
 #+END_QUOTE
 
 ** Application: Personality Modeling
