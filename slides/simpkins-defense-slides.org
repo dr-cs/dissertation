@@ -1,7 +1,7 @@
 #+TITLE:     Integrating Reinforcement Learning into a Programming Language
 #+AUTHOR:    Chris Simpkins
 #+EMAIL:
-#+DATE:      2 February 2017
+#+DATE:      1 February 2017
 #+DESCRIPTION:
 #+KEYWORDS:
 #+LANGUAGE:  en
@@ -12,43 +12,129 @@
 #+LaTeX_CLASS_OPTIONS: [smaller]
 #+LaTeX_HEADER: \usepackage{verbatim, multicol, tabularx,}
 #+LaTeX_HEADER: \usepackage{amsmath,amsthm, amssymb, latexsym, listings, qtree}
-#+LaTeX_HEADER: \lstset{frame=tb, aboveskip=1mm, belowskip=0mm, showstringspaces=false, columns=flexible, basicstyle={\ttfamily}, numbers=left, frame=single, breaklines=true, breakatwhitespace=true}
+#+LaTeX_HEADER: \usepackage{algorithm}
+#+LaTeX_HEADER: \usepackage[noend]{algpseudocode}
+#+LaTeX_HEADER: \lstset{frame=tb, aboveskip=1mm, belowskip=0mm, showstringspaces=false, columns=flexible, basicstyle={\tiny\ttfamily}, numbers=left, frame=single, breaklines=true, breakatwhitespace=true}
+#+LaTeX_HEADER: \lstdefinelanguage{scala}{morekeywords={abstract,case,catch,class,def, do,else,extends,false,final,finally, for,if,implicit,import,match,mixin, new,null,object,override,package, private,protected,requires,return,sealed, super,this,throw,trait,true,try, type,val,var,while,with,yield}, otherkeywords={=>,<-,<\%,<:,>:,\#,@}, sensitive=true, morecomment=[l]{//}, morecomment=[n]{/*}{*/}, morestring=[b]", morestring=[b]', morestring=[b]"""}
+
 #+LaTeX_HEADER: \setbeamertemplate{footline}[frame number]
 
 * Integrating Reinforcement Learning into a Programming Language
 
 ** My Thesis
 
-(1)Modular reinforcement learning modules can be made composable and
-(2) integrating modular reinformcement learning into a programming language improves code reuse and reduces the complexity of certain kinds of intelligent agents.
+(1) Modular reinforcement learning modules can be made composable and
 
-** Contributions
+- In the current state of the art in modular reinforcement learning, modules are not composable
 
-This dissertation makes two contributions:
+(2) integrating modular reinformcement learning into a programming language improves reuse and reduces complexity of intelligent agent code.
 
-1. A command arbitration algorithm for modular reinforcement learning that enables composability by decoupling the reward scales of reinforcement learning modules, and
-2.  a Scala-embedded domain-specific language -- AFABL (A Friendly Adaptive Behavior Language) -- that integrates modular reinforcement learning in a way that allows programmers to use reinforcement learning without knowing much about reinforcement learning algorithms.
+- Intelligent agent code written in traditional programming languages tends to be complex and not amendable to reuse
+
+** Reinforcement Learning
+
+A behavioral agent acts in a world typically modeled as a Markov Decision Process (MDP):
+
+\begin{equation}
+\langle S, A, T(s, a, s'), R(s) \rangle
+\end{equation}
+
+where
+
+- $S$ is a set of states,
+- $A$ is a set of actions, and
+- $T(s, a, s')$ is a transition function which gives the probably that executing action $a$ in state $s$ will result in $s'$.
+- $R(s)$ is a reward function that indicates the one-step
+
+In typical reinforcement learning problems, there is a state with higher reward that represents a "goal." A reinforcement learning agent learns a policy, $\pi(s)$ that maps states to actions such that following the policy maximizes long-term expected reward (Sutton and Barto, 1998).
+
+** Q-Learning (Watkins 1998)
+
+In typical learning scenarios we don't have the MDP, so we learn a direct mapping from states to actions, an action-value function, a Q-function.
+
+\begin{algorithm}
+  \begin{algorithmic}
+    \State $Q \gets$ random initial values
+    \For{each episode}
+      \State $s \gets$ world.initialState()
+      \Repeat
+        \State $a \gets \epsilon-$greedy action for $s$ from $\pi$ derived from $Q$
+        \State Execute $a$, observe effects $r$ and $s'$
+        \State $Q(s, a) \gets Q(s, a) + \alpha [R(s) + \gamma \max_{a'} Q(s', a') - Q(s, a)]$
+        \State $s \gets s'$
+      \Until $s$ is terminal
+    \EndFor
+  \end{algorithmic}
+\end{algorithm}
+
+
+** Curse of Dimensionality
+
+The state space grows exponentially in the number of state features. As an example, consider the $5 \times 5$ grid of the bunny world.
+
+#+BEGIN_CENTER
+#+ATTR_LATEX: :height 1.5in
+[[file:../bunny.png]]
+#+END_CENTER
+
+The bunny, food, and wolf can be in one of 25 possible locations.
+
+- Single task, e.g., bunny reaching a single location, state space is 25.
+- Add task of avoiding a wolf, state space grows to $25^2 = 625$.
+- Add task of finding food, state space grows to $25^3 = 15625$.
 
 ** Modular Reinforcement Learning
+
+(a.k.a. multiple-goal or multi-objective reinforcement learning)
+
+A reinforcement learning agent composed of modules. Instead of one monolithic reward and Q-function, there's a separate reward signal and Q-function for each module.
 
 - Learning agent, $M$, decomposed into $n$ modules, $M=\{M_i\}_{i=1}^n$
 - Each $M_i = (S_i,A,R_i)$ - shared action set, distinct state spaces and rewards
 
-State of the art: merged Q-function assuming additive rewards (Russel and Zimdars, 2003; Sprague and Ballard, 2003):
+The agent uses the modules' separate Q-functions to decide a single policy for the agent.
+
+- MRL bunny has two modules: FindFood and AvoidWolf.
+
+Instead of a single monolithic state space of $25^3 = 15625$ states, two separate state spaces with $25^2 = 625$ states each (bunny plus wolf and bunny plus food).
+
+
+** MRL State of the Art
+
+Merged Q-function assuming additive rewards (Russel and Zimdars, 2003; Sprague and Ballard, 2003; Roijers, et. al. 2013):
 
 #+BEGIN_CENTER
 $Q_{joint}(s, a) = \sum Q_i(s, a)$
 #+END_CENTER
 
+Roijers, Vamplew, et. al. call this a *scalarization* of the separate reward and Q-functions.
+
+- Important assumption: rewards are additive. We'll show how this results in non-composable modules.
+
+** Bunny World
+
+#+BEGIN_CENTER
+#+ATTR_LATEX: :height 1.5in
+[[file:../bunny.png]]
+#+END_CENTER
+
+- Bunny must constantly find food and avoid the wolf.
+- Bunny actions are move up, down, left, or right.
+- Food is static, wolf moves one step towards bunny every other time step.
+- When bunny finds finds food it consumes the food and new food appears elsewhere in the grid world.
+- When bunny meets wolf it is eaten and ``respawns'' elsewhere.
+
+MRL bunny agent: FindFood module and AvoifWolf module
+
 ** Problem 1: Current MRL is not composable
 
 [[file:../gm-bunny-wolf.png]]
 
-Rewards must be comparable between modules, otherwise performance degrades.
+Rewards must be comparable -- use the same scales -- between modules, otherwise performance degrades.
 
 ** Why GM-Sarsa/Q-Decomposition Degrades
 
-Simplified bunny world example (B is for bunny, F is for food, W is for wolf):
+Consider simplified bunny world example (B is for bunny, F is for food, W is for wolf):
 
 #+ATTR_LaTeX: :align |p{1em}|p{1em}|p{1em}|p{1em}|p{1em}|
 |---+---+---+---+---|
@@ -63,56 +149,24 @@ Simplified bunny world example (B is for bunny, F is for food, W is for wolf):
 |   |   |   |   |   |
 |---+---+---+---+---|
 
+Comparable Rewards:
 - FindFood rewards: +1 for finding food, -0.1 otherwise
 - AvoidWolf rewards: -1 for meeting wolf, 0.1 otherwise
 
-** FindFood with Comparable Reward Scales
+Incomparable Rewards:
+- FindFood rewards: +10 for finding food, -1 otherwise
+- AvoidWolf rewards: -1 for meeting wolf, 0.1 otherwise
 
-With comparable rewards the Q-value of moving right for FindFood would be (we use deterministic state transition dynamics here for simplicity)
-
-\begin{align*}
-Q(s, Right) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
-              &= -0.1 + 0.9 (1.0)\\
-              &= 0.8
-\end{align*}
-
-because the max next action would find the food.
-
-The value of moving left would be
-
-\begin{align*}
-Q(s, Left) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
-             &= -0.1 + 0.9 (0.8)\\
-             &= 0.72
-\end{align*}
-
-because the max next action would be Right, to get closer to the food.
-
-** AvoidWolf with Comparable Reward Scales
-
-With comparable rewards the Q-value of moving right for AvoidWolf would be
-
-\begin{align*}
-Q(s, Right) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
-            &= 0.5 + 0.9 (-1.0)\\
-            &= -0.4
-\end{align*}
-
-because the next state meets the wolf.
-
-The value of moving left would be
-
-\begin{align*}
-Q(s, Left) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
-             &= 0.5 + 0.9 (0.5)\\
-             &= 0.95
-\end{align*}
-
-because the max next action would again avoid the wolf.
+By *incomparable* we mean rewards have different scales, e.g., FindFood rewards are 10x greater magnitude than AvoidWolf's.
 
 ** Composite GM-Sarsa Q-values with Comparable Rewards
 
-Given the module Q-values above, the composite Q-values for the Right and Left actions would be
+#+ATTR_LaTeX: :align |p{1em}|p{1em}|p{1em}|p{1em}|p{1em}|
+|---+---+---+---+---|
+|   |   | B | W | F |
+|---+---+---+---+---|
+
+Given the comparable rewards listed previously, the composite Q-values for the Right and Left actions would be
 
 \begin{align*}
 Q(s, Left) &= Q_{FindFood}(s, Left) + Q_{AvoidWolf}(s, Left)\\
@@ -126,27 +180,14 @@ Q(s, Right) &= Q_{FindFood}(s, Right) + Q_{AvoidWolf}(s, Right)\\
 
 Given these composite Q-values the next action decided by GM-Sarsa would be Left, which is correct because it avoids getting eaten by the wolf.
 
-** FindFood with Incomparable Reward Scales
-
-If we scale the FindFood module's rewards by 10, the Q-values for moving right and left would be
-
-\begin{align*}
-Q(s, Right) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
-              &= -1.0 + 0.9 (10.0)\\
-              &= 8.0
-\end{align*}
-
-and
-
-\begin{align*}
-Q(s, Left) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
-             &= -1.0 + 0.9 (8.0)\\
-             &= 6.2
-\end{align*}
-
 ** Composite GM-Sarsa Q-values with Incomparable Rewards
 
-Using the same AvoidWolf values as above and the scaled FindFood Q-values using incomparable rewards the composite Q-values would be
+#+ATTR_LaTeX: :align |p{1em}|p{1em}|p{1em}|p{1em}|p{1em}|
+|---+---+---+---+---|
+|   |   | B | W | F |
+|---+---+---+---+---|
+
+Given the incomparable rewards listed previously resulting in a scaled Q-function for FindFood and the same AvoidWolf values as above, the composite Q-values would be
 
 \begin{align*}
 Q(s, Left) &= Q_{FindFood}(s, Left) + Q_{AvoidWolf}(s, Left)\\
@@ -162,29 +203,46 @@ Q(s, Right) &= Q_{FindFood}(s, Right) + Q_{AvoidWolf}(s, Right)\\
 
 and the bunny would move right and get eaten by the wolf.
 
-This example demonstrates how scaling the FindFood module's rewards causes the preferences of FindFood to dominate action selection, resulting in the bunny getting eaten and not getting to the food.
+- Scaling FindFood's rewards causes FindFood to dominate action selection.
 
 ** MRL Reformulation
 
-An agent is an arbitrator plus a list of modules. Formally:
+An agent is a list of modules, as before, and an arbitrator. Formally:
 
 - An action set $A$ for the agent as a whole, shared by each module,
 - A set of reinforcement learning modules, $M$
-- A state abstraction function, $moduleState_i$ for each module $m_i$
+- A state abstraction function, $moduleState_i$ for each module $m_i$ (optional, but useful)
 - A reward function, $R_i(s)$ for each module $m_i$
-- An arbitrator with:
+- A command arbitrator that chooses one of the modules' action choice as the agent's single action
 
-  - A reward function for the command arbitrator, $R_{CA}(s)$,
-  - Action set $A_{CA}$ that represents choosing a module in a given state
+** Ideal Arbitration is Impossible (Bhat, et. al., 2006)
+
+Note that our MRL reformulation is voting: each module votes on an action, the arbitrator's job is to chose one action. A "fair" voting scheme would have the following properties:
+
+- **Universality**: the ability to handle any possible set of modules.
+
+- **Unanimity**: guarantee that if every module prefers action A, action A will be selected.
+
+- **Independence of Irrelevant Alternatives**: each module's preference for actions A and B are independent of the availability of any other action C. This property prevents any particular module from affecting the global action choice by dishonestly reporting its own preference ordering.
+
+- **Scale Invariance**: ability to scale any module's Q-values without affecting the arbitrator's choice.  This is the crucial property that allows separately authored modules with incomparable reward signals.
+
+- **Non-Dictatorship**: no module gets its way all the time.
+
+According to Arrow's Paradox (Arrow, 1963), if $|A|\geq 3$, then there does not exist an arbitration function that satisfies each of the properties listed above.
+
+We must relax one of the requirements ...
 
 ** Arbi-Q
 
-Arbi-Q is a command arbitration algorithm that uses a Q-learning algorithm to learn a policy mapping states to modules.
+Arbi-Q is a command arbitration algorithm that uses a Q-learning algorithm to learn a policy mapping states to modules. In a given state, a particular module choose's the agent's single action. In summary:
 
+- Command arbitrator has its own reward function, $R_{CA}(s)$
+- Action set $A_{CA}$ that represents choosing a module in a given state
 - Each module gets single unweighted vote for an action in each state
-- Command arbitrator chooses one of the modules' actions
+- Command arbitrator uses Q-learning to learn a policy mapping states to modules
 
-Command arbitrator is a "benevolent dictator"
+Command arbitrator is a "benevolent dictator", that is, a  module that "get's its way" all the time. By Arrow's theorem, other desirable properties will still hold.
 
 
 ** Arbi-Q Results
@@ -197,45 +255,10 @@ Rewards may be incomparable between modules -- no degradation of performance. So
 
 Two important issues in software engineering:
 
-- Reuse - makes software engineering more efficient and code more maintainable
+- Reuse - reusing artificts in the construction of new software
 - Complexity - the effort required to understand or modify a piece of code
 
 Problem 2 of my thesis statement: intelligent agent code tends to be complex and not amenable to reuse.
-
-** AFABL
-
-AFABL (A Friendly Adaptive Behavior Language) is a domain-specific langauge for ariting adaptive intelligent agents.
-
-- Improves reuse of problem domain concepts and application-specific code through domain-specific language
-- Reduces complexity with a declarative syntax
-
-Declarative agent code is transformed into modular reinforcement learning agents by the DSL.
-
-** AFABL Example
-
-#+BEGIN_SRC scala
-  case class FindFoodState(bunny: Location, food: Location)
-  val findFood = AfablModule(
-    world = bunnyWorld,
-    stateAbstraction = (worldState: BunnyState) => {
-      FindFoodState(worldState.bunny, worldState.food)
-    },
-    moduleReward = (moduleState: FindFoodState) => {
-      if (moduleState.bunny == moduleState.food) 1.0
-      else -0.1
-    }
-  )
-  // avoidWolf similar to findFood
-  val afablBunny1 = AfablAgent(
-    world = bunnyWorld,
-    modules = Seq(findFood, avoidWolf),
-    agentLevelReward = (state: BunnyState) => {
-      if (state.bunny == state.wolf) 0.0
-      else if (state.bunny == state.food) 1.0
-      else 0.5
-    }
-  )
-#+END_SRC
 
 ** AFABL Programmer Study World
 
@@ -257,6 +280,123 @@ Write agents for the following tasks in Scala and AFABL.
 1. Task 1: write a bunny agent that finds as much food as possible and avoids the wolf as much as possible.
 2. Task 2: same as Task 1, but add a mate that acts like the food (static, reappears after mating). Bunny ust find food, avoid wolf, and mate as much as possible.
 
+
+** Typical Scala Agent for Task 1
+
+#+BEGIN_SRC scala
+class ScalaBunny1 extends Agent[BunnyState, BunnyAction.Value]
+    with Task1Scorer {
+
+  def getAction(state: BunnyState, shouldExplore: Boolean = false) = {
+    if (wolfNearFood(state))
+      moveAwayFromWolf(state)
+    else
+      moveTowardFood(state)
+   }
+  def wolfNearFood(state: BunnyState) = {
+    val wolfToFood = sqrt(pow(state.food.x - state.wolf.x, 2) +
+                          pow(state.food.y - state.wolf.y, 2))
+    val bunnyToFood = sqrt(pow(state.food.x - state.bunny.x, 2) +
+                           pow(state.food.y - state.bunny.y, 2))
+    wolfToFood < bunnyToFood
+  }
+  def moveTowardFood(state: BunnyState) = {
+    if (state.food.x > state.bunny.x)
+      BunnyAction.Right
+    else if (state.food.x < state.bunny.x)
+      BunnyAction.Left
+    else if (state.food.y < state.bunny.y)
+      BunnyAction.Up
+    else
+      BunnyAction.Down
+  }
+  def moveAwayFromWolf(state: BunnyState) = {
+    if (state.wolf.x < state.bunny.x)
+      BunnyAction.Right
+    else if (state.wolf.x > state.bunny.x)
+      BunnyAction.Left
+    else if (state.wolf.y > state.bunny.y)
+      BunnyAction.Up
+    else
+      BunnyAction.Down
+  }
+}
+#+END_SRC
+
+
+** Domain-Specific Languages
+
+A domain-specific language (DSL) is a language that provides constructs and semantics tailored to a specific problem domain.
+
+- Well-known example: SQL
+
+#+BEGIN_SRC scala
+select name, creator from language where paradigm='functional'
+#+END_SRC
+
+versus
+
+#+BEGIN_SRC scala
+List<String, String> funcLangs = new ArrayList<>();
+for (Record lang: langs) {
+    if (lang.paragigm().equals("functional") {
+        funcLangs.add(new Tuple(lang.name(), lang.creator()));
+    }
+}
+#+END_SRC
+
+SQL provides reusable language constructs and sematics that map directly to relational data model, resulting in far less complex code. (The astute reader will notice that there's far more to the Java example above.)
+
+** AFABL
+
+AFABL (A Friendly Adaptive Behavior Language) is a domain-specific langauge for ariting adaptive intelligent agents.
+
+- Improves reuse of problem domain concepts and application-specific code through domain-specific language
+- Reduces complexity with a declarative syntax
+
+Declarative agent code is transformed into modular reinforcement learning agents by the DSL.
+
+** AFABL Agent Example
+
+#+BEGIN_SRC scala
+  case class FindFoodState(bunny: Location, food: Location)
+  val findFood = AfablModule(
+    world = bunnyWorld,
+    stateAbstraction = (worldState: BunnyState) => {
+      FindFoodState(worldState.bunny, worldState.food)
+    },
+    moduleReward = (moduleState: FindFoodState) => {
+      if (moduleState.bunny == moduleState.food) 1.0
+      else -0.1
+    }
+  )
+
+  case class AvoidWolfState(bunny: Location, wolf: Location)
+  val avoidWolf = AfablModule(
+    world = bunnyWorld,
+    stateAbstraction = (worldState: BunnyState) => {
+      AvoidWolfState(worldState.bunny, worldState.wolf)
+    },
+    moduleReward = (moduleState: AvoidWolfState) => {
+      if (moduleState.bunny == moduleState.wolf) -0.1
+      else 0.1
+    }
+  )
+
+  val afablBunny1 = AfablAgent(
+
+    world = bunnyWorld,
+
+    modules = Seq(findFood, avoidWolf),
+
+    agentLevelReward = (state: BunnyState) => {
+      if (state.bunny == state.wolf) 0.0
+      else if (state.bunny == state.food) 1.0
+      else 0.5
+    }
+  )
+#+END_SRC
+
 ** AFABL Programmer Study Results
 
 Task 1:
@@ -266,7 +406,6 @@ Task 1:
 | Lines of Code         |        0.0 |        0.0 |     0.0 |
 | Time                  |        0.0 |        0.0 |     0.0 |
 | Cyclomatic complexity |        0.0 |        0.0 |     0.0 |
-| Performance           |        0.0 |        0.0 |     0.0 |
 
 Task 2:
 
@@ -275,7 +414,6 @@ Task 2:
 | Lines of Code         |        0.0 |        0.0 |     0.0 |
 | Time                  |        0.0 |        0.0 |     0.0 |
 | Cyclomatic complexity |        0.0 |        0.0 |     0.0 |
-| Performance           |        0.0 |        0.0 |     0.0 |
 
 
 Problem 2 of my thesis: AFABL agents were shorter, took less time to write, and were less complex than Scala agents for the same tasks.
@@ -369,9 +507,15 @@ val testAnxiety = AfablModule(
 )
 #+END_SRC
 
+** Results of Virtual Atkinson Reproduction
 
 - Ran 10 virtual replications of Atkinson's experiment.
 - Generated data similar to Atkinson's human subjects
+
+#+ATTR_LATEX: :width 2in
+[[file:../atkinson.png]] [[file:../iccm.png]]
+
+Just a proof of concept, but promising
 
 ** Limitations of AFABL
 
@@ -383,16 +527,13 @@ val testAnxiety = AfablModule(
 
 - Simplified syntax removing most reward authoring
 - Integration of HRL
-- Drives, aversions, objectives, tasks
+- More reusable concepts in DSL: drives, aversions, objectives, tasks
 - Drama manager features
 
-** Review of Contributions
+** Contributions
 
-Thesis: (1)Modular reinforcement learning modules can be made composable and
-(2) integrating modular reinformcement learning into a programming language improves code reuse and reduces the complexity of certain kinds of intelligent agents.
-
-- Arbi-Q makes modular reinforcement learning composable by decoupling the reward scales of modules
-- AFABL integrates MRL/Arbi-Q, which facilitates reuse and reduces complexity
+1. A command arbitration algorithm for modular reinforcement learning -- Arbi-Q -- that enables composability by decoupling the reward scales of reinforcement learning modules, and
+2.  a Scala-embedded domain-specific language -- AFABL (A Friendly Adaptive Behavior Language) -- that integrates modular reinforcement learning in a way that allows programmers to use reinforcement learning without knowing much about reinforcement learning algorithms.
 
 
 ** The Dissertator
@@ -411,3 +552,106 @@ To be published:
 
 - Command Arbitration for Robust Modular Reinforcement Learning, ICML 2017 (Deadline: 24 Feb 2017)
 - A Friendly Adaptive Behavior Language, OOPSLA 2017 (Deadline: 17 Apr 2017)
+
+** Backup Slides
+
+- Q-value calcuation details
+
+** FindFood with Comparable Reward Scales
+
+With comparable rewards the Q-value of moving right for FindFood would be (we use deterministic state transition dynamics here for simplicity)
+
+\begin{align*}
+Q(s, Right) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+              &= -0.1 + 0.9 (1.0)\\
+              &= 0.8
+\end{align*}
+
+because the max next action would find the food.
+
+The value of moving left would be
+
+\begin{align*}
+Q(s, Left) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+             &= -0.1 + 0.9 (0.8)\\
+             &= 0.72
+\end{align*}
+
+because the max next action would be Right, to get closer to the food.
+
+** AvoidWolf with Comparable Reward Scales
+
+With comparable rewards the Q-value of moving right for AvoidWolf would be
+
+\begin{align*}
+Q(s, Right) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+            &= 0.5 + 0.9 (-1.0)\\
+            &= -0.4
+\end{align*}
+
+because the next state meets the wolf.
+
+The value of moving left would be
+
+\begin{align*}
+Q(s, Left) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+             &= 0.5 + 0.9 (0.5)\\
+             &= 0.95
+\end{align*}
+
+because the max next action would again avoid the wolf.
+
+
+** Composite GM-Sarsa Q-values with Comparable Rewards
+
+Given the module Q-values above, the composite Q-values for the Right and Left actions would be
+
+\begin{align*}
+Q(s, Left) &= Q_{FindFood}(s, Left) + Q_{AvoidWolf}(s, Left)\\
+           &= 0.72 + 0.95 = 1.67
+\end{align*}
+
+\begin{align*}
+Q(s, Right) &= Q_{FindFood}(s, Right) + Q_{AvoidWolf}(s, Right)\\
+            &= 0.8 - 0.4 = 0.4
+\end{align*}
+
+Given these composite Q-values the next action decided by GM-Sarsa would be Left, which is correct because it avoids getting eaten by the wolf.
+
+** FindFood with Incomparable Reward Scales
+
+If we scale the FindFood module's rewards by 10, the Q-values for moving right and left would be
+
+\begin{align*}
+Q(s, Right) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+              &= -1.0 + 0.9 (10.0)\\
+              &= 8.0
+\end{align*}
+
+and
+
+\begin{align*}
+Q(s, Left) &= R(s) + \gamma \sum_{s'} T(s, a, s') \max_{a'} Q(s', a')\\
+             &= -1.0 + 0.9 (8.0)\\
+             &= 6.2
+\end{align*}
+
+** Composite GM-Sarsa Q-values with Incomparable Rewards
+
+Using the same AvoidWolf values as above and the scaled FindFood Q-values using incomparable rewards the composite Q-values would be
+
+\begin{align*}
+Q(s, Left) &= Q_{FindFood}(s, Left) + Q_{AvoidWolf}(s, Left)\\
+           &= 6.2 + 0.95 = 7.15
+\end{align*}
+
+and
+
+\begin{align*}
+Q(s, Right) &= Q_{FindFood}(s, Right) + Q_{AvoidWolf}(s, Right)\\
+            &= 8.0 - 0.4 = 7.6
+\end{align*}
+
+and the bunny would move right and get eaten by the wolf.
+
+This example demonstrates how scaling the FindFood module's rewards causes the preferences of FindFood to dominate action selection, resulting in the bunny getting eaten and not getting to the food.
