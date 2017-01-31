@@ -9,14 +9,13 @@
 #+BEAMER_FRAME_LEVEL: 2
 #+COLUMNS: %40ITEM %10BEAMER_env(Env) %9BEAMER_envargs(Env Args) %4BEAMER_col(Col) %10BEAMER_extra(Extra)
 #+LaTeX_CLASS: beamer
-#+LaTeX_CLASS_OPTIONS: [smaller]
-#+LaTeX_HEADER: \usepackage{verbatim, multicol, tabularx,}
+#+LaTeX_CLASS_OPTIONS: [smaller,aspectratio=1610]
+#+LaTeX_HEADER: \usepackage{verbatim, multicol, tabularx,color}
 #+LaTeX_HEADER: \usepackage{amsmath,amsthm, amssymb, latexsym, listings, qtree}
 #+LaTeX_HEADER: \usepackage{algorithm}
 #+LaTeX_HEADER: \usepackage[noend]{algpseudocode}
 #+LaTeX_HEADER: \lstset{frame=tb, aboveskip=1mm, belowskip=0mm, showstringspaces=false, columns=flexible, basicstyle={\tiny\ttfamily}, numbers=left, frame=single, breaklines=true, breakatwhitespace=true}
 #+LaTeX_HEADER: \lstdefinelanguage{scala}{morekeywords={abstract,case,catch,class,def, do,else,extends,false,final,finally, for,if,implicit,import,match,mixin, new,null,object,override,package, private,protected,requires,return,sealed, super,this,throw,trait,true,try, type,val,var,while,with,yield}, otherkeywords={=>,<-,<\%,<:,>:,\#,@}, sensitive=true, morecomment=[l]{//}, morecomment=[n]{/*}{*/}, morestring=[b]", morestring=[b]', morestring=[b]"""}
-
 #+LaTeX_HEADER: \setbeamertemplate{footline}[frame number]
 
 * Integrating Reinforcement Learning into a Programming Language
@@ -25,11 +24,11 @@
 
 (1) Modular reinforcement learning modules can be made composable and
 
-- In the current state of the art in modular reinforcement learning, modules are not composable
+- (in the current state of the art in modular reinforcement learning, modules are not composable)
 
 (2) integrating modular reinformcement learning into a programming language improves reuse and reduces complexity of intelligent agent code.
 
-- Intelligent agent code written in traditional programming languages tends to be complex and not amendable to reuse
+- (Intelligent agent code written in traditional programming languages tends to be complex and not amenable to reuse.)
 
 ** Reinforcement Learning
 
@@ -44,7 +43,7 @@ where
 - $S$ is a set of states,
 - $A$ is a set of actions, and
 - $T(s, a, s')$ is a transition function which gives the probably that executing action $a$ in state $s$ will result in $s'$.
-- $R(s)$ is a reward function that indicates the one-step
+- $R(s)$ is a reward function that indicates the one-step reward for arriving in state $s$
 
 In typical reinforcement learning problems, there is a state with higher reward that represents a "goal." A reinforcement learning agent learns a policy, $\pi(s)$ that maps states to actions such that following the policy maximizes long-term expected reward (Sutton and Barto, 1998).
 
@@ -120,34 +119,13 @@ Roijers, Vamplew, et. al. call this a *scalarization* of the separate reward and
 
 - Bunny must constantly find food and avoid the wolf.
 - Bunny actions are move up, down, left, or right.
-- Food is static, wolf moves one step towards bunny every other time step.
+- Food is static, wolf moves towards bunny every other time step.
 - When bunny finds finds food it consumes the food and new food appears elsewhere in the grid world.
 - When bunny meets wolf it is eaten and ``respawns'' elsewhere.
 
-MRL bunny agent: FindFood module and AvoifWolf module
+MRL bunny agent: FindFood module and AvoidWolf module
 
-** Problem 1: Current MRL is not composable
-
-[[file:../gm-bunny-wolf.png]]
-
-Rewards must be comparable -- use the same scales -- between modules, otherwise performance degrades.
-
-** Why GM-Sarsa/Q-Decomposition Degrades
-
-Consider simplified bunny world example (B is for bunny, F is for food, W is for wolf):
-
-#+ATTR_LaTeX: :align |p{1em}|p{1em}|p{1em}|p{1em}|p{1em}|
-|---+---+---+---+---|
-|   |   | B | W | F |
-|---+---+---+---+---|
-|   |   |   |   |   |
-|---+---+---+---+---|
-|   |   |   |   |   |
-|---+---+---+---+---|
-|   |   |   |   |   |
-|---+---+---+---+---|
-|   |   |   |   |   |
-|---+---+---+---+---|
+** Comparable and Incomparable Rewards
 
 Comparable Rewards:
 - FindFood rewards: +1 for finding food, -0.1 otherwise
@@ -159,7 +137,21 @@ Incomparable Rewards:
 
 By *incomparable* we mean rewards have different scales, e.g., FindFood rewards are 10x greater magnitude than AvoidWolf's.
 
+
+** Problem 1: Current MRL is not composable
+
+X-axis shows a score, not a reward, since rewards may be incomparable. Score is +1 every time bunny eats, 0 when wolf finds bunny and 0.5 for surviving another step but not eating.
+
+#+BEGIN_CENTER
+#+ATTR_LaTeX: :height 2.5in
+[[file:../gm-bunny-wolf.png]]
+#+END_CENTER
+
+GM-Sarsa (Sprague and Ballard 2003)/Q-Decomposition (Russell and Zimdars 2003) degrades when rewards are not comparable.
+
 ** Composite GM-Sarsa Q-values with Comparable Rewards
+
+Simplified example:
 
 #+ATTR_LaTeX: :align |p{1em}|p{1em}|p{1em}|p{1em}|p{1em}|
 |---+---+---+---+---|
@@ -245,11 +237,16 @@ Arbi-Q is a command arbitration algorithm that uses a Q-learning algorithm to le
 Command arbitrator is a "benevolent dictator", that is, a  module that "get's its way" all the time. By Arrow's theorem, other desirable properties will still hold.
 
 
-** Arbi-Q Results
+** Solution 1: Arbi-Q Results
 
+X-axis shows a score, not a reward, since rewards may be incomparable. Score is +1 every time bunny eats, 0 when wolf finds bunny and 0.5 for surviving another step but not eating.
+
+#+BEGIN_CENTER
+#+ATTR_LaTeX: :height 2.5in
 [[file:../arbiq-bunny-wolf.png]]
+#+END_CENTER
 
-Rewards may be incomparable between modules -- no degradation of performance. So separately authored modules can be composed in the same agent, Problem 1 of my thesis statement.
+Rewards may be incomparable between modules -- no degradation of performance. So separately authored modules can be composed in the same agent.
 
 ** Software Engineering
 
@@ -259,6 +256,46 @@ Two important issues in software engineering:
 - Complexity - the effort required to understand or modify a piece of code
 
 Problem 2 of my thesis statement: intelligent agent code tends to be complex and not amenable to reuse.
+
+** Domain-Specific Languages
+
+A domain-specific language (DSL) is a language that provides constructs and semantics tailored to a specific problem domain.
+
+- Well-known example: SQL
+
+#+BEGIN_SRC scala
+select name, creator from language where paradigm='functional'
+#+END_SRC
+
+versus
+
+#+BEGIN_SRC scala
+List<String, String> funcLangs = new ArrayList<>();
+for (Record lang: langs) {
+    if (lang.paragigm().equals("functional") {
+        funcLangs.add(new Tuple(lang.name(), lang.creator()));
+    }
+}
+#+END_SRC
+
+SQL provides reusable language constructs and sematics that map directly to relational data model, resulting in far less complex code. (The astute reader will notice that there's far more to the Java example above.)
+
+** AFABL
+
+AFABL (A Friendly Adaptive Behavior Language) is a domain-specific langauge for writing adaptive intelligent agents.
+
+- Improves reuse of problem domain concepts and application-specific code through domain-specific language
+- Reduces complexity with a declarative syntax
+
+Declarative agent code is transformed into modular reinforcement learning agents by the DSL.
+
+** AFABL Concepts
+
+- States
+- Actions
+- Rewards
+
+Claim: Using AFABL results in agent code that is less complex and more amenable to reuse than equivalent agetn code in a traditional langauge.
 
 ** AFABL Programmer Study World
 
@@ -281,7 +318,9 @@ Write agents for the following tasks in Scala and AFABL.
 2. Task 2: same as Task 1, but add a mate that acts like the food (static, reappears after mating). Bunny ust find food, avoid wolf, and mate as much as possible.
 
 
-** Typical Scala Agent for Task 1
+** Problem 2.1: Agent Code in Traditional Language is Complex
+
+Typical Scala Agent for Task 1 -- Look at all the action selection logic
 
 #+BEGIN_SRC scala
 class ScalaBunny1 extends Agent[BunnyState, BunnyAction.Value]
@@ -323,40 +362,52 @@ class ScalaBunny1 extends Agent[BunnyState, BunnyAction.Value]
 }
 #+END_SRC
 
+** Problem 2.2: Agent Code in Traditional Language is Not Amenable to Reuse
 
-** Domain-Specific Languages
-
-A domain-specific language (DSL) is a language that provides constructs and semantics tailored to a specific problem domain.
-
-- Well-known example: SQL
+Typical Scala Agent for Task 2 -- Refactored helper methods to effect reuse
 
 #+BEGIN_SRC scala
-select name, creator from language where paradigm='functional'
-#+END_SRC
+class ScalaBunny2 extends Agent[BunnyState, BunnyAction.Value]
+    with Task2Scorer {
 
-versus
-
-#+BEGIN_SRC scala
-List<String, String> funcLangs = new ArrayList<>();
-for (Record lang: langs) {
-    if (lang.paragigm().equals("functional") {
-        funcLangs.add(new Tuple(lang.name(), lang.creator()));
-    }
+  def getAction(state: BunnyState, shouldExplore: Boolean = false) = {
+    if ((distance(state.wolf, state.food) < distance(state.food, state.bunny))
+      || distance(state.wolf, state.mate) < distance(state.mate, state.bunny))
+      moveAwayFromWolf(state)
+    else if (distance(state.bunny, state.food) < distance(state.bunny, state.mate))
+      moveToward(state.bunny, state.food)
+    else
+      moveToward(state.bunny, state.mate)
+  }
+  def distance(a: Location, b: Location) = {
+    sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2))
+  }
+  def moveToward(from: Location, to: Location) = {
+    if (to.x > from.x)
+      BunnyAction.Right
+    else if (to.x < from.x)
+      BunnyAction.Left
+    else if (to.y > from.y)
+      BunnyAction.Up
+    else
+      BunnyAction.Down
+  }
+  def moveAwayFromWolf(state: BunnyState) = {
+    if (state.wolf.x < state.bunny.x)
+      BunnyAction.Right
+    else if (state.wolf.x > state.bunny.x)
+      BunnyAction.Left
+    else if (state.wolf.y > state.bunny.y)
+      BunnyAction.Up
+    else
+      BunnyAction.Down
+  }
 }
 #+END_SRC
 
-SQL provides reusable language constructs and sematics that map directly to relational data model, resulting in far less complex code. (The astute reader will notice that there's far more to the Java example above.)
+** Solution 2.1: AFABL is Less Complex
 
-** AFABL
-
-AFABL (A Friendly Adaptive Behavior Language) is a domain-specific langauge for ariting adaptive intelligent agents.
-
-- Improves reuse of problem domain concepts and application-specific code through domain-specific language
-- Reduces complexity with a declarative syntax
-
-Declarative agent code is transformed into modular reinforcement learning agents by the DSL.
-
-** AFABL Agent Example
+Typical Task 1 submission: code is declarative -- specify what, not how (~if~ is an expression in Scala/AFABL). Less complex, easier to maintain (McCabe 1976)
 
 #+BEGIN_SRC scala
   case class FindFoodState(bunny: Location, food: Location)
@@ -397,6 +448,41 @@ Declarative agent code is transformed into modular reinforcement learning agents
   )
 #+END_SRC
 
+** Solution 2.1: AFABL is Less Complex
+
+Typical Task 2 submission: modules from Task 1 are directly reusable. DSL provides domain-specific reuse opportunities.
+
+#+BEGIN_SRC scala
+  case class FindMateState(bunny: Location, mate: Location)
+  val findMate = AfablModule(
+    world = bunnyWorld,
+    stateAbstraction = (state: BunnyState) => {
+      FindMateState(state.bunny, state.mate)
+    },
+    moduleReward = (state: FindMateState) => {
+      if (state.bunny == state.mate) 1.0
+      else -0.1
+    }
+  )
+
+  // Your solution must assign your AFABL bunny agent for Task 2 to
+  // the val afablBuny2.
+  val afablBunny2 = AfablAgent(
+
+    world = bunnyWorld,
+
+    modules = Seq(AfablTask1.findFood, AfablTask1.avoidWolf, findMate),
+
+    agentLevelReward = (state: BunnyState) => {
+      if (state.bunny == state.wolf) 0.0
+      else if (state.bunny == state.food) 1.0
+      else if (state.bunny == state.mate) 1.0
+      else 0.5
+    }
+  )
+#+END_SRC
+
+
 ** AFABL Programmer Study Results
 
 Task 1:
@@ -417,6 +503,7 @@ Task 2:
 
 
 Problem 2 of my thesis: AFABL agents were shorter, took less time to write, and were less complex than Scala agents for the same tasks.
+
 
 ** AFABL Programmer Study Questionnaire Responses
 
@@ -512,7 +599,7 @@ val testAnxiety = AfablModule(
 - Ran 10 virtual replications of Atkinson's experiment.
 - Generated data similar to Atkinson's human subjects
 
-#+ATTR_LATEX: :width 2in
+#+ATTR_LATEX: :width 2.5in
 [[file:../atkinson.png]] [[file:../iccm.png]]
 
 Just a proof of concept, but promising
