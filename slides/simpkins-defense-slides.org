@@ -14,6 +14,8 @@
 #+LaTeX_HEADER: \usepackage{amsmath,amsthm, amssymb, latexsym, listings, qtree}
 #+LaTeX_HEADER: \usepackage{algorithm}
 #+LaTeX_HEADER: \usepackage[noend]{algpseudocode}
+#+LaTeX_HEADER: \usepackage{biblatex}
+#+LaTeX_HEADER: \bibliography{references}
 #+LaTeX_HEADER: \lstset{frame=tb, aboveskip=1mm, belowskip=0mm, showstringspaces=false, columns=flexible, basicstyle={\tiny\ttfamily}, frame=single, breaklines=true, breakatwhitespace=true}
 #+LaTeX_HEADER: \lstdefinelanguage{scala}{morekeywords={abstract,case,catch,class,def, do,else,extends,false,final,finally, for,if,implicit,import,match,mixin, new,null,object,override,package, private,protected,requires,return,sealed, super,this,throw,trait,true,try, type,val,var,while,with,yield}, otherkeywords={=>,<-,<\%,<:,>:,\#,@}, sensitive=true, morecomment=[l]{//}, morecomment=[n]{/*}{*/}, morestring=[b]", morestring=[b]', morestring=[b]"""}
 #+LaTeX_HEADER: \setbeamertemplate{footline}[frame number]
@@ -45,7 +47,7 @@ where
 - $T(s, a, s')$ is a transition function which gives the probably that executing action $a$ in state $s$ will result in $s'$.
 - $R(s)$ is a reward function that indicates the one-step reward for arriving in state $s$
 
-In typical reinforcement learning problems, there is a state with higher reward that represents a "goal." A reinforcement learning agent learns a policy, $\pi(s)$ that maps states to actions such that following the policy maximizes long-term expected reward (Sutton and Barto, 1998).
+In typical reinforcement learning problems, there is a state with higher reward that represents a "goal." A reinforcement learning agent learns a policy, $\pi(s)$ that maps states to actions such that following the policy maximizes long-term expected reward (Sutton and Barto 1998).
 
 ** Q-Learning (Watkins 1998)
 
@@ -208,7 +210,7 @@ An agent is a list of modules, as before, and an arbitrator. Formally:
 - A reward function, $R_i(s)$ for each module $m_i$
 - A command arbitrator that chooses one of the modules' action choice as the agent's single action
 
-** Ideal Arbitration is Impossible (Bhat, et. al., 2006)
+** Ideal Arbitration is Impossible (Bhat, et. al. 2006)
 
 Note that our MRL reformulation is voting: each module votes on an action, the arbitrator's job is to chose one action. A "fair" voting scheme would have the following properties:
 
@@ -222,7 +224,7 @@ Note that our MRL reformulation is voting: each module votes on an action, the a
 
 - **Non-Dictatorship**: no module gets its way all the time.
 
-According to Arrow's Paradox (Arrow, 1963), if $|A|\geq 3$, then there does not exist an arbitration function that satisfies each of the properties listed above.
+According to social choice theory (Arrow, 1963, Roberts 1980), if $|A|\geq 3$, then there does not exist an arbitration function that satisfies each of the properties listed above.
 
 We must relax one of the requirements ...
 
@@ -235,7 +237,7 @@ Arbi-Q is a command arbitration algorithm that uses a Q-learning algorithm to le
 - Each module gets single unweighted vote for an action in each state
 - Command arbitrator uses Q-learning to learn a policy mapping states to modules
 
-Command arbitrator is a "benevolent dictator", that is, a  module that "get's its way" all the time. By Arrow's theorem, other desirable properties will still hold.
+Command arbitrator is a "benevolent dictator", that is, a  module that "get's its way" all the time. Other desirable properties will still hold.
 
 
 ** Solution 1: Arbi-Q Results
@@ -268,8 +270,8 @@ Two important issues in software engineering:
 - Reuse - reusing existing artifacts in the construction of new software
   - Reusable artifacts include code, concepts, patterns
 - Complexity - the effort required to understand or modify a piece of code
-  - McCabe's cyclomatic complexity: the number of paths through the control graph of a program
-  - Simple calcluation: number of decision statements + 1 (McCabe 1960)
+  - McCabe's cyclomatic complexity: the number of paths through the control flow graph of a program
+  - Simple calcluation: number of decision structures + 1 (McCabe 1960)
 
 Problem 2 of my thesis statement: intelligent agent code tends to be complex and not amenable to reuse.
 
