@@ -141,7 +141,7 @@ By *incomparable* we mean rewards have different scales, e.g., FindFood rewards 
 
 ** Problem 1: Current MRL is not composable
 
-X-axis shows a score, not a reward, since rewards may be incomparable. Score is +1 every time bunny eats, 0 when wolf finds bunny and 0.5 for surviving another step but not eating.
+Y-axis shows a score, not a reward, since rewards may be incomparable. Score is +1 every time bunny eats, 0 when wolf finds bunny and 0.5 for surviving another step but not eating.
 
 #+BEGIN_CENTER
 #+ATTR_LaTeX: :height 2.5in
@@ -240,7 +240,7 @@ Command arbitrator is a "benevolent dictator", that is, a  module that "get's it
 
 ** Solution 1: Arbi-Q Results
 
-X-axis shows a score, not a reward, since rewards may be incomparable. Score is +1 every time bunny eats, 0 when wolf finds bunny and 0.5 for surviving another step but not eating.
+Y-axis shows a score, not a reward, since rewards may be incomparable. Score is +1 every time bunny eats, 0 when wolf finds bunny and 0.5 for surviving another step but not eating.
 
 #+BEGIN_CENTER
 #+ATTR_LaTeX: :height 2.5in
@@ -265,8 +265,11 @@ Arbi-Q achieves composability by decoupling module reward scales at the cost of 
 
 Two important issues in software engineering:
 
-- Reuse - reusing artifacts in the construction of new software
+- Reuse - reusing existing artifacts in the construction of new software
+  - Reusable artifacts include code, concepts, patterns
 - Complexity - the effort required to understand or modify a piece of code
+  - McCabe's cyclomatic complexity: the number of paths through the control graph of a program
+  - Simple calcluation: number of decision statements + 1 (McCabe 1960)
 
 Problem 2 of my thesis statement: intelligent agent code tends to be complex and not amenable to reuse.
 
@@ -291,7 +294,7 @@ for (Record lang: langs) {
 }
 #+END_SRC
 
-SQL provides reusable language constructs and semantics that map directly to relational data model, resulting in far less complex code. (The astute reader will notice that there's far more to the Java example above.)
+SQL provides reusable language constructs and semantics that map directly to relational data model, resulting in far less complex code.
 
 ** AFABL
 
@@ -347,7 +350,7 @@ abstract class World[S, A] {
 A module is a reinforcement learner that can be composed with other modules in an ~AfablAgent~. Each module has
 
 - a world in which it can act,
-- a state abstraction functions which defines the subset of the world the module cares about, and
+- a state abstraction function which defines the subset of the world the module cares about, and
 - a module reward function that shapes the module's learned behavior.
 
 #+BEGIN_SRC scala
@@ -498,7 +501,7 @@ class ScalaBunny2 extends Agent[BunnyState, BunnyAction.Value]
 
 ** Solution 2.1: AFABL is Less Complex
 
-Typical Task 1 submission: code is declarative -- specify what, not how (~if~ is an expression in Scala/AFABL). Less complex, easier to maintain (McCabe 1976)
+Typical Task 1 submission: code is declarative -- specify what, not how. Less complex, easier to maintain (McCabe 1976)
 
 #+BEGIN_SRC scala
   case class FindFoodState(bunny: Location, food: Location)
@@ -539,7 +542,7 @@ Typical Task 1 submission: code is declarative -- specify what, not how (~if~ is
   )
 #+END_SRC
 
-** Solution 2.1: AFABL is Less Complex
+** Solution 2.2: AFABL Facilitates Reuse
 
 Typical Task 2 submission: modules from Task 1 are directly reusable. DSL provides domain-specific reuse opportunities.
 
@@ -625,6 +628,10 @@ You can much more clearly see the similarities between Task 1 and Task 2 in the 
 
 ** Application: Personality Modeling
 
+- Assign numeric values to each of several traits, or personality dimensions.
+- Popular example: Five-Factor Model: Openness, Conscientiousness, Extroversion, Agreeableness, Neuroticism (McCrae & Paul T. Costa 2008).
+- Many different trait theories, but key idea is common: model personality as multiple numeric scales.
+
 Basic idea: trait-theoretic personality models can be translated into reinforcement learning framework.
 
 #+BEGIN_CENTER
@@ -644,11 +651,13 @@ Basic idea: trait-theoretic personality models can be translated into reinforcem
 [[file:ring-toss-186x186.jpg]]
 #+END_CENTER
 
-- Atkinson and Litwin studied Achievement Motivation and Fear of Failure.
+- Atkinson and Litwin (1960) studied Achievement Motivation and Fear of Failure.
 - 49 Students classified as high or low in both Achievement Motivation and Test Anxiety (Fear of Failure).
 - Each student played a ring toss game at one of 15 distances from ring.
 
 ** Simulating Atkinson's Experiment With AFABL Agents
+
+A motivated student with low fear of failure:
 
 #+BEGIN_SRC scala
 val achievementMotivation = AfablModule(
@@ -669,6 +678,14 @@ val testAnxiety = AfablModule(
     case FifteenFootLine => 1
   }
 )
+val motivatedStudent = GmAgent(
+  world = RingTossWorld,
+
+  // Sequence of pairs where the second element of each pair
+  // is the weight of the pair, corresponding to the personality
+  // trait measure
+  modules = Seq((achievementMotivation, 8), (testAnxiety, 2))
+}
 #+END_SRC
 
 ** Results of Virtual Atkinson Reproduction
@@ -690,9 +707,32 @@ Just a proof of concept, but promising
 ** Opportunities
 
 - Simplified syntax removing most reward authoring
-- Integration of HRL
+- Integration of hierarchical reinforcement learning (Precup 1998, Dietterich 1998, Parr 1998, Andre 2000)
 - More reusable concepts in DSL: drives, aversions, objectives, tasks
 - Drama manager features
+
+#+BEGIN_SRC scala
+  val afablBunny2 = AfablAgent(
+
+    world = bunnyWorld,
+
+    drives = Drives(state: BunnyState) {
+      (state.bunny == state.food),
+      (state.bunny == state.mate)
+    },
+
+    aversions = Aversions(state: BunnyState) {
+      (state.bunny == state.wolf)
+    }
+
+    agentLevelReward = (state: BunnyState) => {
+      if (state.bunny == state.wolf) 0.0
+      else if (state.bunny == state.food) 1.0
+      else if (state.bunny == state.mate) 1.0
+      else 0.5
+    }
+  )
+#+END_SRC
 
 ** Contributions
 
