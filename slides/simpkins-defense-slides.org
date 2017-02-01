@@ -26,7 +26,7 @@
 
 - (in the current state of the art in modular reinforcement learning, modules are not composable)
 
-(2) integrating modular reinformcement learning into a programming language improves reuse and reduces complexity of intelligent agent code.
+(2) integrating modular reinforcement learning into a programming language improves reuse and reduces complexity of intelligent agent code.
 
 - (Intelligent agent code written in traditional programming languages tends to be complex and not amenable to reuse.)
 
@@ -51,21 +51,22 @@ In typical reinforcement learning problems, there is a state with higher reward 
 
 In typical learning scenarios we don't have the MDP, so we learn a direct mapping from states to actions, an action-value function, a Q-function.
 
-\begin{algorithm}
-  \begin{algorithmic}
-    \State $Q \gets$ random initial values
-    \For{each episode}
-      \State $s \gets$ world.initialState()
-      \Repeat
-        \State $a \gets \epsilon-$greedy action for $s$ from $\pi$ derived from $Q$
-        \State Execute $a$, observe effects $r$ and $s'$
-        \State $Q(s, a) \gets Q(s, a) + \alpha [R(s) + \gamma \max_{a'} Q(s', a') - Q(s, a)]$
-        \State $s \gets s'$
-      \Until $s$ is terminal
-    \EndFor
-  \end{algorithmic}
-\end{algorithm}
+1. $Q \gets$ random initial values
+2. For each episode
+   1. $s \gets$ world.initialState()
+   2. While $s$ is not terminal
+      1. $a$ $\gets$ $\epsilon-$greedy action for $s$ from $\pi$ derived from $Q$
+      2. Execute $a$, observe effects $r$ and $s'$
+      3. $Q(s, a) \gets Q(s, a) + \alpha [R(s) + \gamma \max_{a'} Q(s', a') - Q(s, a)]$
+      4. $s \gets s'$
 
+For the Sarsa variant of Q-learning, save $a$ in $a'$ and replace the update in Step 2.2.3 with
+
+\begin{equation}
+Q(s, a) \leftarrow Q(s, a) + \alpha [R(s) + \gamma Q(s', a') - Q(s, a))]
+\end{equation}
+
+Sarsa is *on-policy* because the temporal difference used in the Q-update is based on the policy being followed by the agent during learning. The standard Q-learning update is *off-policy* because the Q-update is based on the best known next action.
 
 ** Curse of Dimensionality
 
@@ -248,11 +249,23 @@ X-axis shows a score, not a reward, since rewards may be incomparable. Score is 
 
 Rewards may be incomparable between modules -- no degradation of performance. So separately authored modules can be composed in the same agent.
 
+** The Catch - Arbitrator Reward Function
+
+Arbi-Q achieves composability by decoupling module reward scales at the cost of requiring a separately authored reward function.
+
+- Not obvious how to author arbitrator reward
+  - Represents greater good, "why" find food, "why" avoid wolf -- to live longer
+  - Think of as score in a video game
+- If the reward function uses the original world state, then its state space is the same size as a monolithic reinforcement learner
+  - In this case the savings in learning speed compared to a monolithic reinforcement learner is the ratio of module/agent actions to the number of modules.
+    - Q-table of a monolithic reinforcement learner would have $|S| \times |A|$ entries
+    - Q-table of arbitrator has $|S| \times n$ entries where $n$ is the number of modules
+
 ** Software Engineering
 
 Two important issues in software engineering:
 
-- Reuse - reusing artificts in the construction of new software
+- Reuse - reusing artifacts in the construction of new software
 - Complexity - the effort required to understand or modify a piece of code
 
 Problem 2 of my thesis statement: intelligent agent code tends to be complex and not amenable to reuse.
@@ -278,24 +291,101 @@ for (Record lang: langs) {
 }
 #+END_SRC
 
-SQL provides reusable language constructs and sematics that map directly to relational data model, resulting in far less complex code. (The astute reader will notice that there's far more to the Java example above.)
+SQL provides reusable language constructs and semantics that map directly to relational data model, resulting in far less complex code. (The astute reader will notice that there's far more to the Java example above.)
 
 ** AFABL
 
-AFABL (A Friendly Adaptive Behavior Language) is a domain-specific langauge for writing adaptive intelligent agents.
+AFABL (A Friendly Adaptive Behavior Language) is a domain-specific language for writing adaptive intelligent agents.
 
 - Improves reuse of problem domain concepts and application-specific code through domain-specific language
 - Reduces complexity with a declarative syntax
 
 Declarative agent code is transformed into modular reinforcement learning agents by the DSL.
 
-** AFABL Concepts
+** AFABL Worlds
 
-- States
-- Actions
-- Rewards
+Every AFABL agent and module operates in a particular world defined by
 
-Claim: Using AFABL results in agent code that is less complex and more amenable to reuse than equivalent agetn code in a traditional langauge.
+- states,
+
+#+BEGIN_SRC scala
+case class Location(x: Int, y: Int)
+
+case class BunnyState(
+  bunny: Location,
+  wolf: Location,
+  food: Location
+)
+#+END_SRC
+
+
+- actions
+
+#+BEGIN_SRC scala
+object BunnyAction extends Enumeration {
+  val Up = Value("^")
+  val Down = Value("v")
+  val Left = Value("<")
+  val Right = Value(">")
+}
+#+END_SRC
+
+- and world dynamics
+
+#+BEGIN_SRC scala
+abstract class World[S, A] {
+  def init(): S
+  def resetAgent(): S
+  def states: Seq[S]
+  def actions: Seq[A]
+  def act(action: A): S
+}
+#+END_SRC
+
+** AFABL Modules
+
+A module is a reinforcement learner that can be composed with other modules in an ~AfablAgent~. Each module has
+
+- a world in which it can act,
+- a state abstraction functions which defines the subset of the world the module cares about, and
+- a module reward function that shapes the module's learned behavior.
+
+#+BEGIN_SRC scala
+case class FindFoodState(bunny: Location, food: Location)
+
+val findFood = AfablModule(
+  world = new BunnyWorld,
+
+  stateAbstraction = (worldState: BunnyState) => {
+    FindFoodState(worldState.bunny, worldState.food)
+  },
+
+  moduleReward = (moduleState: FindFoodState) => {
+    if (moduleState.bunny == moduleState.food) 1.0
+    else -0.1
+  }
+)
+#+END_SRC
+
+** AFABL Agents
+
+An AFABL agent is an agent that acts in a particular world, is composed of independent behavior modules pursuing their own continuing goals, and has a central command arbitrator that uses an agent level reward function to learn when it should listen to each module.
+
+#+BEGIN_SRC scala
+val bunny = AfablAgent(
+  world = new BunnyWorld,
+
+  modules = Seq(findFood, avoidWolf),
+
+  agentLevelReward = (state: BunnyState) => {
+    if (state.bunny == state.wolf) 0.0
+    else if (state.bunny == state.food) 1.0
+    else 0.5
+  }
+)
+#+END_SRC
+
+Claim: Using AFABL results in agent code that is less complex and more amenable to reuse than equivalent agent code in a traditional language.
 
 ** AFABL Programmer Study World
 
@@ -315,12 +405,13 @@ Claim: Using AFABL results in agent code that is less complex and more amenable 
 Write agents for the following tasks in Scala and AFABL.
 
 1. Task 1: write a bunny agent that finds as much food as possible and avoids the wolf as much as possible.
-2. Task 2: same as Task 1, but add a mate that acts like the food (static, reappears after mating). Bunny ust find food, avoid wolf, and mate as much as possible.
+2. Task 2: same as Task 1, but add a mate that acts like the food (static, reappears after mating). Bunny must find food, avoid wolf, and mate as much as possible.
 
+Study mechanics screen-cast ...
 
 ** Problem 2.1: Agent Code in Traditional Language is Complex
 
-Typical Scala Agent for Task 1 -- Look at all the action selection logic
+Typical Scala Agent for Task 1. Look at all the action selection logic!
 
 #+BEGIN_SRC scala
 class ScalaBunny1 extends Agent[BunnyState, BunnyAction.Value]
@@ -364,7 +455,7 @@ class ScalaBunny1 extends Agent[BunnyState, BunnyAction.Value]
 
 ** Problem 2.2: Agent Code in Traditional Language is Not Amenable to Reuse
 
-Typical Scala Agent for Task 2 -- Refactored helper methods to effect reuse
+Typical Scala Agent for Task 2. Reuse required refactoring helper methods.
 
 #+BEGIN_SRC scala
 class ScalaBunny2 extends Agent[BunnyState, BunnyAction.Value]
@@ -485,51 +576,37 @@ Typical Task 2 submission: modules from Task 1 are directly reusable. DSL provid
 
 ** AFABL Programmer Study Results
 
-Task 1:
+n=16
 
-|                       | Scala Mean | AFABL Mean | p-value |
-|-----------------------+------------+------------+---------|
-| Lines of Code         |        0.0 |        0.0 |     0.0 |
-| Time                  |        0.0 |        0.0 |     0.0 |
-| Cyclomatic complexity |        0.0 |        0.0 |     0.0 |
+Task 1: FindFood + AvoidWolf
 
-Task 2:
+|                       |      Scala Mean |      AFABL Mean | p-value |
+|-----------------------+-----------------+-----------------+---------|
+| Lines of Code         |            39.3 |            31.2 |    0.23 |
+| Time                  | 1511.5s (25.2m) | 1780.9s (29.7m) |    0.49 |
+| Cyclomatic complexity |            10.8 |             5.3 |    0.01 |
 
-|                       | Scala Mean | AFABL Mean | p-value |
-|-----------------------+------------+------------+---------|
-| Lines of Code         |        0.0 |        0.0 |     0.0 |
-| Time                  |        0.0 |        0.0 |     0.0 |
-| Cyclomatic complexity |        0.0 |        0.0 |     0.0 |
+Task 2: FindFood + AvoidWolf + FindMate
+
+|                       |     Scala Mean |     AFABL Mean | p-value |
+|-----------------------+----------------+----------------+---------|
+| Lines of Code         |           41.7 |           39.2 |    0.58 |
+| Time               | 797.8s (13.3m) | 626.7s (10.4m) |    0.55 |
+| Cyclomatic complexity |           11.3 |            8.2 |    0.04 |
 
 
-Problem 2 of my thesis: AFABL agents were shorter, took less time to write, and were less complex than Scala agents for the same tasks.
+Solution 2: AFABL agents were less complex than Scala agents for the same tasks, and appeared to be easier to adapt to Task 2. AFABL time results likely affected by need to read documentation.
 
 
 ** AFABL Programmer Study Questionnaire Responses
 
-*** Questionnaire responses                                    :B_ignoreheading:BMCOL:
-    :PROPERTIES:
-    :BEAMER_env: ignoreheading
-    :BEAMER_col: 0.5
-    :END:
+#+BEGIN_CENTER
+#+ATTR_LATEX: :height 1.5in
+[[file:../reflection-q3-results.png]]
 
-    #+ATTR_LATEX: :height 1.25in
-    [[file:../reflection-q2-results.png]]
-
-    #+ATTR_LATEX: :height 1.25in
-    [[file:../reflection-q3-results.png]]
-
-*** Questionnaire responses                                    :B_ignoreheading:BMCOL:
-    :PROPERTIES:
-    :BEAMER_env: ignoreheading
-    :BEAMER_col: 0.5
-    :END:
-
-    #+ATTR_LATEX: :height 1.25in
-    [[file:../reflection-q4-results.png]]
-
-    #+ATTR_LATEX: :height 1.25in
-    [[file:../reflection-q5-results.png]]
+#+ATTR_LATEX: :height 1.5in
+[[file:../reflection-q4-results.png]]
+#+END_CENTER
 
 
 ** AFABL Programmer Study Participant Reflections
@@ -539,7 +616,7 @@ While learning AFABL had some overhead for Task 1, being able to program in term
 #+END_QUOTE
 
 #+BEGIN_QUOTE
-Being able to just add in another module and tack it onto the agent with AFABL was much easier and more elegant than having to go in and modify existing methods and logic in scala. Adding the addtional functionality with AFABL was much more convenient in this respect.
+Being able to just add in another module and tack it onto the agent with AFABL was much easier and more elegant than having to go in and modify existing methods and logic in scala. Adding the additional functionality with AFABL was much more convenient in this respect.
 #+END_QUOTE
 
 #+BEGIN_QUOTE
@@ -642,7 +719,7 @@ To be published:
 
 ** Backup Slides
 
-- Q-value calcuation details
+- Q-value calculation details
 
 ** FindFood with Comparable Reward Scales
 
