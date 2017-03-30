@@ -1,0 +1,56 @@
+* Defense Revisions
+
+** Revise
+
+- Spencer's feedback
+
+  - Fully-scripted vs. fully machine learning model in conclusion
+
+** Add
+
+*** Additional Analyses of Programmer Study Data
+
+- Performance
+- Performance vs time
+- Performance vs skill level
+- Newer measures of complexity (talk to Spencer)
+- Experienced vs. non-experienced programmers
+
+*** Extended discussion of adaptivity of AFABL vs. Scala
+
+- FindFood, AvoidWolf
+- FindMate, FindFood, AvoidWolf
+- Picky mate won't mate if no food in pior n steps
+- Wolf also find's food (competition for food)
+
+*** AFABL vs.
+
+- Learning from demonstration/inverse reinforcement learning
+
+*** AFABL Guidelines
+
+*** Charles's notes:
+
+- Add additional metrics to McCabe
+- Address TAs -- show that TAs did same as strangers
+- Description of reusability vs maintenance
+- Design guideleins - if problem has these characteristics, AFABL is good.
+- Argument/proof: as world dynamics added, combinatorial expansion of logic in traditional code vs. linear expansion of AFABL code
+  - Changes require painful rethinking of code
+  - No free lunch. If state space grows, must encode in arbitrator
+  - If state space doesn't grow but world dynamcs change, all
+
+- Argument about wy AFABL scales
+
+
+1. Additional analyses of existing code
+2. Scalability argument - scalability of cognitive load on programmer vs. scalability of machine learning task (hidden from programmer with AFABL)
+
+  - Language goal: minimize cognitive load for programmer.
+    - Cognitive load for programmer is authoring reward function.
+
+3. Design principles - when to pick AFABL
+
+- Can I change AFABL
+
+Argue for premise -- that real people could use AFABL
