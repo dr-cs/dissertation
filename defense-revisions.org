@@ -34,7 +34,7 @@
 - Add additional metrics to McCabe
 - Address TAs -- show that TAs did same as strangers
 - Description of reusability vs maintenance
-- Design guideleins - if problem has these characteristics, AFABL is good.
+- Design guidelines - if problem has these characteristics, AFABL is good.
 - Argument/proof: as world dynamics added, combinatorial expansion of logic in traditional code vs. linear expansion of AFABL code
   - Changes require painful rethinking of code
   - No free lunch. If state space grows, must encode in arbitrator
