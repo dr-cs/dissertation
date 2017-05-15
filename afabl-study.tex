@@ -71,20 +71,6 @@ Programmers were asked to write bunny agents that meet the wolf as little as pos
 
 In this task each programmer wrote a bunny agent for a world that is identical to the world in Task 1 except that the bunny must also find mates.  This world includes one static  potential mate that behaves similarly to the food.  When the bunny finds the potential mate, the simulation assumes that the bunny has ``mated,'' the mate disappears, and another potential mate appears elsewhere.  The simulation runs as in Task 1, and the scorer additionally keeps track of how many mates the bunny finds.  As in Task 1, programmers were asked to write bunny agents that meet the wolf as little as possible, eat as much food as possible, and find as many mates as possible.
 
-%% \subsection{Task 3: Adding Wind, Spoiling Food, and Picky Mates}\label{sec:task3}
-
-%% In this task each programmer will write a bunny agent for a world with the same elements as in Task 2 and with the same goals for the bunny, but the world is more complex.  In particular:
-
-%% \begin{itemize}
-
-%% \item There is constant wind from an unchanging direction that affects the wolf's ability to find the bunny.  The wolf will only move toward the bunny if the wolf is downwind of the bunny.
-
-%% \item If food is not eaten within 15 time steps after it appears, it spoils.  Spoilage is represented by the food disappearing and new food appearing elsewhere.
-
-%% \item To simulate selection of fit bunnies, potential mates will only accept the bunny if the bunny has eaten within 10 time steps (a hungry bunny is an unsuccessful bunny and therefore not fit for mating).  Rejection will be represented by the potential mate remaining in place and the bunny not receiving a signal that mating has occurred.
-
-%% \end{itemize}
-
 \subsection{Provided Code}
 
 Study participants were given starter code so they could focus on writing the behavior of their agents. We provided the world for each task and the files in which to write their code. Participants were also given general documentation for AFABL but assumed to already be proficient in Scala.
@@ -380,8 +366,6 @@ The AFABL solution to Task 2 contains 21 lines of code due to reuse of modules f
 
 \subsection{Summary}
 
-TBD ...
-
 Quantitative results for Task 1 are summarized in Table \ref{tbl:task1-results}. Quantitative results for Task 2 are summarized in Table \ref{tbl:task2-results}.
 
 \begin{center}
@@ -413,8 +397,6 @@ Performance           & 0.0        & 0.0        & 0.0 \\\hline
 \end{center}
 
 \section{Qualitative Results}
-
-TBD ...
 
 Programmers responded to a questionnaire to give their impressions of agent programming in AFABL versus agent programming in Scala.
 
@@ -451,6 +433,14 @@ Rationale: in addition to objective analyses of task submissions, we want to kno
 \item What was it about AFABL that made the Task 2 easier or harder?
 
 \end{enumerate}
+
+\section{Threats to Validity}
+
+Sample size
+
+Problem size
+
+TAs as subjects
 
 \section{Conclusion}
 
