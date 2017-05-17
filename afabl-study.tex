@@ -1,4 +1,4 @@
-\chapter{Evaluating the Benefits of Language-integrated Reinforcement Learning}\label{ch:afabl-study}
+\chapter{AFABL Programmer Study}\label{ch:afabl-study}
 
 %% Basili and colleagues have conducted many experiments and written extensively about the role of experiments in software engineering research and the kinds of knowledge that can be gained from experimentation \cite{basili2007role,basili1986a-experimentation}. In Table \ref{tab:basili-framework} we fit our experiments within Basili's framework.
 
@@ -65,11 +65,11 @@ In this task each programmer wrote an agents that control a bunny character in a
 
 \end{itemize}
 
-Programmers were asked to write bunny agents that meet the wolf as little as possible and eat as much food as possible.
+Programmers were asked to write bunny agents that meet the wolf as little as possible and eat as much food as possible. \added[id=v3]{The bunny's percepts are complete state descriptions: the locations of the bunny and the wolf.}
 
 \subsection{Task 2: Mating Bunny}\label{sec:task2}
 
-In this task each programmer wrote a bunny agent for a world that is identical to the world in Task 1 except that the bunny must also find mates.  This world includes one static  potential mate that behaves similarly to the food.  When the bunny finds the potential mate, the simulation assumes that the bunny has ``mated,'' the mate disappears, and another potential mate appears elsewhere.  The simulation runs as in Task 1, and the scorer additionally keeps track of how many mates the bunny finds.  As in Task 1, programmers were asked to write bunny agents that meet the wolf as little as possible, eat as much food as possible, and find as many mates as possible.
+In this task each programmer wrote a bunny agent for a world that is identical to the world in Task 1 except that the bunny must also find mates.  This world includes one static  potential mate that behaves similarly to the food.  When the bunny finds the potential mate, the simulation assumes that the bunny has ``mated,'' the mate disappears, and another potential mate appears elsewhere.  The simulation runs as in Task 1, and the scorer additionally keeps track of how many mates the bunny finds.  As in Task 1, programmers were asked to write bunny agents that meet the wolf as little as possible, eat as much food as possible, and find as many mates as possible. \added[id=v3]{As in Task 1, the bunny's percepts are complete state descriptions: the locations of the bunny, the wolf and the mate.}
 
 \subsection{Provided Code}
 
@@ -264,8 +264,7 @@ Figure \ref{fig:scala-task1-submission} shows a typical Scala submission for Tas
 
 Figure \ref{fig:afabl-task1-submission} shows a typical AFABL submission for Task 1. As in our earlier examples, the AFABL bunny is composed of behavior modules for finding food and avoiding the wolf. The AFABL documentation contained tips for reward authoring in modules and at the agent level.
 
-
-The AFABL solution to Task 1 contains 31 lines of code and has a cyclomatic complexity of 5 (4 predicates in decision structures). The Scala solution to Task 1 uses 34 lines of code and has a cyclomatic complexity of 8 (7 predicates in decision structures). Both programs achieve the same nearly optimal level of performance with scores of ~0.54.
+The AFABL solution to Task 1 contains 31 lines of code and has a cyclomatic complexity of 5 (4 predicates in decision structures). The Scala solution to Task 1 uses 34 lines of code and has a cyclomatic complexity of 8 (7 predicates in decision structures). Both programs achieve the same nearly optimal level of performance with scores of ~0.54. \added[id=v3]{Optimal performance was determined by running GM-Sarsa/Q-decomposition on the problem, which has been shown by Russell and Zimdars to be optimal \cite{russell2003q-decomposition}.}
 
 \subsection{Typical Task 2 Submissions}
 
@@ -444,4 +443,4 @@ TAs as subjects
 
 \section{Conclusion}
 
-As you can see from the similarity of the submission in Figure \ref{fig:afabl-task1-submission} to our explanatory example, most AFABL bunny agents look the same. There is one obvious way to implement a bunny agent that must pursue multiple goals. This uniformity is desirable. As Tim Peters says in the Zen of Python \cite{peters2004zen}, ``There should be one-- and preferably only one --obvious way to do it.'' The similarity in most AFABL solutions to a particular modular agent programming problem is an indication that AFABL provides the right abstractions for adaptive agent programming.
+As you can see from the similarity of the submission in Figure \ref{fig:afabl-task1-submission} to our explanatory example, most AFABL bunny agents look the same. There is one obvious way to implement a bunny agent that must pursue multiple goals. This uniformity is desirable. As Tim Peters says in the Zen of Python \cite{peters2004zen}, ``There should be one-- and preferably only one --obvious way to do it.'' The similarity in most AFABL solutions to a particular modular agent programming problem is an indication that AFABL provides the right abstractions for adaptive agent programming. \added[id=v3]{This regularity results from exploiting the structure of certain kinds of agent programming problems. In the next chapter we discuss kinds of problems for which AFABL is well-suited and those for which it is less well-suited.}
