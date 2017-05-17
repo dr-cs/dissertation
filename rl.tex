@@ -19,24 +19,24 @@ where
 \begin{itemize}
 \item $S$ is a set of states,
 \item $A$ is a set of actions, and
-\item $T(s, a, s')$ is a transition function which gives the probably that executing action $a$ in state $s$ will result in $s'$.
+\item $T(s, a, s')$ is a transition function which gives the probability that executing action $a$ in state $s$ will result in $s'$.
 \end{itemize}
 
 Most definitions of MDPs include a reward function, $R(s, a, s')$ which specifies the reward that the world provides to an agent for taking action $a$ in state $s$ and arriving in state $s'$ or, equivalently, a reward for arriving in state $s$, $R(s)$. Some definitions of MDPs include an initialization function, $I(s)$, which specifies the probability the the agent will start in some state $s \in S$, others specify a particular state from $S$ as the start state.
 
-We prefer to think of the basic 3-tuple MDP as representing the states and state transition dynamics of a world, and an agent solving a Markov Decision {\it Problem} which adds the reward function, initialization function, and discount factor. This distinction between Markov Decision {\it Processes} and Markov Decision {\it Problems} leads to a more natural expression of worlds and agents for programmers who are not familiar with the underlying theory of reinforcement learning. For example, most people would not include a single universal reward function as part of the ``world'' because different agents may value states differently. Similarly, different agents may have a shorter or longer term view of decision optimality and thus different discount factors. Separating the world dynamics from the agent's use of the world dynamics doesn't change the reinforcement learning algorithms, but as we will see in Chapter \ref{ch:afabl}, separating worlds from agents is useful in practical programming.
+We prefer to think of the basic 3-tuple MDP as representing the states and state transition dynamics of a world, and an agent solving a Markov Decision {\it Problem} which adds the reward function, initialization function, and discount factor \added[id=v3]{ -- the rate at which long-term rewards are discounted compared to short-term rewards, usually 0.9.} This distinction between Markov Decision {\it Processes} and Markov Decision {\it Problems} leads to a more natural expression of worlds and agents for programmers who are not familiar with the underlying theory of reinforcement learning. For example, most people would not include a single universal reward function as part of the ``world'' because different agents may value states differently. Similarly, different agents may have a shorter or longer term view of decision optimality and thus different discount factors. Separating the world dynamics from the agent's use of the world dynamics doesn't change the reinforcement learning algorithms, but as we will see in Chapter \ref{ch:afabl}, separating worlds from agents is useful in practical programming.
 
 The solution to a Markov Decision Problem is a policy, denoted $\pi$, which is a mapping from states to actions. The policy says, for any state, what is the best action to take in order to maximize the agent's long term reward.
 
 \subsection{Long Term Reward}
 
-Acting optimally in the world means maximizing your long term reward. In the MDP setting there are many ways to compute long term reward depending on whether you consider rewards gained during a finite or infinite time horizon, can depend on there being a terminal state the agent is guaranteed to reach, or whether the agent's task is episodic or continuing. The most commonly used formulation of long term reward is geometrically discounted rewards over an infinite time horizon, which works for episodic tasks, continuing tasks, and results in stationary policies, that is, policies that depend only on the current state no matter the time step in which the state is visited.
+Acting optimally in the world means maximizing your long term reward. In the MDP setting there are many ways to compute long term reward depending on whether you consider rewards gained during a finite or infinite time horizon, can depend on there being a terminal state the agent is guaranteed to reach, or whether the agent's task is episodic or continuing. The most commonly used formulation of long term reward is geometrically discounted rewards over an infinite time horizon, which works for episodic tasks, continuing tasks, and results in stationary policies, that is, policies that depend only on the current state no matter the time step in which the state is visited:
 
 \begin{equation}
 R_t = \sum_{k=0}^{\infty} \gamma^k r_{t+k+1}
 \end{equation}
 
-We use this conception of long term reward to calculate the values of states.
+\added[id=v3]{where $R_t$ is the long-term sum of rewards at time step $t$, $r_{t+k+1}$ is the one-step reward for a particular step in the future, and $\gamma$ is a discount factor less than 1 which causes short-term rewards to be more important than rewards received in the future.} We use this conception of long term reward to calculate the values of states.
 
 \subsection{Value Functions}
 
@@ -75,7 +75,7 @@ V(s) = R(s) + \max_{a \in A} \sum_{s'} T(s, a, s') V(s')
 This equation is called the Bellman optimality equation \cite{bellman1957dynamic,bertsekas2012dynamic}. There is one Bellman equation for each state -- $n$ equations in $n$ unknowns (the values) for a state space of size $n$. However, since the $max$ operator is nonlinear we cannot solve the system of simultaneous Bellman equations using linear algebra. One solution is to use an iterative dynamic programming approach: value iteration. The value iteration algorithm initializes each state's value to a random value, then iteratively update these values by turning the Bellman equation into an update rule (the Bellman update):
 
 \begin{equation}\label{eqn:bellman-update}
-V_{i+1}(s) \leftarrow R(s) + \max_{a \in A} \sum_{s'} T(s, a, s') V(s')
+V_{i+1}(s) \leftarrow R(s) + \max_{a \in A} \sum_{s'} T(s, a, s') V_i(s')
 \end{equation}
 
 These updates are applied at the same time for all states, i.e., the values in iteration $i+1$ are calculated from the values in iteration $i$. The value iteration algorithm is shown in Algorithm \ref{alg:value-iteration}
@@ -104,7 +104,7 @@ In practice we may iterate until the updated values change by a sufficiently sma
 In policy iteration \cite{howard1960dynamic} we start with a random initial values and policy and alternate between two steps for each iteration $i$:
 
 \begin{itemize}
-\item {\bf Policy evaluation.} Use policy $\pi_i$ to calculate the values of of each state using the discounted current values of their successor states. Since we are calculating the values under a particular policy, we drop the $max$ operator:
+\item {\bf Policy evaluation.} Use policy $\pi_i$ to calculate the values of each state using the discounted current values of their successor states. Since we are calculating the values under a particular policy, we drop the $max$ operator:
 
   \begin{equation}
   V_{i+1}(s) = R(s) + \gamma \sum_{s'} T(s, a, s') V(s')
@@ -196,7 +196,7 @@ Q-learning has the advantage of being able to learn an optimal policy even if th
 
 \section{Decompositional Reinforcement Learning}
 
-Decomposition is an important tool in designing software systems in general, and as we will see in Section \ref{sec:curse-dimensinality} a necessity for larger state spaces likely to be encountered in real-world problems. Hierarchical reinforcement learning (HRL), discussed first below, has had as a primary goal improved authoring based on temporal subgoals that allows intermediate tasks to be modeled as higher-level actions. HRL has also formed to basis of current approaches to RL-based programming systems. Modular reinforcement learning (MRL) decomposes the original problem concurrently, modeling an agent as a set of concurrently running reinforcement learning modules. MRL has been used primarily to model multiple-goal problems and to deal with large state spaces. This work is the first to use MRL as the basis of a practical programming system and validate its advatages to working programmers scientifically.
+Decomposition is an important tool in designing software systems in general, and as we will see in Section \ref{sec:curse-dimensinality} a necessity for larger state spaces likely to be encountered in real-world problems. Hierarchical reinforcement learning (HRL), discussed first below, has had as a primary goal improved authoring based on temporal subgoals that allows intermediate tasks to be modeled as higher-level actions. HRL has also formed the basis of current approaches to RL-based programming systems. Modular reinforcement learning (MRL) decomposes the original problem concurrently, modeling an agent as a set of concurrently running reinforcement learning modules. MRL has been used primarily to model multiple-goal problems and to deal with large state spaces. This work is the first to use MRL as the basis of a practical programming system and validate its advantages to working programmers scientifically.
 
 \subsection{Hierarchical Reinforcement Learning}
 
@@ -204,7 +204,7 @@ Current implementations of partial programming are based on hierarchical reinfor
 
 The current state of the art in HRL is based on the theory of {\bf Semi-Markov Decision Processes} (SMDPs). In an SMDP some actions are allowed to take more than one time step. These multi-step actions, sometimes called macros, subroutines, options, or hierarchical machines represent a form of procedural abstraction that may allow a programmer to write reinforcement learning agents in a manner similar to writing other kinds of computer programs. The SMDP-based thread of research in HRL also includes work in developing programming languages and systems that exploit HRL models, making this line of research particularly relevant to our work.
 
-Precup's {\bf Options} \cite{precup1998a-theoretical,sutton1999between,precup2000a-temporal} framework develops a detailed theory of temporal abstraction abstraction based on SMDPs. Dietterich's {\bf MAXQ} \cite{dietterich1998maxq,dietterich2000hierarchical} and {\bf Hierarchical Abstract Machines} \cite{parr1998reinforcement} models decompose an MDP into a hierarchies of smaller MDPs. These smaller MDPs represent {\it subroutines} in the MAXQ framework or {\it HAMs} in the {\it Hierarchical Abstract Machines} framework. Andre's {\bf Programmable Hierarchical Abstract Machines} \cite{andre2000programmable,andre2002state} develops a programming language for HAMs called ALisp (Adaptive Lisp), and Marthi and colleagues  \cite{marthi2005concurrent} extend ALisp (Concurrent ALisp) for single reinforcement learning agents with multiple simultaneous actions, such as as robots with multiple effectors or a controller for multiple characters in a computer game.
+Precup's {\bf Options} \cite{precup1998a-theoretical,sutton1999between,precup2000a-temporal} framework develops a detailed theory of temporal abstraction based on SMDPs. Dietterich's {\bf MAXQ} \cite{dietterich1998maxq,dietterich2000hierarchical} and {\bf Hierarchical Abstract Machines} \cite{parr1998reinforcement} models decompose an MDP into a hierarchies of smaller MDPs. These smaller MDPs represent {\it subroutines} in the MAXQ framework or {\it HAMs} in the {\bf Hierarchical Abstract Machines} framework. Andre's {\bf Programmable Hierarchical Abstract Machines} \cite{andre2000programmable,andre2002state} develops a programming language for HAMs called ALisp (Adaptive Lisp), and Marthi and colleagues  \cite{marthi2005concurrent} extend ALisp (Concurrent ALisp) for single reinforcement learning agents with multiple simultaneous actions, such as as robots with multiple effectors or a controller for multiple characters in a computer game.
 
 \subsection{The Curse of Dimensionality in Reinforcement Learning}\label{sec:curse-dimensinality}
 
