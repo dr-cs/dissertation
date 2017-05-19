@@ -365,8 +365,6 @@ The AFABL solution to Task 2 contains 21 lines of code due to reuse of modules f
 
 \subsection{Quantitative Results}
 
-Overall results for Task 1 are summarized in Table \ref{tbl:task1-results}. Overall results for Task 2 are summarized in Table \ref{tbl:task2-results}. The data do not show statistically significant differences in time or lines of code, but for the same amount of time and number of lines of code AFABL solutions were less complex and performed better. We also believe that the AFABL results for time were skewed because programmers left their editors open while they were reading documentation on AFABL. So the time measures for AFABL solutions include programming time and the time spent learning AFABL. Given this fact, the similarity in time between Scala and AFABL solutions indicates that AFABL programs are indeed quicker to write, but we cannot say that with statistical certainty.
-
 \begin{center}
 \begin{table}[h]
 \begin{center}
@@ -401,7 +399,112 @@ Performance & 0.48 & 0.54 & 0.02\\
 \end{table}
 \end{center}
 
+
+Overall results for Task 1 are summarized in Table \ref{tbl:task1-results}. Overall results for Task 2 are summarized in Table \ref{tbl:task2-results}. The data do not show statistically significant differences in time or lines of code, but for the same amount of time and number of lines of code AFABL solutions were less complex and performed better. We also believe that the AFABL results for time were skewed because programmers left their editors open while they were reading documentation on AFABL. So the time measures for AFABL solutions include programming time and the time spent learning AFABL. Given this fact, the similarity in time between Scala and AFABL solutions indicates that AFABL programs are indeed quicker to write, but we cannot say that with statistical certainty.
+
 \subsubsection{Programmer Demographics}
+
+We collected demographic data from each programmer, including professional programming experience (work experience), the largest program personally written (code experience), agent programming proficiency, scala proficiency, level of education, and major. Almost all participants were undergraduate students, and all participants were computer science majors except for one electrical engineering major who was an experienced professional programmer proficient in Scala. The categories in there was a nearly 50\% split were code experience and agent programming experience, so we compared the splits to get a sense of how programming proficiency affected their results.
+
+Interestingly, the only metric on which experienced and novice coders had statistically significant difference was in lines of code for the Scala solution to Task 1. This result makes some sense given that Scala is an expressive language with terse idioms available to experienced programmers. The lack of differences in other metrics suggest that the agenet programming problem was simply to small to reveal differences in programmer proficiency.
+
+\begin{center}
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|l|r|r|r|}\hline
+Afabl Task 1 & Coding Novice Mean & Experienced Coder Mean & p-value \\\hline
+Time in Seconds & 2071.00 & 1539.17 & 0.40\\
+Lines of Code & 31.43 & 31.00 & 0.71\\
+Complexity & 5.00 & 5.50 & 0.37\\
+Performance & 0.55 & 0.51 & 0.32\\
+\hline
+\end{tabular}
+
+
+\begin{tabular}{|l|r|r|r|}\hline
+Afabl Task 2 & Coding Novice Mean & Experienced Coder Mean & p-value \\\hline
+Time in Seconds & 470.20 & 757.17 & 0.33\\
+Lines of Code & 40.43 & 38.12 & 0.63\\
+Complexity & 8.29 & 8.12 & 0.75\\
+Performance & 0.55 & 0.54 & 0.45\\
+\hline
+\end{tabular}
+
+
+\begin{tabular}{|l|r|r|r|}\hline
+Scala Task 1 & Coding Novice Mean & Experienced Coder Mean & p-value \\\hline
+Time in Seconds & 1487.60 & 1531.33 & 0.92\\
+Lines of Code & 25.71 & 51.25 & 0.04\\
+Complexity & 8.14 & 13.12 & 0.14\\
+Performance & 0.44 & 0.44 & 0.99\\
+\hline
+\end{tabular}
+
+
+\begin{tabular}{|l|r|r|r|}\hline
+Scala Task 2 & Coding Novice Mean & Experienced Coder Mean & p-value \\\hline
+Time in Seconds & 470.20 & 757.17 & 0.33\\
+Lines of Code & 40.43 & 38.12 & 0.63\\
+Complexity & 8.29 & 8.12 & 0.75\\
+Performance & 0.55 & 0.54 & 0.45\\
+\hline
+\end{tabular}
+\end{center}
+\caption{Comparison of novice vs. experienced coder results. A p-value of less than .05 mean that the difference in means is statistically significant at the 95\% significance level, i.e., we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different.}
+\label{tbl:code-experience}
+\end{table}
+\end{center}
+
+
+As the results in Table \ref{tbl:agent-experience} show, agent programming experience had no effect on any of the programming metrics. This results suggests that simple agent problems are readily soved with AFABL, and that the agent problems were not sufficiently complex to bring out differences in agent programming experience.
+
+\begin{center}
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|l|r|r|r|}\hline
+Afabl Task 1 & Agent Novice Mean & Some Agent Exp Mean & p-value \\\hline
+Time in Seconds & 1770.00 & 1787.14 & 0.98\\
+Lines of Code & 31.83 & 30.78 & 0.35\\
+Complexity & 5.67 & 5.00 & 0.23\\
+Performance & 0.55 & 0.51 & 0.43\\
+\hline
+\end{tabular}
+
+
+\begin{tabular}{|l|r|r|r|}\hline
+Afabl Task 2 & Agent Novice Mean & Some Agent Exp Mean & p-value \\\hline
+Time in Seconds & 552.50 & 669.14 & 0.71\\
+Lines of Code & 40.67 & 38.22 & 0.62\\
+Complexity & 8.17 & 8.22 & 0.92\\
+Performance & 0.55 & 0.54 & 0.54\\
+\hline
+\end{tabular}
+
+
+\begin{tabular}{|l|r|r|r|}\hline
+Scala Task 1 & Agent Novice Mean & Some Agent Exp Mean & p-value \\\hline
+Time in Seconds & 1717.50 & 1393.71 & 0.47\\
+Lines of Code & 40.83 & 38.33 & 0.86\\
+Complexity & 11.17 & 10.56 & 0.87\\
+Performance & 0.43 & 0.44 & 0.80\\
+\hline
+\end{tabular}
+
+
+\begin{tabular}{|l|r|r|r|}\hline
+Scala Task 2 & Agent Novice Mean & Some Agent Exp Mean & p-value \\\hline
+Time in Seconds & 552.50 & 669.14 & 0.71\\
+Lines of Code & 40.67 & 38.22 & 0.62\\
+Complexity & 8.17 & 8.22 & 0.92\\
+Performance & 0.55 & 0.54 & 0.54\\
+\hline
+\end{tabular}
+
+\end{center}
+\caption{Comparison of results from programmers no agent programming experience vs programmers with some agent programming experience. A p-value of less than .05 mean that the difference in means is statistically significant at the 95\% significance level, i.e., we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different.}
+\label{tbl:agent-experience}
+\end{table}
+\end{center}
 
 
 
