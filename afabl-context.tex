@@ -286,3 +286,72 @@ class ScalaBunny3 extends Agent[BunnyState, BunnyAction.Value]
 
 
 \subsection{Bunny, Wolf, Food, Mate, Spoiling Food, Picky Mate}
+
+AFABL:
+\begin{lstlisting}[language=Scala]
+  val afablBunny3 = AfablAgent(
+
+    world = bunnyWorld,
+
+    modules = Seq(AfablTask0.findFood, AfablTask1.avoidWolf, AfablTask2.findMate),
+
+    agentLevelReward = (state: BunnyState) => {
+      if (state.bunny == state.wolf) 0.0
+      else if (state.bunny == state.food) 1.0
+      else if (state.bunny == state.mate) 1.0
+      else 0.5
+    }
+  )
+\end{lstlisting}
+
+Scala:
+\begin{lstlisting}[language=Scala]
+class ScalaBunny3 extends Agent[BunnyState, BunnyAction.Value]
+    with Task2Scorer {
+
+  var lastMeal = 0
+
+  def getAction(state: BunnyState, shouldExplore: Boolean = false) = {
+    lastMeal += 1
+    if ((distance(state.wolf, state.food) < distance(state.food, state.bunny))
+      || distance(state.wolf, state.mate) < distance(state.mate, state.bunny))
+      moveAwayFromWolf(state)
+    else if (distance(state.bunny, state.food) < distance(state.bunny, state.mate))
+      moveToward(state.bunny, state.food)
+    else
+      moveToward(state.bunny, state.mate)
+  }
+
+  def distance(a: Location, b: Location) = {
+    sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2))
+  }
+
+  def moveToward(from: Location, to: Location) = {
+    if (to.x > from.x)
+      BunnyAction.Right
+    else if (to.x < from.x)
+      BunnyAction.Left
+    else if (to.y > from.y)
+      BunnyAction.Up
+    else
+      BunnyAction.Down
+  }
+
+  def moveAwayFromWolf(state: BunnyState) = {
+    if (state.wolf.x < state.bunny.x)
+      BunnyAction.Right
+    else if (state.wolf.x > state.bunny.x)
+      BunnyAction.Left
+    else if (state.wolf.y > state.bunny.y)
+      BunnyAction.Up
+    else
+      BunnyAction.Down
+  }
+}
+\end{lstlisting}
+
+
+
+\section{Usage Guidelines}
+
+AFABL

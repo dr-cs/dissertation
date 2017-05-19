@@ -5,7 +5,7 @@
 %% Definition
 %% ---
 %% Motivation - assess advantage of AFABL, validate language-integrated RL
-%% Object - a programming language applied to a particular kin dof programming task
+%% Object - a programming language applied to a particular kind of programming task
 %% Purpose -evaluate
 %% Perspective - user (of the programming language)
 %% Domain - programmer
@@ -134,7 +134,7 @@ The provided code for Task 2 was identical to the provided code for Task 1, exce
 
 Each task had a main method which ran the agents in the world to evaluate their performance.
 
-\section{Quantitative Results}
+\section{Quantitative Analysis}
 
 We analyzed the submissions of study participants to compare Scala agents to AFABL agents in terms of code size, time spent writing Scala versus AFABL agents, the complexity of Scala versus AFABL agent code, and the performance of the agents on the assigned tasks.
 
@@ -363,19 +363,22 @@ Figure \ref{fig:afabl-task2-submission} shows typical AFABL code for Task 2. Not
 
 The AFABL solution to Task 2 contains 21 lines of code due to reuse of modules from Task 1, and has the same cyclomatic complexity of 5 (4 predicates in decision structures) even though the agent is solving a more complex problem. Even with the refactoring of common logic in Task 2 the Scala solution has a higher cyclomatic complexity of 10 (9 predicates in decision structures), which McCabe says is the maximum allowable cyclomatic complexity for a testable, maintainable software module \cite{mccabe1976complexity}. Finally, the performance of the Scala solution to Task 2 decreases to 0.48, while the AFABL solution continues to achieve the same nearly optimal 0.54. With additional work perhaps the Scala agent's performance on Task 2 could have been improved, but the point here is that AFABL agents are easier to write, easier to adapt to new domains, have less complex code, and perform well without requiring a great deal of effort beyond choosing reward signals.
 
-\subsection{Summary}
+\subsection{Quantitative Results}
 
-Quantitative results for Task 1 are summarized in Table \ref{tbl:task1-results}. Quantitative results for Task 2 are summarized in Table \ref{tbl:task2-results}.
+Overall results for Task 1 are summarized in Table \ref{tbl:task1-results}. Overall results for Task 2 are summarized in Table \ref{tbl:task2-results}. The data do not show statistically significant differences in time or lines of code, but for the same amount of time and number of lines of code AFABL solutions were less complex and performed better. We also believe that the AFABL results for time were skewed because programmers left their editors open while they were reading documentation on AFABL. So the time measures for AFABL solutions include programming time and the time spent learning AFABL. Given this fact, the similarity in time between Scala and AFABL solutions indicates that AFABL programs are indeed quicker to write, but we cannot say that with statistical certainty.
 
 \begin{center}
 \begin{table}[h]
+\begin{center}
 \begin{tabular}{|l|r|r|r|}\hline
-                      & Scala Mean & AFABL Mean & p-value \\\hline
-Lines of Code         & 0.0        & 0.0        & 0.0 \\
-Time                  & 0.0        & 0.0        & 0.0 \\
-Cyclomatic complexity & 0.0        & 0.0        & 0.0 \\
-Performance           & 0.0        & 0.0        & 0.0 \\\hline
+Task 1 & Scala Mean & AFABL Mean & p-value \\\hline
+Time in seconds & 1511.45 & 1780.91 & 0.49\\
+Lines of code & 39.33 & 31.20 & 0.23\\
+Complexity & 10.80 & 5.27 & 0.01\\
+Performance & 0.44 & 0.53 & 0.02\\
+\hline
 \end{tabular}
+\end{center}
 \caption{Quantitative results of Scala agent code versus AFABL agent code on Task 1. A p-value of less than .05 mean that the difference in means is statistically significant at the 95\% significance level, i.e. we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different.}
 \label{tbl:task1-results}
 \end{table}
@@ -383,19 +386,28 @@ Performance           & 0.0        & 0.0        & 0.0 \\\hline
 
 \begin{center}
 \begin{table}[h]
+\begin{center}
 \begin{tabular}{|l|r|r|r|}\hline
-                      & Scala Mean & AFABL Mean & p-value \\\hline
-Lines of Code         & 0.0        & 0.0        & 0.0 \\
-Time                  & 0.0        & 0.0        & 0.0 \\
-Cyclomatic complexity & 0.0        & 0.0        & 0.0 \\
-Performance           & 0.0        & 0.0        & 0.0 \\\hline
+Task 2 & Scala Mean & AFABL Mean & p-value \\\hline
+Time in seconds & 797.82 & 626.73 & 0.55\\
+Lines of code & 41.67 & 39.20 & 0.58\\
+Complexity & 11.27 & 8.20 & 0.04\\
+Performance & 0.48 & 0.54 & 0.02\\
+\hline
 \end{tabular}
+\end{center}
 \caption{Quantitative results of Scala agent code versus AFABL agent code on Task 2. A p-value of less than .05 mean that the difference in means is statistically significant at the 95\% significance level, i.e., we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different.}
 \label{tbl:task2-results}
 \end{table}
 \end{center}
 
-\section{Qualitative Results}
+\subsubsection{Programmer Demographics}
+
+
+
+
+
+\subsection{Qualitative Results}
 
 Programmers responded to a questionnaire to give their impressions of agent programming in AFABL versus agent programming in Scala.
 
@@ -433,14 +445,66 @@ Rationale: in addition to objective analyses of task submissions, we want to kno
 
 \end{enumerate}
 
+
+
+\section{Insights}
+
+All but one of the study programmers created good AFABL agents. One programmer failed to understand the right way to write the reward function and therefore got very poor performance with their AFABL agents.
+
+
+
 \section{Threats to Validity}
 
-Sample size
+The first threat to validity is sample size -- there were only 16 study participants. However, the problem size was small and there was low variablility in the data, suggesting that a larger sample would have yielded similar results. The second threat is problem size. The tasks that programmers were given were smaller than typical software engineering tasks. Given the difficulty of getting programmers to work for hours writing programs for a study, and the further challenge of finding Scala programmers, the problem size had to be limited. We believe that the insights are still valid because the chief differences between AFABL agent programs and traditional programs are the control-flow complexity and the additional effort required to adapt agent programs to more complex domains. As our results showed, the small tasks were sufficient to show these differences. The final threat to validity is the fact that 8 of the 16 study participants were teaching assistants for the principal investigator. This fact may have biased them towards writing better AFABL solutions in order to help me show positive results. However, as Table \ref{tbl:tas-vs-non-tas} shows, the data do not show that the TAs' results differed from the non-TAs' results.
 
-Problem size
+\begin{center}
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|l|r|r|r|}\hline
+Afabl Task 1 & TA Mean & Non-TA Mean & p-value \\\hline
+Time in Seconds & 1620.00 & 1733.33 & 0.86\\
+Lines of Code & 31.38 & 31.12 & 0.82\\
+Complexity & 5.00 & 5.50 & 0.35\\
+Performance & 0.51 & 0.54 & 0.41\\
+\hline
+\end{tabular}
 
-TAs as subjects
+
+\begin{tabular}{|l|r|r|r|}\hline
+Afabl Task 2 & TA Mean & Non-TA Mean & p-value \\\hline
+Time in Seconds & 686.83 & 552.00 & 0.66\\
+Lines of Code & 41.75 & 38.25 & 0.50\\
+Complexity & 8.38 & 8.12 & 0.63\\
+Performance & 0.55 & 0.54 & 0.17\\
+\hline
+\end{tabular}
+
+
+\begin{tabular}{|l|r|r|r|}\hline
+Scala Task 1 & TA Mean & Non-TA Mean & p-value \\\hline
+Time in Seconds & 1520.67 & 1462.17 & 0.89\\
+Lines of Code & 36.88 & 40.12 & 0.83\\
+Complexity & 10.62 & 11.12 & 0.90\\
+Performance & 0.46 & 0.42 & 0.55\\
+\hline
+\end{tabular}
+
+
+\begin{tabular}{|l|r|r|r|}\hline
+Scala Task 2 & TA Mean & Non-TA Mean & p-value \\\hline
+Time in Seconds & 686.83 & 552.00 & 0.66\\
+Lines of Code & 41.75 & 38.25 & 0.50\\
+Complexity & 8.38 & 8.12 & 0.63\\
+Performance & 0.55 & 0.54 & 0.17\\
+\hline
+\end{tabular}
+\end{center}
+\caption{Comparison of TA results versus non-TA results. A p-value of less than .05 means that the difference in means is statistically significant at the 95\% significance level, i.e., we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different.}
+\label{tbl:tas-vs-non-tas}
+\end{table}
+\end{center}
+
 
 \section{Conclusion}
 
-As you can see from the similarity of the submission in Figure \ref{fig:afabl-task1-submission} to our explanatory example, most AFABL bunny agents look the same. There is one obvious way to implement a bunny agent that must pursue multiple goals. This uniformity is desirable. As Tim Peters says in the Zen of Python \cite{peters2004zen}, ``There should be one-- and preferably only one --obvious way to do it.'' The similarity in most AFABL solutions to a particular modular agent programming problem is an indication that AFABL provides the right abstractions for adaptive agent programming. \added[id=v3]{This regularity results from exploiting the structure of certain kinds of agent programming problems. In the next chapter we discuss kinds of problems for which AFABL is well-suited and those for which it is less well-suited.}
+As you can see from the similarity of the submission in Figure \ref{fig:afabl-task1-submission} to our explanatory example, most AFABL bunny agents look the same. There is one obvious way to implement a bunny agent that must pursue multiple goals. This uniformity is desirable. As Tim Peters says in the Zen of Python \cite{peters2004zen}, ``There should be one-- and preferably only one --obvious way to do it.'' The similarity in most AFABL solutions to a particular modular agent programming problem is an indication that AFABL provides the right abstractions for adaptive agent programming. \added[id=v3]{This regularity results from exploiting the structure of certain kinds of agent programming problems. In the next chapter we discuss the kinds of problems for which AFABL is well-suited and those for which it is less well-suited.}
