@@ -408,7 +408,7 @@ Overall results for Task 1 are summarized in Table \ref{tbl:task1-results}. Over
 
 \subsubsection{Programmer Demographics}
 
-We collected demographic data from each programmer, including professional programming experience (work experience), the largest program personally written (code experience), agent programming proficiency, scala proficiency, level of education, and major. Almost all participants were undergraduate students, and all participants were computer science majors except for one electrical engineering major who was an experienced professional programmer proficient in Scala. The only categories in which there was a nearly 50\% split were code experience and agent programming experience, so we compared these splits to get a sense of how programming proficiency affected their results.
+We collected demographic data from each programmer, including professional programming experience (work experience), the largest program personally written (code experience), agent programming proficiency, Scala proficiency, level of education, and major. Almost all participants were undergraduate students, and all participants were computer science majors except for one electrical engineering major who was an experienced professional programmer proficient in Scala. The only categories in which there was a nearly 50\% split were code experience and agent programming experience, so we compared these splits to get a sense of how programming proficiency affected their results.
 
 Interestingly, the only metric on which experienced and novice coders had statistically significant difference was in lines of code for the Scala solution to Task 1. This result makes some sense given that Scala is an expressive language with terse idioms available to experienced programmers. The lack of differences in other metrics suggest that the agent programming problem was simply to small to reveal differences in programmer proficiency.
 
@@ -516,46 +516,56 @@ Performance & 0.55 & 0.54 & 0.54 & 0.09\\
 
 \subsection{Qualitative Results}
 
-Programmers responded to a questionnaire to give their impressions of agent programming in AFABL versus agent programming in Scala.
+Programmers responded to a questionnaire to give their impressions of agent programming in AFABL versus agent programming in Scala. Here we summarize the responses of the eight participants who were not TAs of the principal investigator.
 
-\begin{enumerate}
-\item I have a positive impression of agent programming in Scala.
 
-Rationale: programmers’ impression of Scala will provide a baseline for evaluating
-programmers’ impression of AFABL.
+\begin{figure}[h!]
+\begin{tabular}{cc}\\
+  \includegraphics[height=2.5in]{afabl-impression.png} & \includegraphics[height=2.5in]{afabl-easier-overall.png} \\
+  \includegraphics[height=2.5in]{afabl-better-maintenance.png} & \includegraphics[height=2.5in]{afabl-choice.png} \\
+  \includegraphics[height=2.5in]{afabl-easier-task1.png} & \includegraphics[height=2.5in]{afabl-easier-task2.png} \\\hline
+\end{tabular}
+\caption{Responses to Likert-scale question on reflection survey.}
+\label{fig:likert-responses}
+\end{figure}
 
-\item I found it easier to write the agents using AFABL’s programming constructs compared to bare Scala.
+Figure \ref{fig:likert-responses} shows that programmers had a positive response to AFABL. The most interesting responses of these is for the question ``If given the choice, I would choose AFABL over Scala for agent programming projects.'' Although every programmer found AFABL to be easier than Scala for Task 2, and almost all programmers found AFABL easier for Task 1, some of the study participants were very experienced Scala programmers who would still prefer the familiarity of Scala. The programmer who reported that they would choose Scala over AFABL did report for Task 2 that they found it easier to adapt their AFABL agent to Task 2 after they had developed some basic knowledge of AFABL.
 
-Rationale: the point of AFABL is to facilitate agent programming, so programmers should have a more positive impression of AFABL for agent programming.
+\subsubsection{Free Response Questions}
 
-\item I believe that AFABL facilitated more reusable and maintainable code for agents compared to bare Scala.
+Two of the questions on the survey allowed for free responses. These responses are listed below, again, only for non-TAs.
 
-Rationale: answers to this question should correlate with answers to Question 1.
+{\bf What was it about AFABL that made Task 1 easier or harder?}
 
-\item If given the choice, I would choose AFABL over Scala for agent programming projects.
+\begin{itemize}
+\item I didn't have to put so much thought into the mechanics of moving and distance calculation, and didn't have to think about priorities.
+\item The choice of going towards to food or avoiding the wolf is tricky. Should you only avoid the wolf when it's adjacent? 2 Squares away? what exactly does it mean to avoid? Answering these questions is hard, but expressing the rewards and punishments for getting food and meeting the wolf is easy. AFABL did not require me to express these domain-specific problems, instead it learned based on the rewards and costs what policy is optimal.
+\item No need to explicitly compare locations, calculate distances or balance separate goals.
+\item Easier because it only asks for important parts of the specific domain, more difficult as I don't know how different goals interact and I don't know why my end score was lower in AFABL or what changes improve a score.
+\item While learning AFABL had some overhead for Task 1, being able to program in terms of rewards and punishments was much more intuitive than coding an algorithm from scratch that may or may not be correct.
+\item I've written agents similar to my Scala agent in the past, so it took much less new thought to develop it, whereas the AFABL agent was conceptually and structurally very different from anything I've written before, and were therefore harder to approach.
+\item You simply define success and failure scenarios; there's no dealing with weighting different values and that makes it MUCH easier to work with, as a programmer.
+\item There was no need to define the movement algorithm
+\end{itemize}
 
-Rationale: answers to this question should correlate with answers to Question 2.
+{\bf What was it about AFABL that made Task 2 easier or harder?}
 
-\item I found it easier to use AFABL compared to Scala for Task 1.
+\begin{itemize}
+\item All I had to do was add a 3rd module which was very much like FindFood.
+\item Same arguments as 1, but now there's the mate. I actually found that I could treat the mate exactly as a food source by adding another module very similar to the food module. The problem then became how to maximize the total reward by playing around with the module-level rewards and the agent-level rewards. If it were very important to find good reward values, one could run some optimization program on the rewards. It's worth mentioning that if I were faced with this problem, I would feel more comfortable running an optimization algorithm than writing my own domain-specific agent behavior. AFABL would pair nicely with a solver that optimizes on rewards.
+\item The design of independent modules made adding an additional module/goal trivial.
+\item Both were pretty easy to add 1 more goal. But in Scala I copied and pasted. In AFABL it was really neat to just import modules from the other file with no effort to integrate them.
+\item Being able to just add in another module and tack it onto the agent with AFABL was much easier and more elegant than having to go in and modify existing methods and logic in Scala. Adding the additional functionality with AFABL was much more convenient in this respect.
+\item After understanding AFABL to some degree, it was quite easy to modify my existing agent to the new task and thereby receive a good score.
+\item You can much more clearly see the similarities between Task 1 and Task 2 in the AFABL version, for one thing. Second, it doesn't require modifying existing code nearly as much as the plain Scala version does. It's a delight to use, and as a programmer at a startup, I would much rather work with this format over what I have to do to work with AWS' Machine Learning program.
+\item Too many cases to work on in Scala, hard to figure out whether mating or eating takes importance, takes far less time with AFABL.
+\end{itemize}
 
-  Rationale: in addition to objective analyses of task submissions, we want to know whether programmers subjectively prefer AFABL.
-
-\item What was it about AFABL that made the Task 1 easier or harder?
-
-Rationale: we want to get open-ended feedback for things we did not anticipate.
-
-\item I found it easier to use AFABL compared to Scala for Task 2.
-
-Rationale: in addition to objective analyses of task submissions, we want to know whether programmers subjectively prefer AFABL.
-
-\item What was it about AFABL that made the Task 2 easier or harder?
-
-\end{enumerate}
-
+Many of the answers above mention the reduced time and effort of writing AFABL agents. These answers corroborate our belief that the time tracking in the quantitative section was unreliable due to programmers not following directions to move the focus off their editors while reading documentation, and possible malfunctions in the IntelliJ IDEA plug-in used to automatically track time.
 
 \section{Threats to Validity}
 
-The first threat to validity is sample size -- there were only 16 study participants. Indeed the statistical power caclulations for most comparisons indicate that results are inconclusive due to the small sample sizes and large variances in many metrics. However, two core metrics -- complexity and perfoamce -- yielded very high statistical power, supporting our claim that AFABL agent programs are simpler to write than their non-AFABL equivalents, and that it takes less effort to get good performance from AFBL agents.
+The first threat to validity is sample size -- there were only 16 study participants. Indeed the statistical power calculations for most comparisons indicate that results are inconclusive due to the small sample sizes and large variances in many metrics. However, two core metrics -- complexity and performance -- yielded very high statistical power, supporting our claim that AFABL agent programs are simpler to write than their non-AFABL equivalents, and that it takes less effort to get good performance from AFABL agents.
 
 The second threat is problem size. The tasks that programmers were given were smaller than typical software engineering tasks. Given the difficulty of getting programmers to work for hours writing programs for a study, and the further challenge of finding Scala programmers, the problem size had to be limited. We believe that the insights are still valid because the chief differences between AFABL agent programs and traditional programs are the control-flow complexity and the additional effort required to adapt agent programs to more complex domains. As our results showed, the small tasks were sufficient to show these differences.
 
