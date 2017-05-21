@@ -368,16 +368,18 @@ The AFABL solution to Task 2 contains 21 lines of code due to reuse of modules f
 \begin{center}
 \begin{table}[h]
 \begin{center}
-\begin{tabular}{|l|r|r|r|}\hline
-Task 1 & Scala Mean & AFABL Mean & p-value \\\hline
-Time in seconds & 1511.45 & 1780.91 & 0.49\\
-Lines of code & 39.33 & 31.20 & 0.23\\
-Complexity & 10.80 & 5.27 & 0.01\\
-Performance & 0.44 & 0.53 & 0.02\\
+
+\begin{tabular}{|l|r|r|r|r|}\hline
+Task 1 & Scala Mean & AFABL Mean & p-value & Power \\\hline
+Time in seconds & 1511.45 & 1780.91 & 0.47 & 0.11\\
+Lines of code & 39.33 & 31.20 & 0.22 & 0.85\\
+Complexity & 10.80 & 5.27 & 0.01 & 1.00\\
+Performance & 0.44 & 0.53 & 0.02 & 0.73\\
 \hline
 \end{tabular}
+
 \end{center}
-\caption{Quantitative results of Scala agent code versus AFABL agent code on Task 1. A p-value of less than .05 mean that the difference in means is statistically significant at the 95\% significance level, i.e. we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different.}
+\caption{Quantitative results of Scala agent code versus AFABL agent code on Task 1. p-value is for comparison of means between samples of unequal variances (Welch's t-test). A p-value of less than .05 mean that the difference in means is statistically significant at the 95\% significance level, i.e. we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different. Power is the probability that we reject the null hypothesis $H_0$ when it is in fact false, given the sample size, variance, and significance level of 95\% ($\alpha = .05$).}
 \label{tbl:task1-results}
 \end{table}
 \end{center}
@@ -385,129 +387,131 @@ Performance & 0.44 & 0.53 & 0.02\\
 \begin{center}
 \begin{table}[h]
 \begin{center}
-\begin{tabular}{|l|r|r|r|}\hline
-Task 2 & Scala Mean & AFABL Mean & p-value \\\hline
-Time in seconds & 797.82 & 626.73 & 0.55\\
-Lines of code & 41.67 & 39.20 & 0.58\\
-Complexity & 11.27 & 8.20 & 0.04\\
-Performance & 0.48 & 0.54 & 0.02\\
+
+\begin{tabular}{|l|r|r|r|r|}\hline
+Task 2 & Scala Mean & AFABL Mean & p-value & Power \\\hline
+Time in seconds & 797.82 & 626.73 & 0.53 & 0.10\\
+Lines of code & 41.67 & 39.20 & 0.62 & 0.08\\
+Complexity & 11.27 & 8.20 & 0.05 & 0.95\\
+Performance & 0.48 & 0.54 & 0.03 & 0.98\\
 \hline
 \end{tabular}
+
 \end{center}
-\caption{Quantitative results of Scala agent code versus AFABL agent code on Task 2. A p-value of less than .05 mean that the difference in means is statistically significant at the 95\% significance level, i.e., we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different.}
+\caption{Quantitative results of Scala agent code versus AFABL agent code on Task 2. p-value is for comparison of means between samples of unequal variances (Welch's t-test). A p-value of less than .05 mean that the difference in means is statistically significant at the 95\% significance level, i.e. we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different. Power is the probability that we reject the null hypothesis $H_0$ when it is in fact false, given the sample size, variance, and significance level of 95\% ($\alpha = .05$).}
 \label{tbl:task2-results}
 \end{table}
 \end{center}
 
 
-Overall results for Task 1 are summarized in Table \ref{tbl:task1-results}. Overall results for Task 2 are summarized in Table \ref{tbl:task2-results}. The data do not show statistically significant differences in time or lines of code, but for the same amount of time and number of lines of code AFABL solutions were less complex and performed better. We also believe that the AFABL results for time were skewed because programmers left their editors open while they were reading documentation on AFABL. So the time measures for AFABL solutions include programming time and the time spent learning AFABL. Given this fact, the similarity in time between Scala and AFABL solutions indicates that AFABL programs are indeed quicker to write, but we cannot say that with statistical certainty.
+Overall results for Task 1 are summarized in Table \ref{tbl:task1-results}. Overall results for Task 2 are summarized in Table \ref{tbl:task2-results}. All but one of the study programmers created good AFABL agents. One programmer failed to understand the right way to write the reward function and therefore got very poor performance with their AFABL agents. The data do not show statistically significant differences in time or lines of code, but for the same amount of time and number of lines of code AFABL solutions were less complex and performed better. We also believe that the AFABL results for time are unreliable because programmers left their editors open while they were reading documentation on AFABL. So the time measures for AFABL solutions include programming time and the time spent learning AFABL. Given this fact, the similarity in time between Scala and AFABL solutions indicates that AFABL programs are indeed quicker to write, but we cannot say that with statistical certainty.
 
 \subsubsection{Programmer Demographics}
 
-We collected demographic data from each programmer, including professional programming experience (work experience), the largest program personally written (code experience), agent programming proficiency, scala proficiency, level of education, and major. Almost all participants were undergraduate students, and all participants were computer science majors except for one electrical engineering major who was an experienced professional programmer proficient in Scala. The categories in there was a nearly 50\% split were code experience and agent programming experience, so we compared the splits to get a sense of how programming proficiency affected their results.
+We collected demographic data from each programmer, including professional programming experience (work experience), the largest program personally written (code experience), agent programming proficiency, scala proficiency, level of education, and major. Almost all participants were undergraduate students, and all participants were computer science majors except for one electrical engineering major who was an experienced professional programmer proficient in Scala. The only categories in which there was a nearly 50\% split were code experience and agent programming experience, so we compared these splits to get a sense of how programming proficiency affected their results.
 
-Interestingly, the only metric on which experienced and novice coders had statistically significant difference was in lines of code for the Scala solution to Task 1. This result makes some sense given that Scala is an expressive language with terse idioms available to experienced programmers. The lack of differences in other metrics suggest that the agenet programming problem was simply to small to reveal differences in programmer proficiency.
+Interestingly, the only metric on which experienced and novice coders had statistically significant difference was in lines of code for the Scala solution to Task 1. This result makes some sense given that Scala is an expressive language with terse idioms available to experienced programmers. The lack of differences in other metrics suggest that the agent programming problem was simply to small to reveal differences in programmer proficiency.
 
 \begin{center}
 \begin{table}[h]
 \begin{center}
-\begin{tabular}{|l|r|r|r|}\hline
-Afabl Task 1 & Coding Novice Mean & Experienced Coder Mean & p-value \\\hline
-Time in Seconds & 2071.00 & 1539.17 & 0.40\\
-Lines of Code & 31.43 & 31.00 & 0.71\\
-Complexity & 5.00 & 5.50 & 0.37\\
-Performance & 0.55 & 0.51 & 0.32\\
+
+\begin{tabular}{|l|r|r|r|r|}\hline
+Afabl Task 1 & Coding Novice Mean & Experienced Coder Mean & p-value & Power\\\hline
+Time in Seconds & 2071.00 & 1539.17 & 0.39 & 0.12\\
+Lines of Code & 31.43 & 31.00 & 0.69 & 0.07\\
+Complexity & 5.00 & 5.50 & 0.35 & 0.24\\
+Performance & 0.55 & 0.51 & 0.30 & 0.26\\
 \hline
 \end{tabular}
 
 
-\begin{tabular}{|l|r|r|r|}\hline
-Afabl Task 2 & Coding Novice Mean & Experienced Coder Mean & p-value \\\hline
-Time in Seconds & 470.20 & 757.17 & 0.33\\
-Lines of Code & 40.43 & 38.12 & 0.63\\
-Complexity & 8.29 & 8.12 & 0.75\\
-Performance & 0.55 & 0.54 & 0.45\\
+\begin{tabular}{|l|r|r|r|r|}\hline
+Afabl Task 2 & Coding Novice Mean & Experienced Coder Mean & p-value & Power\\\hline
+Time in Seconds & 470.20 & 757.17 & 0.30 & 0.18\\
+Lines of Code & 40.43 & 38.12 & 0.62 & 0.08\\
+Complexity & 8.29 & 8.12 & 0.75 & 0.06\\
+Performance & 0.55 & 0.54 & 0.45 & 0.11\\
 \hline
 \end{tabular}
 
 
-\begin{tabular}{|l|r|r|r|}\hline
-Scala Task 1 & Coding Novice Mean & Experienced Coder Mean & p-value \\\hline
-Time in Seconds & 1487.60 & 1531.33 & 0.92\\
-Lines of Code & 25.71 & 51.25 & 0.04\\
-Complexity & 8.14 & 13.12 & 0.14\\
-Performance & 0.44 & 0.44 & 0.99\\
+\begin{tabular}{|l|r|r|r|r|}\hline
+Scala Task 1 & Coding Novice Mean & Experienced Coder Mean & p-value & Power\\\hline
+Time in Seconds & 1487.60 & 1531.33 & 0.92 & 0.05\\
+Lines of Code & 25.71 & 51.25 & 0.04 & 0.67\\
+Complexity & 8.14 & 13.12 & 0.13 & 0.33\\
+Performance & 0.44 & 0.44 & 0.99 & 0.05\\
 \hline
 \end{tabular}
 
 
-\begin{tabular}{|l|r|r|r|}\hline
-Scala Task 2 & Coding Novice Mean & Experienced Coder Mean & p-value \\\hline
-Time in Seconds & 470.20 & 757.17 & 0.33\\
-Lines of Code & 40.43 & 38.12 & 0.63\\
-Complexity & 8.29 & 8.12 & 0.75\\
-Performance & 0.55 & 0.54 & 0.45\\
+\begin{tabular}{|l|r|r|r|r|}\hline
+Scala Task 2 & Coding Novice Mean & Experienced Coder Mean & p-value & Power\\\hline
+Time in Seconds & 470.20 & 757.17 & 0.30 & 0.18\\
+Lines of Code & 40.43 & 38.12 & 0.62 & 0.08\\
+Complexity & 8.29 & 8.12 & 0.75 & 0.06\\
+Performance & 0.55 & 0.54 & 0.45 & 0.11\\
 \hline
 \end{tabular}
+
 \end{center}
-\caption{Comparison of novice vs. experienced coder results. A p-value of less than .05 mean that the difference in means is statistically significant at the 95\% significance level, i.e., we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different.}
+\caption{Comparison of novice vs. experienced coder results. p-value is for comparison of means between samples of unequal variances (Welch's t-test). A p-value of less than .05 mean that the difference in means is statistically significant at the 95\% significance level, i.e. we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different. Power is the probability that we reject the null hypothesis $H_0$ when it is in fact false, given the sample size, variance, and significance level of 95\% ($\alpha = .05$).}
 \label{tbl:code-experience}
 \end{table}
 \end{center}
 
 
-As the results in Table \ref{tbl:agent-experience} show, agent programming experience had no effect on any of the programming metrics. This results suggests that simple agent problems are readily soved with AFABL, and that the agent problems were not sufficiently complex to bring out differences in agent programming experience.
+As the results in Table \ref{tbl:agent-experience} show, agent programming experience had no effect on any of the programming metrics. This results suggests that simple agent problems are readily soved with AFABL, and that the agent problems in the study were not sufficiently complex to bring out differences in agent programming experience.
 
 \begin{center}
 \begin{table}[h]
 \begin{center}
-\begin{tabular}{|l|r|r|r|}\hline
-Afabl Task 1 & Agent Novice Mean & Some Agent Exp Mean & p-value \\\hline
-Time in Seconds & 1770.00 & 1787.14 & 0.98\\
-Lines of Code & 31.83 & 30.78 & 0.35\\
-Complexity & 5.67 & 5.00 & 0.23\\
-Performance & 0.55 & 0.51 & 0.43\\
+
+\begin{tabular}{|l|r|r|r|r|}\hline
+Afabl Task 1 & Agent Novice Mean & Some Agent Exp Mean & p-value & Power\\\hline
+Time in Seconds & 1770.00 & 1787.14 & 0.98 & 0.05\\
+Lines of Code & 31.83 & 30.78 & 0.45 & 0.14\\
+Complexity & 5.67 & 5.00 & 0.36 & 0.29\\
+Performance & 0.55 & 0.51 & 0.34 & 0.19\\
 \hline
 \end{tabular}
 
 
-\begin{tabular}{|l|r|r|r|}\hline
-Afabl Task 2 & Agent Novice Mean & Some Agent Exp Mean & p-value \\\hline
-Time in Seconds & 552.50 & 669.14 & 0.71\\
-Lines of Code & 40.67 & 38.22 & 0.62\\
-Complexity & 8.17 & 8.22 & 0.92\\
-Performance & 0.55 & 0.54 & 0.54\\
+\begin{tabular}{|l|r|r|r|r|}\hline
+Afabl Task 2 & Agent Novice Mean & Some Agent Exp Mean & p-value & Power\\\hline
+Time in Seconds & 552.50 & 669.14 & 0.71 & 0.06\\
+Lines of Code & 40.67 & 38.22 & 0.57 & 0.08\\
+Complexity & 8.17 & 8.22 & 0.92 & 0.05\\
+Performance & 0.55 & 0.54 & 0.54 & 0.09\\
 \hline
 \end{tabular}
 
 
-\begin{tabular}{|l|r|r|r|}\hline
-Scala Task 1 & Agent Novice Mean & Some Agent Exp Mean & p-value \\\hline
-Time in Seconds & 1717.50 & 1393.71 & 0.47\\
-Lines of Code & 40.83 & 38.33 & 0.86\\
-Complexity & 11.17 & 10.56 & 0.87\\
-Performance & 0.43 & 0.44 & 0.80\\
+\begin{tabular}{|l|r|r|r|r|}\hline
+Scala Task 1 & Agent Novice Mean & Some Agent Exp Mean & p-value & Power\\\hline
+Time in Seconds & 1717.50 & 1393.71 & 0.56 & 0.09\\
+Lines of Code & 40.83 & 38.33 & 0.84 & 0.05\\
+Complexity & 11.17 & 10.56 & 0.87 & 0.05\\
+Performance & 0.43 & 0.44 & 0.81 & 0.06\\
 \hline
 \end{tabular}
 
 
-\begin{tabular}{|l|r|r|r|}\hline
-Scala Task 2 & Agent Novice Mean & Some Agent Exp Mean & p-value \\\hline
-Time in Seconds & 552.50 & 669.14 & 0.71\\
-Lines of Code & 40.67 & 38.22 & 0.62\\
-Complexity & 8.17 & 8.22 & 0.92\\
-Performance & 0.55 & 0.54 & 0.54\\
+\begin{tabular}{|l|r|r|r|r|}\hline
+Scala Task 2 & Agent Novice Mean & Some Agent Exp Mean & p-value & Power\\\hline
+Time in Seconds & 552.50 & 669.14 & 0.71 & 0.06\\
+Lines of Code & 40.67 & 38.22 & 0.57 & 0.08\\
+Complexity & 8.17 & 8.22 & 0.92 & 0.05\\
+Performance & 0.55 & 0.54 & 0.54 & 0.09\\
 \hline
 \end{tabular}
 
 \end{center}
-\caption{Comparison of results from programmers no agent programming experience vs programmers with some agent programming experience. A p-value of less than .05 mean that the difference in means is statistically significant at the 95\% significance level, i.e., we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different.}
+\caption{Comparison of results from programmers no agent programming experience vs programmers with some agent programming experience. p-value is for comparison of means between samples of unequal variances (Welch's t-test). A p-value of less than .05 mean that the difference in means is statistically significant at the 95\% significance level, i.e. we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different. Power is the probability that we reject the null hypothesis $H_0$ when it is in fact false, given the sample size, variance, and significance level of 95\% ($\alpha = .05$).}
 \label{tbl:agent-experience}
 \end{table}
 \end{center}
-
-
-
 
 
 \subsection{Qualitative Results}
@@ -549,58 +553,57 @@ Rationale: in addition to objective analyses of task submissions, we want to kno
 \end{enumerate}
 
 
-
-\section{Insights}
-
-All but one of the study programmers created good AFABL agents. One programmer failed to understand the right way to write the reward function and therefore got very poor performance with their AFABL agents.
-
-
-
 \section{Threats to Validity}
 
-The first threat to validity is sample size -- there were only 16 study participants. However, the problem size was small and there was low variablility in the data, suggesting that a larger sample would have yielded similar results. The second threat is problem size. The tasks that programmers were given were smaller than typical software engineering tasks. Given the difficulty of getting programmers to work for hours writing programs for a study, and the further challenge of finding Scala programmers, the problem size had to be limited. We believe that the insights are still valid because the chief differences between AFABL agent programs and traditional programs are the control-flow complexity and the additional effort required to adapt agent programs to more complex domains. As our results showed, the small tasks were sufficient to show these differences. The final threat to validity is the fact that 8 of the 16 study participants were teaching assistants for the principal investigator. This fact may have biased them towards writing better AFABL solutions in order to help me show positive results. However, as Table \ref{tbl:tas-vs-non-tas} shows, the data do not show that the TAs' results differed from the non-TAs' results.
+The first threat to validity is sample size -- there were only 16 study participants. Indeed the statistical power caclulations for most comparisons indicate that results are inconclusive due to the small sample sizes and large variances in many metrics. However, two core metrics -- complexity and perfoamce -- yielded very high statistical power, supporting our claim that AFABL agent programs are simpler to write than their non-AFABL equivalents, and that it takes less effort to get good performance from AFBL agents.
+
+The second threat is problem size. The tasks that programmers were given were smaller than typical software engineering tasks. Given the difficulty of getting programmers to work for hours writing programs for a study, and the further challenge of finding Scala programmers, the problem size had to be limited. We believe that the insights are still valid because the chief differences between AFABL agent programs and traditional programs are the control-flow complexity and the additional effort required to adapt agent programs to more complex domains. As our results showed, the small tasks were sufficient to show these differences.
+
+The final threat to validity is the fact that 8 of the 16 study participants were teaching assistants for the principal investigator. This fact may have biased them towards writing better AFABL solutions in order to help me show positive results. However, as Table \ref{tbl:tas-vs-non-tas} shows, the data do not show that the TAs' results differed from the non-TAs' results. Again, due to small samples sizes the statistical power of these comparisons is low, but nevertheless we cannot show a statistically significant difference between the results of TAs and non-TAs.
 
 \begin{center}
 \begin{table}[h]
+
 \begin{center}
-\begin{tabular}{|l|r|r|r|}\hline
-Afabl Task 1 & TA Mean & Non-TA Mean & p-value \\\hline
-Time in Seconds & 1620.00 & 1733.33 & 0.86\\
-Lines of Code & 31.38 & 31.12 & 0.82\\
-Complexity & 5.00 & 5.50 & 0.35\\
-Performance & 0.51 & 0.54 & 0.41\\
+\begin{tabular}{|l|r|r|r|r|}\hline
+Afabl Task 1 & TA Mean & Non-TA Mean & p-value & Power\\\hline
+Time in Seconds & 1620.00 & 1733.33 & 0.86 & 0.05\\
+Lines of Code & 31.38 & 31.12 & 0.82 & 0.06\\
+Complexity & 5.00 & 5.50 & 0.35 & 0.26\\
+Performance & 0.51 & 0.54 & 0.42 & 0.19\\
 \hline
 \end{tabular}
 
 
-\begin{tabular}{|l|r|r|r|}\hline
-Afabl Task 2 & TA Mean & Non-TA Mean & p-value \\\hline
-Time in Seconds & 686.83 & 552.00 & 0.66\\
-Lines of Code & 41.75 & 38.25 & 0.50\\
-Complexity & 8.38 & 8.12 & 0.63\\
-Performance & 0.55 & 0.54 & 0.17\\
+\begin{tabular}{|l|r|r|r|r|}\hline
+Afabl Task 2 & TA Mean & Non-TA Mean & p-value & Power\\\hline
+Time in Seconds & 686.83 & 552.00 & 0.62 & 0.08\\
+Lines of Code & 41.75 & 38.25 & 0.47 & 0.11\\
+Complexity & 8.38 & 8.12 & 0.61 & 0.08\\
+Performance & 0.55 & 0.54 & 0.19 & 0.26\\
 \hline
 \end{tabular}
 
 
-\begin{tabular}{|l|r|r|r|}\hline
-Scala Task 1 & TA Mean & Non-TA Mean & p-value \\\hline
-Time in Seconds & 1520.67 & 1462.17 & 0.89\\
-Lines of Code & 36.88 & 40.12 & 0.83\\
-Complexity & 10.62 & 11.12 & 0.90\\
-Performance & 0.46 & 0.42 & 0.55\\
+\begin{tabular}{|l|r|r|r|r|}\hline
+Scala Task 1 & TA Mean & Non-TA Mean & p-value & Power\\\hline
+Time in Seconds & 1520.67 & 1462.17 & 0.89 & 0.05\\
+Lines of Code & 36.88 & 40.12 & 0.80 & 0.06\\
+Complexity & 10.62 & 11.12 & 0.88 & 0.05\\
+Performance & 0.46 & 0.42 & 0.47 & 0.11\\
 \hline
 \end{tabular}
 
 
-\begin{tabular}{|l|r|r|r|}\hline
-Scala Task 2 & TA Mean & Non-TA Mean & p-value \\\hline
-Time in Seconds & 686.83 & 552.00 & 0.66\\
-Lines of Code & 41.75 & 38.25 & 0.50\\
-Complexity & 8.38 & 8.12 & 0.63\\
-Performance & 0.55 & 0.54 & 0.17\\
+\begin{tabular}{|l|r|r|r|r|}\hline
+Scala Task 2 & TA Mean & Non-TA Mean & p-value & Power\\\hline
+Time in Seconds & 686.83 & 552.00 & 0.62 & 0.08\\
+Lines of Code & 41.75 & 38.25 & 0.47 & 0.11\\
+Complexity & 8.38 & 8.12 & 0.61 & 0.08\\
+Performance & 0.55 & 0.54 & 0.19 & 0.26\\
 \hline
 \end{tabular}
+
 \end{center}
 \caption{Comparison of TA results versus non-TA results. A p-value of less than .05 means that the difference in means is statistically significant at the 95\% significance level, i.e., we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different.}
 \label{tbl:tas-vs-non-tas}
