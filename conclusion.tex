@@ -4,56 +4,6 @@
 
 This dissertation has reported on two primary contributions: a command arbitration algorithm for robust modular reinforcement learning, and a domain-specific language that integrates modular reinforcement learning, AFABL. The benefits of language-integrated reinforcement learning have been demonstrated in a study of programmers' solutions to agent programming tasks using AFABL compared to using a traditional programming language. AFABL agents are easier to write, are expressed in less complex code, and have more readily reused components than agents written in traditional programming languages. In the remainder of this chapter we discuss some implications of AFABL (as a representative first step in language-integrated modular reinforcement learning), limitations of the current work, and directions for future work.
 
-\section{Adaptive Agent Software Engineering with AFABL}
-
-In this section we discuss the broader implications of adaptive agent programming with AFABL. For the present discussion we define authorability as the ease with which a programmer can author the behavior of agents.  Concretely, we suggest a framework for assessing authorability that considers domain knowledge requirements, algorithm knowledge requirements, and the adaptability of agents.
-
-{\bf Domain knowledge} refers to the world-specific details the agent author must program into the agent for a particular domain.  Examples of domain knowledge include representations of state and the dynamics of the world, that is, how actions cause transitions from one state to another.
-
-{\bf Algorithm knowledge} refers to the degree of algorithm detail that must be programmed in the agent.  An agent using a general-purpose programming language with no libraries to support agent programming would need to write the agent's behavior algorithms from scratch. Even an agent using an agent programming library would still likely need to encode a significant amount of algorithm knowledge in the agent. For example, an agent that uses a STRIPS planner for action selection would need to contain details of STRIPS operators and the mechanisms for selecting them in response to state perception.
-
-{\bf Adaptability} refers to the ease with which an agent, once authored, can adapt to a changing world or be reused in a different world.
-
-These factors are not completely orthogonal.  High domain knowledge requirements can hinder adaptability because agents need to be preprogrammed for worlds that have different dynamics.  Domain knowledge and algorithm knowledge often go hand-in-hand, for example in the encoding of heuristic functions.  Returning to our STRIPS example, STRIPS operators essentially encode world dynamics into the decision making algorithm, thereby coupling domain knowledge and algorithm knowledge.
-
-We say that authorability is high when required domain knowledge is low, algorithm knowledge is low, and adaptability is high.  Such an agent is easy to program in the first place and can be reused in new worlds with minimal reprogramming.
-
-With this working framework for assessing the authorability of agent programming approaches we can map the agent programming space as a spectrum from fully scripted to fully learning approaches.
-
-\subsubsection{Fully scripted agent Programming}
-
-Fully scripted agents are the most common type of agents.  The scripts that control such agents specify every detail of the agent's behavior ahead of time.  While scripted agents can pursue goals and exhibit intelligence, the manner in which these goals are pursued must be written explicitly by the agent author, and if these goals are to be pursued using a particular algorithm, such as a planning algorithm, the algorithm itself must be encoded (or used as a library) from within the code.
-
-In terms of our authorability framework, fully scripted agents have the following properties.
-
-\begin{itemize}
-\item Domain knowledge: high. A fully scripted agent must specify a knowledge representation for perception and action that facilitates all the kinds of analyses and decisions the agent will make.  The dynamics of the world must be known in advance and encoded in the script to allow the agent to pursue goals.
-\item Algorithm knowledge: high.  Although the algorithms may be simple, such as big if-else ladders, the agent author must have complete knowledge of how the agent's behavior algorithms work.  More complex algorithms mean more complex knowledge for the agent author to manage, fully scripted approaches scale poorly to more complex agents.
-\item Adaptability: low.  Once an agent is fully scripted for a given environment, it must be reprogrammed for new environments with different dynamics.  Also, any run-time adaptivity must be scripted explicitly.
-\end{itemize}
-
-\subsubsection{Fully Machine Learning agent Programming}
-
-\begin{itemize}
-\item Domain knowledge: low. With a sufficiently abstract state representation, the agent can have very little domain knowledge.
-\item Algorithm knowledge: low to moderate.  The choice of machine learning algorithm and state representation determine the level of algorithm knowledge necessary to author a fully machine learning agent.
-\item Adaptability: high.  Adaptability is the key advantage of machine learning.
-\end{itemize}
-
-Neither of these two endpoints of the agent authorability spectrum is desirable.  Fully scripted agents are laborious to write.  Fully machine learning agents typically exhibit a long period of decreasing incompetence until their learning algorithms have sufficient data.  What we want is something in between fully scripted and fully machine learning agents.
-
-
-{\bf AFABL Hits the Agent Authorability Sweet Spot}
-
-AFABL's integrated reinforcement learning separates the dynamics of the world from the action-selection logic in the agent, freeing the programmer from writing domain-dependent code and facilitating the adaptation of agents to new worlds.
-
-\begin{itemize}
-\item Domain knowledge: as much or as little as you want.  You can program the parts you know how to program, and leave AFABL to learn the rest automatically.
-\item Algorithm knowledge: moderate.  AFABL is based on the agent and reinforcement learning models.  Behaviors are programmed as actions that execute in response to observed state (hence ``behavior''), and automatic behaviors additionally specify reward signals that enable AFABL to learn the best responses to particular states.
-\item Adaptability: high. Adaptability is the key advantage of machine learning.
-\end{itemize}
-
-
 \section{Limitations of Current Work}
 
 % The work presented here is promising, but focused in scope.

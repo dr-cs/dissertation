@@ -508,16 +508,13 @@ Performance & 0.55 & 0.54 & 0.54 & 0.09\\
 \end{tabular}
 
 \end{center}
-\caption{Comparison of results from programmers no agent programming experience vs programmers with some agent programming experience. p-value is for comparison of means between samples of unequal variances (Welch's t-test). A p-value of less than .05 mean that the difference in means is statistically significant at the 95\% significance level, i.e. we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different. Power is the probability that we reject the null hypothesis $H_0$ when it is in fact false, given the sample size, variance, and significance level of 95\% ($\alpha = .05$).}
+\caption{Comparison of results from programmers no agent programming experience vs programmers with some agent programming experience. p-value is for comparison of means between samples of unequal variances (Welch's t-test \cite{welch1947generalization}). A p-value of less than .05 mean that the difference in means is statistically significant at the 95\% significance level, i.e. we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different. Power is the probability that we reject the null hypothesis $H_0$ when it is in fact false, given the sample size, variance, and significance level of 95\% ($\alpha = .05$).}
 \label{tbl:agent-experience}
 \end{table}
 \end{center}
 
 
 \subsection{Qualitative Results}
-
-Programmers responded to a questionnaire to give their impressions of agent programming in AFABL versus agent programming in Scala. Here we summarize the responses of the eight participants who were not TAs of the principal investigator.
-
 
 \begin{figure}[h!]
 \begin{tabular}{cc}\\
@@ -529,7 +526,48 @@ Programmers responded to a questionnaire to give their impressions of agent prog
 \label{fig:likert-responses}
 \end{figure}
 
-Figure \ref{fig:likert-responses} shows that programmers had a positive response to AFABL. The most interesting responses of these is for the question ``If given the choice, I would choose AFABL over Scala for agent programming projects.'' Although every programmer found AFABL to be easier than Scala for Task 2, and almost all programmers found AFABL easier for Task 1, some of the study participants were very experienced Scala programmers who would still prefer the familiarity of Scala. The programmer who reported that they would choose Scala over AFABL did report for Task 2 that they found it easier to adapt their AFABL agent to Task 2 after they had developed some basic knowledge of AFABL.
+Programmers responded to a questionnaire to give their impressions of agent programming in AFABL versus agent programming in Scala. Here we summarize the responses of the eight participants who were not TAs of the principal investigator. Figure \ref{fig:likert-responses} shows that programmers had a positive response to AFABL. The most interesting responses of these is for the question ``If given the choice, I would choose AFABL over Scala for agent programming projects.'' Although every programmer found AFABL to be easier than Scala for Task 2, and almost all programmers found AFABL easier for Task 1, some of the study participants were very experienced Scala programmers who would still prefer the familiarity of Scala. The programmer who reported that they would choose Scala over AFABL did report for Task 2 that they found it easier to adapt their AFABL agent to Task 2 after they had developed some basic knowledge of AFABL.
+
+\subsubsection{Internal Validity of Reflection Survey}
+
+The Cronbach alpha coefficient measures the correlation between the answers to questions that measure the same construct and is given by:
+
+\[
+\alpha = \frac{k}{k - 1} \times (1 - \frac{s_{T}^{2} - \sum s_{I}^{2}}{s_{T}^{2}})
+\]
+
+where
+\begin{itemize}
+\item $s_T^2$ is the total variance of all the items (questions) for a construct
+\item $s_I^2$ is the variance of an individual item, and
+\item $k$ is the number of items.
+\end{itemize}
+
+We evaluated the internal consistency of the survey by calculating the Cronbach alpha coefficients for the following constructs:
+
+\begin{enumerate}
+
+\item User satisfaction with Scala for agent programming tasks.
+\begin{itemize}
+\item Questions 1 and 3
+\item Cronbach alpha: 1.38
+\end{itemize}
+
+\item User satisfaction with AFABL for agent programming tasks.
+\begin{itemize}
+\item  Questions 2 and 4
+\item Cronbach alpha: 1.35
+\end{itemize}
+
+\item User preference for AFABL over Scala for agent programming tasks.
+\begin{itemize}
+\item Questions 5 and 7
+\item Cronbach alpha: 1.28
+\end{itemize}
+
+\end{enumerate}
+
+Since all Cronbach aplha scores were above 0.7, we may consider the reflection survey to be reliable.
 
 \subsubsection{Free Response Questions}
 
@@ -615,7 +653,7 @@ Performance & 0.55 & 0.54 & 0.19 & 0.26\\
 \end{tabular}
 
 \end{center}
-\caption{Comparison of TA results versus non-TA results. p-value is for comparison of means between samples of unequal variances (Welch's t-test). A p-value of less than .05 mean that the difference in means is statistically significant at the 95\% significance level, i.e. we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different. Power is the probability that we reject the null hypothesis $H_0$ when it is in fact false, given the sample size, variance, and significance level of 95\% ($\alpha = .05$).}
+\caption{Comparison of TA results versus non-TA results. p-value is for comparison of means between samples of unequal variances (Welch's t-test\cite{welch1947generalization}). A p-value of less than .05 mean that the difference in means is statistically significant at the 95\% significance level, i.e. we reject $H_0: \mu_1 = \mu_2$ and conclude that the means are different. Power is the probability that we reject the null hypothesis $H_0$ when it is in fact false, given the sample size, variance, and significance level of 95\% ($\alpha = .05$).}
 \label{tbl:tas-vs-non-tas}
 \end{table}
 \end{center}
