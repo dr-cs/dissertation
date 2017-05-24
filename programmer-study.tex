@@ -2,7 +2,7 @@
 
 \section{Experiments}
 
-Programmers will be randomly assigned to two equally-sized groups: one group will use Scala without AFABL first -- the Scala-first group -- and the other group will use Scala with AFABL first -- the AFABL-first group.  Each group will complete three programming tasks using Scala and AFABL in the order determined by their group.  For each task the programmers will be asked to design and implement elegant code that meets the requirements of the task as quickly as possible, balancing the quality of their solutions with time.  The idea is to get a good solution quickly, not a perfect solution in a long time.
+Programmers ere randomly assigned to two equally-sized groups: one group used Scala without AFABL first -- the Scala-first group -- and the other group used AFABL first -- the AFABL-first group.  Each group completed two programming tasks using Scala and AFABL in the order determined by their group.  For each task the programmers were asked to design and implement elegant code that meets the requirements of the task as quickly as possible, balancing the quality of their solutions with time.  The idea is to get a good solution quickly, not a perfect solution in a long time.
 
 \subsection{Task 1: The Bunny-Wolf Domain}\label{sec:task1}
 
@@ -21,7 +21,7 @@ Programmers will be randomly assigned to two equally-sized groups: one group wil
 \label{fig:bunny-picture}
 \end{figure}
 
-In this task each programmer will write an agent that controls a bunny character in a simple
+In this task each programmer wrote an agent that controls a bunny character in a simple
 world, depicted in Figure~\ref{fig:bunny-picture}.  The bunny world works as follows:
 
 \begin{itemize}
@@ -62,17 +62,17 @@ In this task each programmer will write a bunny agent for a world that is identi
 
 \section{Data Collection}
 
-Data will be collected from programmers in three ways: directly through work diaries and surveys, and independently through static and dynamic analysis of programmers' submitted solutions to the programming tasks \cite{singer2008a-software}.  The following sections discuss each of the data collection methods.
+Data were collected from programmers in three ways: directly through questionnaires and surveys, automatically with a custom-developed IntelliJ IDEA plug-in that tracked time and submitted solutions, and independently through static and dynamic analysis of programmers' submitted solutions to the programming tasks \cite{singer2008a-software}.  The following sections discuss each of the data collection methods.
 
 \subsection{Programmer Demographics Survey}
 
-The demographics survey will be given to participants after they have read and agreed to the consent form and before they are given task instructions and assigned to groups.
+The demographics survey was be given to participants after they read and agreed to the consent form and before they were given task instructions and assigned to groups.
 
-Purpose
+\paragraph{Purpose}
 
-The purpose of this survey is to place the programmers in groups according to their programming experience and skills.  In particular, the web application will use this survey to assign participants to the Scala-first and AFABL-first groups so that each group has similar distributions of programmer experience and skill levels.  Survey results may also be used to develop other quantitative and qualitative measures relating demographic information to task performance.
+The purpose of this survey was to place the programmers in groups according to their programming experience and skills.  In particular, the web application used this survey to assign participants to the Scala-first and AFABL-first groups so that each group had similar distributions of programmer experience and skill levels.  Survey results were also used to develop other quantitative and qualitative measures relating demographic information to task performance.
 
-Questionnaire
+\paragraph{Questionnaire}
 
 \begin{enumerate}
 
@@ -96,44 +96,6 @@ Rationale: college major can affect programming proficiency.  Additionally, we m
 
 Rationale: programming experience can affect programming proficiency.
 
-\item Number of programming languages with which you have ever been proficient. Include only programming languages, not markup languages like XML/HTML, build specification languages like Make, or special purpose languages like Lex and Yacc.
-
-Rationale: proficiency in multiple programming languages can affect can affect a programmer’s ability to use a new language/library.
-
-\item Number of programming languages with which you are currently proficient.
-
-Rationale: proficiency in multiple programming languages can affect can affect a programmer’s ability to use a new language/library.
-
-\item How proficient are you with imperative programming (languages like C, C++, Java, Python) ?
-\begin{enumerate}
-\item Not proficient
-\item Familiar (have done tutorials or simple examples)
-\item Proficient (can write programs with multiple objects and files)
-\item Expert
-\end{enumerate}
-
-Rationale: AFABL represents a novel programming paradigm.  Proficiency in multiple programming paradigms may affect a programmer’s ability to use AFABL.
-
-\item How proficient are you at object-oriented programming (languages like Smalltalk, Ruby, Scala, Java, C++)?  
-\begin{enumerate}
-\item Not proficient
-\item Familiar (have done tutorials or simple examples)
-\item Proficient (can write programs with multiple objects and files)
-\item Expert
-\end{enumerate}
-
-Rationale: AFABL represents a novel programming paradigm.  Proficiency in multiple programming paradigms may affect a programmer’s ability to use AFABL.
-
-\item How proficient are you at functional programming (languages like Lisp/Scheme, Haskell, ML, Scala)?  
-\begin{enumerate}
-\item Not proficient
-\item Familiar (have done tutorials or simple examples)
-\item Proficient (can write programs with multiple objects and files)
-\item Expert
-\end{enumerate}
-
-Rationale: AFABL represents a novel programming paradigm.  Proficiency in multiple programming paradigms may affect a programmer’s ability to use AFABL.
-
 \item How proficient are you at game/agent programming?  
 \begin{enumerate}
 \item Not proficient
@@ -142,7 +104,7 @@ Rationale: AFABL represents a novel programming paradigm.  Proficiency in multip
 \item Expert
 \end{enumerate}
 
-Rationale: game/agent programming proficiency is not common in the general programmer population.  Knowing programmers’ proficiency in game/agent programming will help randomize the experiment groups and allow additional inferences relating game/agent programming proficiency and proficiency with AFABL.
+Rationale: game/agent programming proficiency is not common in the general programmer population.  Knowing programmers’ proficiencies in game/agent programming will help randomize the experiment groups and allow additional inferences relating game/agent programming proficiency and proficiency with AFABL.
 
 \item How proficient are you at Scala programming?  
 \begin{enumerate}
@@ -156,15 +118,12 @@ Rationale: Scala is our baseline language, and AFABL is embedded in Scala.  Scal
 
 \end{enumerate}
 
-%% \subsection{Work Diary}
-
-%% Programmers will be asked to record the total amount of time they spend in design and implementation for each task, the time they spend debugging, and the time they spend referring to documentation.
 
 \subsection{Reflection Survey}
 
 The purpose of the reflection survey is to develop a qualitative assessment of programmer satisfaction with AFABL.
 
-Questionnaire
+\paragraph{Questionnaire}
 
 For each question, select the degree to which you agree with the statement based on
 the agent programming tasks you completed for this experiment.
@@ -255,7 +214,7 @@ Rationale: we want to get open-ended feedback for things we didn’t anticipate.
 
 \section{Evaluation}
 
-Using results from the pilot study, we will evaluate the internal consistency of the survey by calculating the Cronbach alpha coefficients for the following constructs:
+Using results from the pilot study, we evaluated the internal consistency of the survey by calculating the Cronbach alpha coefficients for the following constructs:
 
 \begin{enumerate}
 
@@ -289,13 +248,11 @@ where
 \item $k$ is the number of items.
 \end{itemize}
 
-Typically a construct is considered valid if its Cronbach alpha coefficient is at least 0.7.
-
-
+Typically a construct is considered valid if its Cronbach alpha coefficient is at least 0.7. As we report in Chapter \ref{ch:afabl-study}, all Cronbach alpha coefficients were greater than 1.
 
 \section{Source Code Analysis}
 
-The code submitted for each task will be analyzed to determine:
+The code submitted for each task was analyzed to determine:
 
 \begin{itemize}
 \item How much code was required for each task with and without AFABL.
@@ -305,31 +262,18 @@ The code submitted for each task will be analyzed to determine:
 
 \section{Run-time Analysis}
 
-The performance of the solutions submitted for each task will be recorded using repeated trials.  In essence, each solution will compete with the others.
+The performance of the solutions submitted for each task was recorded for comparison. The purpose of this comparison was to determine how much effort was required to get good performance, not to get the best possible performance.
 
 \subsection{Logistics}
 
-The experiments will be conducted online to provide easy access to the greatest number of participants.  Participants will:
+The experiments were conducted online to provide easy access to the greatest number of participants.  Participants:
 
 \begin{enumerate}
-\item Register online with confidential identifying information.
-\item Complete demographics survey.  The web application will use the demographic survey to place participants in the Scala-first or AFABL-first groups.
-\item Download code and task instructions.
-\item Complete Task 1 in Scala and AFABL.
-\item Submit Task 1 solutions, including work diary.
-\item Complete Task 2 in Scala and AFABL.
-\item Submit Task 2 solutions, including work diary.
-\item Complete Task 3 in Scala and AFABL.
-\item Submit Task 3 solutions, including work diary.
-\item Complete experiment reflection survey.
+\item Register online with (optional) confidential identifying information.
+\item Complete demographics survey.  The web application used the demographic survey to place participants in the Scala-first or AFABL-first groups.
+\item Downloaded code and task instructions.
+\item Completed Task 1 in Scala or AFABL.
+\item Complete Task 2 in Scala or AFABL.
+\item Submitted their solutions using our IntelliJ IDEA plug-in.
+\item Completes a reflection survey.
 \end{enumerate}
-
-The entire experiment will be designed to take less than 20 hours to complete.
-
-\subsection{Contingency Plans}
-
-In the event that an insufficient number of online participants can be recruited, we will hold in-person workshops with students from Georgia Tech, lured by free pizza and free Scala training (since Scala use is relatively low at Georgia Tech).
-
-\section{Evaluation}
-
-The primary quantitative metric will be task completion effort in time and code quantity.  Tasks 2 and 3 will provide a measure of how much effort is required to adapt agents to new domains.  In addition, we will calculate qualitative metrics for programmer satisfaction, and mine the source code for design patterns.

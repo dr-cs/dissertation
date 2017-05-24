@@ -2,7 +2,7 @@
 
 \section{Review of Major Contributions}
 
-This dissertation has reported on two primary contributions: a command arbitration algorithm for robust modular reinforcement learning, and a domain-specific language that integrates modular reinforcement learning, AFABL. The benefits of language-integrated reinforcement learning have been demonstrated in a study of programmers' solutions to agent programming tasks using AFABL compared to using a traditional programming language. AFABL agents are easier to write, are expressed in less complex code, and have more readily reused components than agents written in traditional programming languages. In the remainder of this chapter we discuss some implications of AFABL (as a representative first step in language-integrated modular reinforcement learning), limitations of the current work, and directions for future work.
+This dissertation has reported on two primary contributions: a command arbitration algorithm for robust modular reinforcement learning, and a domain-specific language that supports modular reinforcement learning, AFABL. Our new command arbitration algorithm solves a problem that existed in previous approaches to modular reinforcement learning, namely, that reward scales for all modules had to be comparable. Supporting modules with incomparable rewards allows modules to be written separately, which supports modular agent software engineering, towards which AFABL is a first step. We demonstrated the benefits of language-integrated reinforcement learning in a study of programmers' solutions to agent programming tasks using AFABL compared to solutions using a traditional programming language. AFABL agents are easier to write, are expressed in less complex code, and have more readily reused components than agents written in traditional programming languages. In the remainder of this chapter we discuss some implications of AFABL (as a representative first step in language-integrated modular reinforcement learning), limitations of the current work, and directions for future work.
 
 \section{Limitations of Current Work}
 
@@ -18,7 +18,7 @@ Using any reinforcement learning-based programming system requires the availabil
 
 \subsection{Host Language Limitations}
 
-Writing AFABL agents is writing Scala code, so AFABL programmers must have at least basic competence with Scala and the Scala tool chain. Since it was outside the scope of the present work, we did not try to determine how much of the Scala tooling can be hidden or automated for AFABL programmers. We required study participants to use a recent version of IntelliJ IDEA and provided a pre-configured Scala/AFABL project and an IntelliJ plugin to automate the time tracking and submission process. Still, several participants had trouble running the study code smoothly, as is often the case with development tools. Many study participants who did not participate in a group session simply abandoned the study. We advertised the study to the Atlanta Scala Meet-up, a group of local software engineers either using Scala professionally or interested in learning. Approximately 15 Scala Meet-up members started the study and only one finished. Due to the number of individual software issues we needed to help participants solve -- differing operating systems, IntelliJ versions, etc -- we believe many of these dropouts were due to simple software setup issues.
+Writing AFABL agents is writing Scala code, so AFABL programmers must have at least basic competence with Scala and the Scala tool chain. Since it was outside the scope of the present work, we did not try to determine how much of the Scala tooling can be hidden or automated for AFABL programmers. We required study participants to use a recent version of IntelliJ IDEA and provided a pre-configured Scala/AFABL project and an IntelliJ plug-in to automate the time tracking and submission process. Still, several participants had trouble running the study code smoothly, as is often the case with development tools. Many study participants who did not participate in a group session simply abandoned the study. We advertised the study to the Atlanta Scala Meet-up, a group of local software engineers either using Scala professionally or interested in learning. Approximately 15 Scala Meet-up members started the study and only one finished. Due to the number of individual software issues we needed to help participants solve -- differing operating systems, IntelliJ versions, etc -- we believe many of these dropouts were due to simple software setup issues.
 
 In addition to Scala tooling issues, AFABL programmers must deal with the Scala programming language. For example, when a programmer makes a mistake in their code the error messages come from the Scala compiler and run-time system, not AFABL. Luckily, in the study few people had such issues with AFABL code itself. With more complex agents problems are more likely to occur, and the programmer may be faced with the famous complexity of the Scala type system. The AFABL programmer who is not also a competent Scala programmer has little hope of debugging non-trivial errors.
 
@@ -27,7 +27,7 @@ In addition to Scala tooling issues, AFABL programmers must deal with the Scala 
 
 \subsection{Refined Module Types}
 
-AFABL currently supports a narrow definition of an agent: a behaving entity with a set of states that must constantly be pursued or avoided. In reinforcement learning these kinds of modules are called called continuing tasks, as opposed to episodic goals. Previous versions of AFABL supported a greater set of features but we removed them to focus on AFABL's core for the purpose of this work. With a cleaner core AFABL we could re-implement some of these features and more, which we discuss below.
+AFABL currently supports a narrow definition of an agent: a behaving entity with a set of states that must constantly be pursued or avoided. In reinforcement learning these kinds of modules are called continuing tasks, as opposed to episodic goals. Previous versions of AFABL supported a greater set of features but we removed them to focus on AFABL's core for the purpose of this work. With a cleaner core AFABL we could re-implement some of these features and more, which we discuss below. The following features would provide a richer set of agent modeling tools for programmers.
 
 \paragraph{Drives}
 
@@ -39,7 +39,7 @@ An Aversion module is a behavior module that runs throughout the life of its con
 
 \paragraph{Objectives}
 
-A an objective is a short-term goal state that generates a drive module that is active until its goal is achieved.  The command arbitrator gives objective modules priority over drive modules, but all modules are constrained by constraint modules.
+An objective is a short-term goal state that generates a drive module that is active until its goal is achieved.  The command arbitrator gives objective modules priority over drive modules, but all modules are constrained by constraint modules.
 
 \paragraph{Tasks}
 
@@ -47,7 +47,7 @@ A task is a temporally-extended action, a "mini-policy" that achieves a subgoal.
 
 \subsection{Simplified Syntax}
 
-The features listed above may make it possible to automatically author reward functions for modules. For example, the Bunny agent for Task 2 from Chapter \ref{ch:afabl} could be written with Drives and Aversions as shown in Figure \ref{fig:simplified-afabl}
+The features listed above may make it possible to automatically author reward functions for modules. For example, the Bunny agent for Task 2 from Chapter \ref{ch:afabl-study} could be written with Drives and Aversions as shown in Figure \ref{fig:simplified-afabl}
 
 
 \begin{figure}[!h]
