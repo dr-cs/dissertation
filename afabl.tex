@@ -70,7 +70,7 @@ Every AFABL module and agent is designed to operate in a world. A world defines 
 
 \subsubsection{States}
 
-The states of a world can be represented with any kind of Scala class. Case classes (\ref{sec:scala-case-classes}) are good for representing states because of their concise syntax and built-in equality methods. Figure \ref{fig:bunny-state-code} shows a case class for a state with three state variables: the locations of a bunny, wolf, and food.
+The states of a world can be represented with any kind of Scala class. Case classes are good for representing states because of their concise syntax and built-in equality methods. Figure \ref{fig:bunny-state-code} shows a case class for a state with three state variables: the locations of a bunny, wolf, and food.
 
 \begin{figure}[!h]
 \begin{center}
@@ -92,7 +92,7 @@ case class BunnyState(
 
 \subsubsection{Actions}
 
-Actions are represented by objects which can be instances of any class. As with states, case classes make a good choice for implementing actions. Figure \ref{fig:bunny-action-code} shows actions for the bunny world implemented as a Scala enumeration (\ref{sec:scala-enumerations}).
+Actions are represented by objects which can be instances of any class. As with states, case classes make a good choice for implementing actions. Figure \ref{fig:bunny-action-code} shows actions for the bunny world implemented as a Scala enumeration.
 
 \begin{figure}[!h]
 \begin{center}
