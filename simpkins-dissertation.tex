@@ -45,19 +45,19 @@
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 
 % Default settings for code listings
-\lstset{frame=tb,
+\lstset{
+  frame=single,
   language=scala,
   aboveskip=2mm,
   belowskip=2mm,
   showstringspaces=false,
   columns=flexible,
-  basicstyle={\footnotesize,\ttfamily,\singlespacing},
+  basicstyle={\footnotesize\ttfamily\singlespacing},
   numbers=none,
   numberstyle=\tiny\color{gray},
   keywordstyle=\color{blue},
   commentstyle=\color{dkgreen},
   stringstyle=\color{mauve},
-  frame=single,
   breaklines=true,
   breakatwhitespace=true,
   keepspaces=true
@@ -98,7 +98,7 @@
 
 %\includeonly{introduction,rl,arbiq,afabl}
 
-\usepackage[draft]{changes}
+\usepackage[final]{changes}
 \definechangesauthor[color=blue]{v3}
 
 \begin{document}
@@ -107,11 +107,11 @@
 
 %% Version v2 adds Chapters 4, 6, and 7, making it a complete draft except for the appendix on Scala. Changes to other chapters are marked in blue text with a v2 superscript. The following table lists changes to previously released drafts with links.
 
-\noindent {\LARGE {\bf Version v3}}\\
+%% \noindent {\LARGE {\bf Version v3}}\\
 
-Version v3 splits Chapter 5 (AFABL) into three chapters: AFABL, AFABL Programmer Study and AFABL in Context.  All of the material in Chapter 7, AFABL in Context, is new. Changes in other chapters are marked in blue text with a v3 superscript. The following table lists changes from v2 to v3 with links to the changes.
+%% Version v3 splits Chapter 5 (AFABL) into three chapters: AFABL, AFABL Programmer Study and AFABL in Context.  All of the material in Chapter 7, AFABL in Context, is new. Changes in other chapters are marked in blue text with a v3 superscript. The following table lists changes from v2 to v3 with links to the changes.
 
-\listofchanges[style=list]
+%% \listofchanges[style=list]
 
 \doublespacing  %set line spacing
 
