@@ -1,0 +1,32 @@
+\documentclass[12pt]{article}
+
+\usepackage{times}
+\usepackage{setspace}
+\doublespacing
+\pagenumbering{gobble}
+
+\textwidth = 6 in
+\textheight = 10 in
+\oddsidemargin = 0.25 in
+\evensidemargin = 0.25 in
+\topmargin = 0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.1in
+\parindent = 0.0in
+
+
+\begin{document}
+
+\begin{center}
+  Integrating Reinforcement Learning into a Programming Language\\
+  Christopher L. Simpkins\\
+  151 Pages\\
+  Directed by Dr. Charles Isbell, Jr.
+\end{center}
+
+Reinforcement learning is a promising solution to the intelligent agent problem. However, reinforcement learning algorithms are often slow to converge and using them in agent programs requires detailed knowledge of the algorithms. One approach to improving learning speed is decomposition. Modular reinforcement learning decomposes an agent into modules that each learn an isolated solution to a subset of the original problem. However, current approaches to modular reinforcement learning support decomposition but not composition because the reward scales of the modules must be comparable. A module written for one agent cannot be reused in another agent without modifying its reward function.
+
+This dissertation makes two contributions: (1) a command arbitration algorithm for modular reinforcement learning that enables composition by decoupling the reward scales of modules, and (2) a Scala-embedded domain-specific language -- AFABL (A Friendly Adaptive Behavior Language) -- that integrates modular reinforcement learning, allowing programmers to use reinforcement learning without knowing much about reinforcement learning algorithms. We empirically demonstrate the reward comparability problem and show that our command arbitration algorithm solves it, and we present the results of a study in which programmers used AFABL and traditional programming to write a simple agent and adapt it to a new domain, demonstrating the promise of language-integrated reinforcement learning for practical agent software engineering.
+
+\end{document}
