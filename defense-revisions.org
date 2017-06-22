@@ -23,34 +23,27 @@
 - Picky mate won't mate if no food in pior n steps
 - Wolf also find's food (competition for food)
 
-*** AFABL vs.
-
-- Learning from demonstration/inverse reinforcement learning
-
 *** AFABL Guidelines
 
 *** Charles's notes:
 
-- Add additional metrics to McCabe
+I wrote these notes as you read them to me. I put answers in -- bullets below yours.
+
+- Add additional metrics to McCabe.
+  -- I argued that McCabe is the most appropriate metric and that OO metrics wouldn't yield any useful information.
 - Address TAs -- show that TAs did same as strangers
-- Description of reusability vs maintenance
+  -- Addressed in the in AFABL Study chapter.
+- Description of reusability vs maintenance.
+  -- Addressed in the AFABL in Context chapter.
 - Design guidelines - if problem has these characteristics, AFABL is good.
-- Argument/proof: as world dynamics added, combinatorial expansion of logic in traditional code vs. linear expansion of AFABL code
-  - Changes require painful rethinking of code
-  - No free lunch. If state space grows, must encode in arbitrator
-  - If state space doesn't grow but world dynamcs change, all
+  -- Addressed in the AFABL in Context chapter.
+- Argument/proof: as world dynamics added, combinatorial expansion of logic in traditional code vs. linear expansion of AFABL code. Changes require painful rethinking of code. No free lunch. If state space grows, must encode in arbitrator. Argument about wy AFABL scales.
+  -- Addressed in the AFABL in Context chapter.
 
-- Argument about wy AFABL scales
-
+You then summarized my revisions as:
 
 1. Additional analyses of existing code
 2. Scalability argument - scalability of cognitive load on programmer vs. scalability of machine learning task (hidden from programmer with AFABL)
-
   - Language goal: minimize cognitive load for programmer.
     - Cognitive load for programmer is authoring reward function.
-
 3. Design principles - when to pick AFABL
-
-- Can I change AFABL
-
-Argue for premise -- that real people could use AFABL
